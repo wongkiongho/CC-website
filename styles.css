@@ -1,0 +1,101 @@
+/* Reset some default styles to ensure consistent rendering */
+body, h1, h2, ul, li {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+/* Apply styles to the header */
+header {
+    background-color: #333;
+    color: #fff;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+}
+
+.header h1 {
+    font-size: 24px;
+    margin-top: 10px;
+}
+
+/* Style the logo */
+.logo img {
+    width: 50px; /* Adjust the size as needed */
+    height: 50px; /* Adjust the size as needed */
+    border-radius: 50%; /* Makes the logo round if it's a square image */
+}
+
+/* Style the side navigation bar */
+.side-nav {
+    background-color: #333;
+    color: #fff;
+    width: 200px;
+    position: fixed;
+    left: 0;
+    height: 100%;
+    overflow-y: auto;
+}
+
+.side-nav ul {
+    padding: 20px;
+}
+
+.side-nav li {
+    margin-bottom: 10px;
+}
+
+.side-nav a {
+    color: #fff;
+    text-decoration: none;
+    display: block;
+    padding: 10px;
+    border-left: 3px solid transparent;
+}
+
+.side-nav a:hover {
+    background-color: #555;
+    border-left: 3px solid #ff6600; /* Highlight the active link */
+}
+
+/* Style the login section */
+.login-page {
+    margin-left: 220px; /* Adjust to account for the side navigation width */
+    padding: 20px;
+}
+
+.login-page h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    text-align: center;
+    /* align-items: center; */
+}
+
+/* Style the login form */
+.login-page form {
+    max-width: 300px;
+    margin: 0 auto;
+}
+
+.login-page input[type="text"],
+.login-page input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.login-page button {
+    width: 100%;
+    padding: 10px;
+    background-color: #ff6600;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.login-page button:hover {
+    background-color: #ff9933;
+}
