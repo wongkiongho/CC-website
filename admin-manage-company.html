@@ -29,16 +29,7 @@
         <h1 class="text-2xl mt-2 m-0 p-0">Internship</h1>
     </header>
     
-
-
-
-    <!-- Table-->
-    <div class="flex flex-grow">
-
-        <!-- Side Navigation stays as-is -->
-        <nav class="bg-gray-700 text-white w-72 fixed left-0 h-full overflow-y-auto">
-            <!-- ... Existing side navigation code ... -->
-                <!-- Side Navigation Bar -->
+    <!-- Side Navigation stays as-is -->
     <nav class="bg-gray-700 text-white w-72 fixed left-0 h-full overflow-y-auto">
         <ul class="py-5 pl-4">
             <li class="mb-4">
@@ -59,10 +50,10 @@
             </li>
         </ul>
     </nav>
-        </nav>
-    
-<!-- Right side content: Manage Company Page -->
-<div class="ml-80 mt-10 px-8 w-full space-y-6">
+
+    <div class="flex flex-grow">
+    <!-- Right side content: Manage Company Page -->
+    <div class="ml-80 mt-10 px-8 w-full space-y-6">
 
     <!-- Dashboard Overview -->
     <section class="bg-white p-5 rounded-lg shadow-md">
@@ -114,59 +105,24 @@
         </table>
     </section>
 </div>
-
-    
     </div>
     
-    <!-- ... Your existing code up to the end of the side navigation bar ... -->
-
-
-
-
-    
-
     <!-- Link to tailwind -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.1/flowbite.min.js"></script>
     <!-- Link to Tailwind Elements -->
     <script src="https://cdn.jsdelivr.net/npm/tw-elements/dist/js/tw-elements.umd.min.js"></script>
 
-    <script src="script.js"></script>
+    <script src="admin.js"></script>
     
     <script>
         new DataTable('#example', {
-    scrollX: true,
-    scrollY: 200
-});
-            function navigateToNextPage() {
-        window.location.href = "admin-add-company.html";
-    }
-
-        const studentLink = document.getElementById("admin");
-        const userManagementLink = document.getElementById("userManagement");
-        const submenu = document.getElementById("submenu");
-        const subSubmenu = document.getElementById("sub-submenu");
-
-        submenu.style.display = "none";
-        subSubmenu.style.display = "none";
-
-        studentLink.addEventListener("click", function (e) {
-            e.preventDefault();
-            if (submenu.style.display === "none") {
-                submenu.style.display = "block";
-            } else {
-                submenu.style.display = "none";
-                subSubmenu.style.display = "none";
-            }
+            scrollX: true,
+            scrollY: 200
         });
 
-        userManagementLink.addEventListener("click", function (e) {
-            e.preventDefault();
-            if (subSubmenu.style.display === "none") {
-                subSubmenu.style.display = "block";
-            } else {
-                subSubmenu.style.display = "none";
-            }
-        });
+        function navigateToNextPage() {
+            window.location.href = "admin-add-company.html";
+        }
     </script>
 
 </body>

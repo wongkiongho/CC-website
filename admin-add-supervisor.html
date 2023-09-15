@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Internship</title>
+    <!-- Add your CSS stylesheet link here -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="logo">
+            <img src="logo.png" alt="Internship Logo">
+        </div>
+        <h1>Internship</h1>
+    </header>
+
+    <!-- Side Navigation Bar -->
+    <nav class="side-nav">
+        <ul>
+            <li>
+                <a>Admin</a>
+                <ul class="submenu">
+                    <li>
+                        <a>User Management</a>
+                        <ul class="sub-submenu">
+                            <li><a href="admin-add-student.html">Add Student</a></li>
+                            <li><a href="admin-add-supervisor.html">Add Supervisor</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#">Company Management</a></li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Student Login Page -->
+    <section class="login-page">
+        <h2>Add Supervisor</h2>
+        <form action="process-supervisor.php" method="POST">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
+
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+
+            <label for="first-name">First Name:</label>
+            <input type="text" id="first-name" name="first-name" required>
+
+            <label for="last-name">Last Name:</label>
+            <input type="text" id="last-name" name="last-name" required>
+
+            <!-- Add more fields as needed, such as email, phone number, etc. -->
+
+            <button type="submit">Add Supervisor</button>
+        </form>
+    </section>
+
+    <!-- Include similar HTML sections for Supervisor and Admin login pages -->
+
+    <!-- Add your JavaScript for interactivity if needed -->
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const studentLink = document.querySelector(".side-nav li a");
+            const submenu = document.querySelector(".submenu");
+            const subSubmenu = document.querySelector(".sub-submenu");
+    
+            // Initially hide the submenu
+            submenu.style.display = "none";
+    
+            // Toggle the submenu when the "Student" link is clicked
+            studentLink.addEventListener("click", function (e) {
+                e.preventDefault();
+                if (submenu.style.display === "none") {
+                    submenu.style.display = "block";
+                } else {
+                    submenu.style.display = "none";
+                    subSubmenu.style.display = "none";
+                }
+            });
+        });
+
+        document.addEventListener("DOMContentLoaded", function () {
+        const userManagementLink = document.querySelector(".submenu > li > a");
+        const subSubmenu = document.querySelector(".sub-submenu");
+
+        // Initially hide the sub-submenu
+        subSubmenu.style.display = "none";
+
+        // Toggle the sub-submenu when the "User Management" link is clicked
+        userManagementLink.addEventListener("click", function (e) {
+            e.preventDefault();
+            if (subSubmenu.style.display === "none") {
+                subSubmenu.style.display = "block";
+            } else {
+                subSubmenu.style.display = "none";
+            }
+        });
+    });
+    </script>
+</body>
+</html>

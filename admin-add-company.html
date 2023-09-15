@@ -17,8 +17,6 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tw-elements/dist/css/tw-elements.min.css" />
 
     <title>Internship</title>
-    <!-- Add your CSS stylesheet link here -->
-    <!-- <link rel="stylesheet" href="styles.css"> -->
 </head>
 <body class="m-0 p-0 bg-gray-200">
     <!-- Header -->
@@ -50,13 +48,13 @@
         </ul>
     </nav>
 
-    <!-- Add student -->
+    <!-- Add company -->
     <section class="ml-72 p-5 bg-gray-100 rounded-lg shadow-md">
         <h2 class="text-2xl md:text-3xl mb-5 text-center text-gray-800 font-bold">Add Company</h2>
         
-        <form action="process-student.php" method="POST" class="bg-white p-5 rounded-lg shadow">
+        <form action="process-student.php" method="POST" class="max-w-screen-sm mx-auto bg-white p-5 rounded-lg shadow">
             <div class="mb-4">
-                <label for="companyName" class="block text-sm font-medium text-gray-700">Company Name:</label>
+                <label for="companyName" class="block text-lg font-medium text-gray-700">Company Name:</label>
                 <input type="text" class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-orange-500 focus:ring focus:ring-orange-200 focus:ring-opacity-50" id="companyName" name="companyName" required>
             </div>
 
@@ -119,43 +117,12 @@
             
         </form>
     </section>
-    
 
     <!-- Link to tailwind -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.1/flowbite.min.js"></script>
     <!-- Link to Tailwind Elements -->
     <script src="https://cdn.jsdelivr.net/npm/tw-elements/dist/js/tw-elements.umd.min.js"></script>
 
-    <script src="script.js"></script>
-    
-    <script>
-        const studentLink = document.getElementById("admin");
-        const userManagementLink = document.getElementById("userManagement");
-        const submenu = document.getElementById("submenu");
-        const subSubmenu = document.getElementById("sub-submenu");
-
-        submenu.style.display = "none";
-        subSubmenu.style.display = "none";
-
-        studentLink.addEventListener("click", function (e) {
-            e.preventDefault();
-            if (submenu.style.display === "none") {
-                submenu.style.display = "block";
-            } else {
-                submenu.style.display = "none";
-                subSubmenu.style.display = "none";
-            }
-        });
-
-        userManagementLink.addEventListener("click", function (e) {
-            e.preventDefault();
-            if (subSubmenu.style.display === "none") {
-                subSubmenu.style.display = "block";
-            } else {
-                subSubmenu.style.display = "none";
-            }
-        });
-    </script>
-
+    <script src="admin.js"></script>
 </body>
 </html>
