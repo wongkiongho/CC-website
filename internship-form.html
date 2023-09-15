@@ -25,50 +25,37 @@
 
 <body class="bg-gray-100 h-screen font-sans">
 
-<!-- Header -->
-<header class="bg-gray-800 text-white py-5 flex items-center">
-    <div class="logo">
-        <img src="logo.png" alt="Internship Logo" class="w-12 h-12 rounded-full">
-    </div>
-    <h1 class="text-2xl mt-2 m-0 p-0">Internship</h1>
-</header>
+    <!-- Header -->
+    <header class="bg-gray-800 text-white py-5 flex items-center">
+        <div class="logo ml-8">
+            <img src="logo.png" alt="Internship Logo" class="w-12 h-12 rounded-full">
+        </div>
+        <h1 class="text-2xl ml-4">Internship</h1>
+    </header>
 
-<!-- Side Navigation Bar -->
-<nav class="bg-gray-900 text-white w-72 fixed left-0 h-full overflow-y-auto">
-    <ul class="py-5 pl-4">
-        <li class="mb-4">
-            <a id="admin" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Admin</a>
-            <ul id="submenu" class="py-5 pl-4">
-                <li class="mb-4">
-                    <a id="userManagement" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">User Management</a>
-                    <ul id="sub-submenu" class="py-5 pl-4">
-                        <li class="mb-4"><a href="admin-add-student.html" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Add Student</a></li>
-                        <li class="mb-4"><a href="admin-add-supervisor.html" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Add Supervisor</a></li>
-                    </ul>
-                </li>
-                <li class="mb-4">
-                    <a id="companyManagement" href="admin-add-company.html" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Company Management</a>
-                </li>
-            </ul>
-        </li>
+    <!-- Side Navigation Bar -->
+    <nav class="bg-gray-900 text-white w-72 fixed left-0 h-full overflow-y-auto">
+        <ul class="py-5 pl-4">
+            <li class="mb-4">
+                <a id="studentMenu" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Student</a>
+                <ul id="studentSubmenu" class=" py-5 pl-4">
+                    <li class="mb-4"><a href="profile.html" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Profile</a></li>
+                    <li class="mb-4"><a href="company-list.html" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Company List</a></li>
+                    <li class="mb-4"><a href="internship-form.html" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Internship Form</a></li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
 
-        <li class="mb-4">
-            <a id="studentMenu" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Student</a>
-            <ul id="studentSubmenu" class=" py-5 pl-4">
-                <li class="mb-4"><a href="profile.html" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Profile</a></li>
-                <li class="mb-4"><a href="company-list.html" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Company List</a></li>
-                <li class="mb-4"><a href="internship-form.html" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Internship Form</a></li>
-            </ul>
-        </li>
-    </ul>
-</nav>
+    <!-- Main Content -->
+    <div class="ml-80 mt-10 w-3/4 mx-auto">
 
+        <!-- Title -->
+        <h1 class="text-xl font-semibold mb-5">Internship Form</h1>
 
-
-        <!-- Main Content -->
-        <div class="ml-80 w-3/4 bg-gray-100 p-8">
-            <h1 class="text-xl font-semibold">Internship Form</h1>
-            <form class="mt-4">
+        <!-- Card View for Internship Form -->
+        <div class="bg-white p-8 shadow-md rounded-lg hover:shadow-xl transition-shadow duration-300 ease-in-out">
+            <form>
                 <div class="mb-4">
                     <label class="block text-gray-700 text-sm font-bold mb-2" for="student-name">Student Name</label>
                     <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="student-name" type="text" placeholder="Enter your name">
@@ -83,22 +70,16 @@
                         <option value="bachelor_cs">Bachelor degree of Computer Science</option>
                         <option value="bachelor_it">Bachelor degree of Information Technology</option>
                         <option value="bachelor_se">Bachelor degree of Software Engineering</option>
-                        <!-- Add more courses as needed -->
                     </select>
                 </div>
-
-                <!-- Company Dropdown -->
                 <div class="mb-4">
                     <label class="block text-gray-700 text-sm font-bold mb-2" for="company">Company</label>
                     <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="company">
                         <option value="company_a">Company A</option>
                         <option value="company_b">Company B</option>
                         <option value="company_c">Company C</option>
-                        <!-- Add more companies as needed -->
                     </select>
                 </div>
-
-                <!-- More form fields as necessary -->
                 <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">Submit</button>
             </form>
         </div>
