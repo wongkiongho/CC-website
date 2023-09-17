@@ -1,4 +1,4 @@
-const studentLink = document.getElementById("admin");
+const adminLink = document.getElementById("admin");
 const userManagementLink = document.getElementById("userManagement");
 const companyManagementLink = document.getElementById("companyManagement");
 const submenu = document.getElementById("submenu");
@@ -8,7 +8,7 @@ const subSubmenu2 = document.getElementById("sub-submenu2");
 submenu.style.display = "none";
 subSubmenu.style.display = "none";
 
-studentLink.addEventListener("click", function (e) {
+adminLink.addEventListener("click", function (e) {
     e.preventDefault();
     if (submenu.style.display === "none") {
         submenu.style.display = "block";
@@ -36,4 +36,10 @@ companyManagementLink.addEventListener("click", function (e) {
     } else {
         subSubmenu2.style.display = "none";
     }
+});
+
+const logoutButton = document.getElementById("logoutBtn");
+
+logoutButton.addEventListener("click", function() {
+    window.location.href = "admin-login.html";
 });

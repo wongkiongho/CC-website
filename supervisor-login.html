@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.1/flowbite.min.css" rel="stylesheet" />
+        <script src="https://cdn.tailwindcss.com"></script>
+
+        <!-- Link to FontAwesome -->
+        <link rel="stylesheet" type="text/css"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+        <!-- Link to Tailwind Elements -->
+        <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900&display=swap" rel="stylesheet" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tw-elements/dist/css/tw-elements.min.css" />
+
+        <title>Internship</title>
+    </head>
+
+    <body class="m-0 p-0 bg-gray-200">
+        <!-- Header -->
+        <header class="bg-gray-800 text-white py-5 flex items-center">
+            <div class="logo">
+                <img src="logo.png" alt="Internship Logo" class="w-12 h-12 ml-5 rounded-full">
+            </div>
+            <h1 class="text-2xl mt-2 ml-5 p-0">Internship</h1>
+        </header>
+
+        <!-- Side Navigation Bar -->
+        <nav class="bg-gray-700 text-white w-72 fixed left-0 h-full overflow-y-auto">
+            <ul class="py-5 pl-4">
+                <li class="mb-4"><a href="student-login.html" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Student</a></li>
+                <li class="mb-4"><a href="supervisor-login.html" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Supervisor</a></li>
+                <li class="mb-4"><a href="admin-login.html" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Admin</a></li>
+            </ul>
+        </nav>
+
+        <!-- Supervisor Login Page -->
+        <section class="ml-72 p-5 bg-gray-100 rounded-lg shadow-md">
+            <h2 class="text-2xl md:text-3xl mb-5 text-center text-gray-800 font-bold">Supervisor Login</h2>
+            
+            <form action="student-dashboard.html" method="POST" class="max-w-screen-sm mx-auto bg-white p-5 rounded-lg shadow">
+                <input type="text" name="username" placeholder="Username" class="w-full px-4 py-2 mb-8 border border-gray-300 rounded-lg text-lg" required>
+                
+                <input type="password" name="password" placeholder="Password" class="w-full px-4 py-2 mb-8 border border-gray-300 rounded-lg text-lg" required>
+                
+                <button type="submit" id="loginBtn" onclick="login()" class="w-40 py-2 mx-auto block bg-orange-500 text-white rounded-lg focus:outline-none hover:bg-orange-600">Login</button>
+            </form>
+        </section>
+
+        <!-- Link to tailwind -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.1/flowbite.min.js"></script>
+        
+        <!-- Link to Tailwind Elements -->
+        <script src="https://cdn.jsdelivr.net/npm/tw-elements/dist/js/tw-elements.umd.min.js"></script>
+
+        <script src="login.js"></script>
+    </body>
+</html>

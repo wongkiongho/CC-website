@@ -1,89 +1,85 @@
 <!DOCTYPE html>
 <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<head>
- 
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.1/flowbite.min.css" rel="stylesheet" />
+        <script src="https://cdn.tailwindcss.com"></script>
 
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.1/flowbite.min.css" rel="stylesheet" />
-    <script src="https://cdn.tailwindcss.com"></script>
+        <!-- Link to FontAwesome -->
+        <link rel="stylesheet" type="text/css"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 
-    <!-- Link to FontAwesome -->
-    <link rel="stylesheet" type="text/css"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+        <!-- Link to Tailwind Elements -->
+        <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900&display=swap" rel="stylesheet" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tw-elements/dist/css/tw-elements.min.css" />
 
-    <!-- Link to Tailwind Elements -->
-    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tw-elements/dist/css/tw-elements.min.css" />
+        <title>Internship</title>
+    </head>
 
-    <title>Internship</title>
-    <!-- Add your CSS stylesheet link here -->
-    <!-- <link rel="stylesheet" href="styles.css"> -->
+    <body class="bg-gray-100 h-screen font-sans">
 
-</head>
+        <!-- Header -->
+        <header class="bg-gray-800 text-white py-5 flex items-center">
+            <div class="logo">
+                <img src="logo.png" alt="Internship Logo" class="w-12 h-12 ml-5 rounded-full">
+            </div>
+            <h1 class="text-2xl mt-2 ml-5 p-0">Internship</h1>
+            <button id="logoutBtn" onclick="logout()" class="ml-auto mr-5 bg-red-500 hover:bg-red-700 text-white px-4 py-1 rounded">Logout</button>
+        </header>
 
-<body class="bg-gray-100 h-screen font-sans">
+        <!-- Side Navigation Bar -->
+        <nav class="bg-gray-700 text-white w-72 fixed left-0 h-full overflow-y-auto">
+            <ul class="py-5 pl-4">
+                <li class="mb-4">
+                    <a id="studentMenu" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Student</a>
+                    <ul id="studentSubmenu" class=" py-5 pl-4">
+                        <li class="mb-4"><a href="profile.html" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Profile</a></li>
+                        <li class="mb-4"><a href="company-list.html" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Company List</a></li>
+                        <li class="mb-4"><a href="internship-form.html" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Internship Form</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
 
-    <!-- Header -->
-    <header class="bg-gray-800 text-white py-5 flex items-center">
-        <div class="logo ml-8">
-            <img src="logo.png" alt="Internship Logo" class="w-12 h-12 rounded-full">
+        <!-- Main Content -->
+        <div class="ml-80 mt-10 w-3/4 mx-auto">
+
+            <!-- Title -->
+            <h1 class="text-xl font-semibold mb-5">Internship Form</h1>
+
+            <!-- Card View for Internship Form -->
+            <div class="bg-white p-8 shadow-md rounded-lg hover:shadow-xl transition-shadow duration-300 ease-in-out">
+                <form>
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2" for="student-name">Student Name</label>
+                        <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="student-name" type="text" placeholder="Enter your name">
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2" for="student-Id">Student ID</label>
+                        <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="student-Id" type="text" placeholder="Enter your student ID">
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2" for="course">Course</label>
+                        <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="course">
+                            <option value="bachelor_cs">Bachelor degree of Computer Science</option>
+                            <option value="bachelor_it">Bachelor degree of Information Technology</option>
+                            <option value="bachelor_se">Bachelor degree of Software Engineering</option>
+                        </select>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2" for="company">Company</label>
+                        <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="company">
+                            <option value="company_a">Company A</option>
+                            <option value="company_b">Company B</option>
+                            <option value="company_c">Company C</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">Submit</button>
+                </form>
+            </div>
         </div>
-        <h1 class="text-2xl ml-4">Internship</h1>
-    </header>
-
-    <!-- Side Navigation Bar -->
-    <nav class="bg-gray-900 text-white w-72 fixed left-0 h-full overflow-y-auto">
-        <ul class="py-5 pl-4">
-            <li class="mb-4">
-                <a id="studentMenu" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Student</a>
-                <ul id="studentSubmenu" class=" py-5 pl-4">
-                    <li class="mb-4"><a href="profile.html" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Profile</a></li>
-                    <li class="mb-4"><a href="company-list.html" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Company List</a></li>
-                    <li class="mb-4"><a href="internship-form.html" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Internship Form</a></li>
-                </ul>
-            </li>
-        </ul>
-    </nav>
-
-    <!-- Main Content -->
-    <div class="ml-80 mt-10 w-3/4 mx-auto">
-
-        <!-- Title -->
-        <h1 class="text-xl font-semibold mb-5">Internship Form</h1>
-
-        <!-- Card View for Internship Form -->
-        <div class="bg-white p-8 shadow-md rounded-lg hover:shadow-xl transition-shadow duration-300 ease-in-out">
-            <form>
-                <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="student-name">Student Name</label>
-                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="student-name" type="text" placeholder="Enter your name">
-                </div>
-                <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="student-Id">Student ID</label>
-                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="student-Id" type="text" placeholder="Enter your student ID">
-                </div>
-                <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="course">Course</label>
-                    <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="course">
-                        <option value="bachelor_cs">Bachelor degree of Computer Science</option>
-                        <option value="bachelor_it">Bachelor degree of Information Technology</option>
-                        <option value="bachelor_se">Bachelor degree of Software Engineering</option>
-                    </select>
-                </div>
-                <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="company">Company</label>
-                    <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="company">
-                        <option value="company_a">Company A</option>
-                        <option value="company_b">Company B</option>
-                        <option value="company_c">Company C</option>
-                    </select>
-                </div>
-                <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">Submit</button>
-            </form>
-        </div>
-    </div>
-</body>
-
+        <script src="student.js"></script>
+    </body>
 </html>
