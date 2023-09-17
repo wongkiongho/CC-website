@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.16/dist/tailwind.min.css" rel="stylesheet">
+<title>Student List</title>
+</head>
+<body class="bg-gray-100">
+
+<div class="container mx-auto mt-10">
+  <div class="bg-white shadow-md rounded-lg p-6">
+    <h1 class="text-xl font-bold mb-4">Student List</h1>
+    <ul>
+      <li class="border-b border-gray-200">
+        <div class="flex justify-between p-2 cursor-pointer" onclick="toggleDetails('student1')">
+          <h2>Student 1</h2>
+          <h2>Grade A</h2>
+        </div>
+        <div id="student1" class="transition-all overflow-hidden max-h-0 p-0 pl-10">
+          <p class="py-2">Programme:</p>
+          <p class="py-2">Faculty:</p>
+          <p class="py-2">Season Joined:</p>
+          <p class="py-2">Contact Number:</p>
+          <p class="py-2">Email Address:</p>
+        </div>
+      </li>
+       <li class="border-b border-gray-200">
+    <!-- Student 2 Block -->
+    <div class="flex justify-between p-2 cursor-pointer" onclick="toggleDetails('student2')">
+      <h2>Student 2</h2>
+      <h2>Grade B</h2>
+    </div>
+    <div id="student2" class="transition-all overflow-hidden max-h-0 p-0 pl-10">
+      <p class="py-2">Programme:</p>
+      <p class="py-2">Faculty:</p>
+      <p class="py-2">Season Joined:</p>
+      <p class="py-2">Contact Number:</p>
+      <p class="py-2">Email Address:</p>
+    </div>
+  </li>
+  <li class="border-b border-gray-200">
+    <!-- Student 3 Block -->
+    <div class="flex justify-between p-2 cursor-pointer" onclick="toggleDetails('student3')">
+      <h2>Student 3</h2>
+      <h2>Grade C</h2>
+    </div>
+    <div id="student3" class="transition-all overflow-hidden max-h-0 p-0 pl-10">
+      <p class="py-2">Programme:</p>
+      <p class="py-2">Faculty:</p>
+      <p class="py-2">Season Joined:</p>
+      <p class="py-2">Contact Number:</p>
+      <p class="py-2">Email Address:</p>
+    </div>
+  </li>
+</ul>
+  </div>
+</div>
+
+<script>
+  function toggleDetails(id) {
+  const details = document.getElementById(id);
+  if (details.classList.contains('max-h-0')) {
+    details.classList.remove('max-h-0', 'p-0');
+    details.classList.add('max-h-full', 'py-2');
+  } else {
+    details.classList.remove('max-h-full', 'py-2');
+    details.classList.add('max-h-0', 'p-0');
+  }
+}
+</script>
+
+</body>
+</html>

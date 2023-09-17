@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.1/flowbite.min.css" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Link to FontAwesome -->
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    
+    <!-- Link to Tailwind Elements -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tw-elements/dist/css/tw-elements.min.css" />
+
+    <title>Internship</title>
+</head>
+<body class="bg-gray-100 h-screen font-sans">
+
+    <!-- Header -->
+    <header class="bg-gray-800 text-white py-5 flex items-center">
+        <div class="logo">
+            <img src="logo.png" alt="Internship Logo" class="w-12 h-12 ml-5 rounded-full">
+        </div>
+        <h1 class="text-2xl mt-2 ml-5 p-0">Internship</h1>
+        <button id="logoutBtn" onclick="logout()" class="ml-auto mr-5 bg-red-500 hover:bg-red-700 text-white px-4 py-1 rounded">Logout</button>
+    </header>
+
+    <!-- Side Navigation Bar -->
+    <nav class="bg-gray-700 text-white w-72 fixed left-0 h-full overflow-y-auto">
+        <ul class="py-5 pl-4">
+            <li class="mb-4">
+                <a id="studentMenu" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500" onclick="toggleMenu()">Supervisor</a>
+<ul id="studentSubmenu" class="hidden py-5 pl-4">
+    <li class="mb-4"><a href="supervisor-studentList.html" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Student List</a></li>
+    <li class="mb-4"><a href="supervisor-application.html" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Student Application</a></li>
+    <li class="mb-4"><a href="supervisor-ApproveOrReject.html" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Internship Form</a></li>
+</ul>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content ml-72 mt-5 p-5 bg-white shadow-md rounded-lg p-6">
+        <h1 class="text-xl font-bold mb-4">Student List</h1>
+        <ul>
+            <li class="border-b border-gray-200">
+				<div class="flex justify-between p-2 cursor-pointer" onclick="toggleDetails('student1')">
+				  <h2>Student 1</h2>
+				  <h2>Grade A</h2>
+				</div>
+				<div id="student1" class="transition-all overflow-hidden max-h-0 p-0 pl-10">
+				  <p class="py-2">Programme:</p>
+				  <p class="py-2">Faculty:</p>
+				  <p class="py-2">Season Joined:</p>
+				  <p class="py-2">Contact Number:</p>
+				  <p class="py-2">Email Address:</p>
+				</div>
+			  </li>
+			   <li class="border-b border-gray-200">
+			<!-- Student 2 Block -->
+			<div class="flex justify-between p-2 cursor-pointer" onclick="toggleDetails('student2')">
+			  <h2>Student 2</h2>
+			  <h2>Grade B</h2>
+			</div>
+			<div id="student2" class="transition-all overflow-hidden max-h-0 p-0 pl-10">
+			  <p class="py-2">Programme:</p>
+			  <p class="py-2">Faculty:</p>
+			  <p class="py-2">Season Joined:</p>
+			  <p class="py-2">Contact Number:</p>
+			  <p class="py-2">Email Address:</p>
+			</div>
+		  </li>
+		  <li class="border-b border-gray-200">
+			<!-- Student 3 Block -->
+			<div class="flex justify-between p-2 cursor-pointer" onclick="toggleDetails('student3')">
+			  <h2>Student 3</h2>
+			  <h2>Grade C</h2>
+			</div>
+			<div id="student3" class="transition-all overflow-hidden max-h-0 p-0 pl-10">
+			  <p class="py-2">Programme:</p>
+			  <p class="py-2">Faculty:</p>
+			  <p class="py-2">Season Joined:</p>
+			  <p class="py-2">Contact Number:</p>
+			  <p class="py-2">Email Address:</p>
+			</div>
+		  </li>
+        </ul>
+    </div>
+
+    <script>
+		 function toggleMenu() {
+        document.getElementById('studentSubmenu').classList.toggle('hidden');
+    }
+        function toggleDetails(id) {
+            const details = document.getElementById(id);
+            if (details.classList.contains('max-h-0')) {
+                details.classList.remove('max-h-0', 'p-0');
+                details.classList.add('max-h-full', 'py-2');
+            } else {
+                details.classList.remove('max-h-full', 'py-2');
+                details.classList.add('max-h-0', 'p-0');
+            }
+        }
+
+        function logout() {
+            // Implement your logout function here
+        }
+    </script>
+</body>
+</html>
