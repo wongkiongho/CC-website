@@ -33,6 +33,7 @@ def home():
 
 @app.route("/addcompany", methods=['POST'])
 def Addcompany():
+    return render_template('admin-manage-company.html',)
     # Retrieve form fields
     company_id = str(uuid4())
     company_name = request.form.get("companyName")
@@ -91,7 +92,7 @@ def Addcompany():
         cursor.close()
     # If it's a GET request, simply render the form
     print("all modification done...")
-    return render_template('admin-manage-company.html', name=company_name)
+    return render_template('admin-manage-company.html')
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=80, debug=True)
