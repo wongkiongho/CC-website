@@ -31,11 +31,6 @@ def home():
     print("all modification done...")
     return render_template('admin-manage-company.html')
 
-@app.route("/", methods=['GET', 'POST'])
-def home():
-    print("all modification done...")
-    return render_template('admin-manage-company.html')
-
 @app.route("/addcompany", methods=['POST'])
 def Addcompany():
     # Retrieve form fields
