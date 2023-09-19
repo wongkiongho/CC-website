@@ -122,3 +122,4 @@ def view_companies():
         return render_template('admin-manage-company.html', companies=companies)
     except Exception as e:
         return str(e)
+    
