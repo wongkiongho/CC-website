@@ -134,27 +134,7 @@
             window.location.href = "admin-add-company.html";
         }
     $(document).ready(function() {
-        // Fetch company data from the /viewcompanies endpoint
-        $.ajax({
-            url: "/viewcompanies",
-            type: "GET",
-            dataType: "json",
-            success: function(data) {
-                // Iterate through the company data and populate the table rows
-                var tbody = $("#company-data");
-                $.each(data, function(index, company) {
-                    var row = $("<tr>");
-                    row.append($("<td>").html("<img src='" + company.logo_url + "' alt='Company Logo' class='w-12 h-12'>"));
-                    row.append($("<td>").text(company.company_name));
-                    row.append($("<td>").text(company.industry));
-                    // Add more columns or actions here as needed
-                    tbody.append(row);
-                });
-            },
-            error: function(xhr, status, error) {
-                console.error("Error fetching company data: " + error);
-            }
-        });
+        window.location.href = "\viewcompanies";
     });
 </script>
 
