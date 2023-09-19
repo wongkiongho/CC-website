@@ -97,6 +97,19 @@ def Addcompany():
     print("all modification done...")
     return render_template('admin-manage-company.html')
 
+@app.route("/deletecompany/<int:company_id>", methods=['DELETE'])
+def delete_company(company_id):
+    try:
+        cursor = db_conn.cursor()
+        delete_sql = "DELETE FROM company WHERE company_id = %s"
+        cursor.execute(delete_sql, (company_id,))
+        db_conn.commit()
+        cursor.close()
+        return jsonify({"message": "Company deleted successfully"}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
 @app.route("/viewcompanies", methods=['GET'])
 def view_companies():
     try:
