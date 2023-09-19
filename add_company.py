@@ -50,7 +50,7 @@ def add_company():
     # Serialize the positions list to JSON
     positions_json = json.dumps(positions)
 
-    insert_sql = "INSERT INTO employee VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
+    insert_sql = "INSERT INTO company VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
     cursor = db_conn.cursor()
 
     if company_file.filename == "":
