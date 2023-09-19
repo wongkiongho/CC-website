@@ -30,6 +30,10 @@ table = 'company'
 def home():
     return render_template('admin-manage-company.html')
 
+@app.route("/viewManageCompanyPage", methods=['GET', 'POST'])
+def viewManageCompanyPage():
+    return render_template('admin-manage-company.html')
+
 @app.route("/viewAddCompanyPage", methods=['GET', 'POST'])
 def viewAddCompanyPage():
     return render_template('admin-add-company.html')
@@ -95,7 +99,7 @@ def Addcompany():
         cursor.close()
     # If it's a GET request, simply render the form
     print("all modification done...")
-    return render_template('admin-manage-company.html')
+    return redirect(url_for('viewManageCompanyPage'))
 
 @app.route("/deletecompany/<string:company_id>", methods=['DELETE'])
 def delete_company(company_id):
