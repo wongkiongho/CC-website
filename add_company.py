@@ -19,7 +19,7 @@ db_conn = connections.Connection(
     db=customdb
 )
 output = {}
-table = 'employee'
+table = 'company'
 
 @app.route("/", methods=['GET', 'POST'])
 def home():
