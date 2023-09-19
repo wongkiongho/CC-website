@@ -114,11 +114,8 @@ def view_companies():
         for company in company_data:
             company_id, company_name, industry = company
             # Assuming you have a naming convention for the logo files
-            company_logo_file_name_in_s3 = f"company_id-{company_id}_logo_file"
-            # Construct the S3 URL
-            s3_location = ''  # Replace with the actual S3 location
-            logo_url = f"https://s3{s3_location}.amazonaws.com/{custombucket}/{company_logo_file_name_in_s3}"
-            companies.append({'company_name': company_name, 'industry': industry, 'logo_url': logo_url})
+            
+            companies.append({'company_name': company_name, 'industry': industry})
 
         return jsonify(companies)
     except Exception as e:
@@ -127,7 +124,12 @@ def view_companies():
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=80, debug=True)
 
-
+'''
+company_logo_file_name_in_s3 = f"company_id-{company_id}_logo_file"
+            # Construct the S3 URL
+            s3_location = ''  # Replace with the actual S3 location
+            logo_url = f"https://s3{s3_location}.amazonaws.com/{custombucket}/{company_logo_file_name_in_s3}"
+'''
     
     
     
