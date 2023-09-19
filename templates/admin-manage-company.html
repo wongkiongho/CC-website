@@ -133,9 +133,15 @@
     function navigateToNextPage() {
             window.location.href = "admin-add-company.html";
         }
+        
     function fetchCompanies() {
         fetch('/viewcompanies')
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
             .then(companies => {
             const companyTable = $('#company-data');
 
