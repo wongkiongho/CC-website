@@ -26,6 +26,7 @@ table = 'company'
 
 @app.route("/", methods=['GET', 'POST'])
 def home():
+    print("all modification done...")
     return render_template('admin-add-company.html')
 
 
