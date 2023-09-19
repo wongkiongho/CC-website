@@ -97,7 +97,7 @@ def Addcompany():
     print("all modification done...")
     return render_template('admin-manage-company.html')
 
-@app.route("/deletecompany/<int:company_id>", methods=['DELETE'])
+@app.route("/deletecompany/<string:company_id>", methods=['DELETE'])
 def delete_company(company_id):
     try:
         cursor = db_conn.cursor()
