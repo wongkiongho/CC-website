@@ -26,7 +26,7 @@ def home():
     return render_template('admin-add-company.html')
 
 @app.route("/addcompany", methods=['POST'])
-def add_company():
+def Addcompany():
     # Retrieve form fields
     company_id = str(uuid4())
     company_name = request.form.get("companyName")
@@ -78,9 +78,9 @@ def add_company():
 
     finally:
         cursor.close()
-    
+        print("all modification done...")
     # Redirect to the manage company page with the URLs
-    return redirect(url_for('manage_company', company_name=company_name, company_details_url=company_details_url, company_logo_url=company_logo_url))
+    return render_template('AddEmpOutput.html')
 
 @app.route("/managecompany", methods=['GET'])
 def manage_company():
