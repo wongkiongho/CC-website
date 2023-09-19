@@ -31,7 +31,7 @@ def home():
     return render_template('admin-manage-company.html')
 
 @app.route("/viewAddCompanyPage", methods=['GET', 'POST'])
-def home():
+def viewAddCompanyPage():
     return render_template('admin-add-company.html')
 
 
