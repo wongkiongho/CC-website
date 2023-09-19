@@ -128,7 +128,7 @@ def view_companies():
             company_id, company_name, industry = company
             # Assuming you have a naming convention for the logo files
             
-            companies.append({'company_name': company_name, 'industry': industry})
+            companies.append({'company_id': company_id,'company_name': company_name, 'industry': industry})
 
         return jsonify(companies)
     except Exception as e:
