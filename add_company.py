@@ -100,7 +100,6 @@ if __name__ == "__main__":
 
 @app.route("/viewcompanies", methods=['GET'])
 def view_companies():
-    return "Test route is working!"
     try:
         # Retrieve company data from the database
         cursor = db_conn.cursor()
