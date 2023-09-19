@@ -77,7 +77,11 @@ def Addcompany():
             object_url = "https://s3{0}.amazonaws.com/{1}/{2}&{3}".format(
                 s3_location,
                 custombucket,
-                company_detials_file_name_in_s3，
+                company_detials_file_name_in_s3)
+
+            object_url2 = "https://s3{0}.amazonaws.com/{1}/{2}".format(
+                s3_location,
+                custombucket,
                 company_logo_file_name_in_s3)
 
         except Exception as e:
