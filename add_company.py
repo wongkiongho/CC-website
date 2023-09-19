@@ -42,17 +42,17 @@ def Addcompany():
     email = request.form.get("email")
     contact_number = request.form.get("contactNumber")
     positions = request.form.getlist("position[]")
-    company_file = request.files.get("companyFile")
-    company_logo  = request.files.get("companyLogo")
+    company_detials_file = request.files.get("companyFile")
+    company_logo_file  = request.files.get("companyLogo")
     # Serialize the positions list to JSON
     positions_json = json.dumps(positions)
 
     insert_sql = "INSERT INTO company VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
     cursor = db_conn.cursor()
 
-    if company_file.filename == "":
+    if company_detials_file.filename == "":
         return "Please upload a company's detail file"
-    if company_logo.filename == "":
+    if company_logo_file.filename == "":
         return "Please upload a company logo "
 
     try:
