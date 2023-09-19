@@ -29,12 +29,8 @@ def home():
     return render_template('admin-add-company.html')
 
 
-@app.route("/manage_company", methods=['POST'])
-def about():
-    return render_template('admin-manage-company.html')
 
-
-@app.route("/add_company", methods=['POST'])
+@app.route("/addcompany", methods=['POST'])
 def add_company():
     # Retrieve form fields
     company_id = str(uuid4())
