@@ -25,14 +25,13 @@ db_conn = connections.Connection(
 output = {}
 table = 'company'
 
-@app.route("/viewcompanies", methods=['POST'])
-def view_companies():
-    return render_template('admin-manage-company.html')
 
 @app.route("/", methods=['GET', 'POST'])
 def home():
     print("all modification done...")
     return render_template('admin-manage-company.html')
+
+
 
 @app.route("/addcompany", methods=['POST'])
 def Addcompany():
@@ -96,9 +95,35 @@ def Addcompany():
     print("all modification done...")
     return render_template('admin-manage-company.html')
 
+@app.route("/viewcompanies", methods=['GET'])
+def view_companies():
+    try:
+        # Retrieve company data from the database
+        cursor = db_conn.cursor()
+        select_sql = "SELECT company_id, company_name, industry FROM company"
+        cursor.execute(select_sql)
+        company_data = cursor.fetchall()
+        cursor.close()
+
+        # Create a list to store the company details
+        companies = []
+
+        # Loop through the retrieved data and fetch S3 URLs for logos
+        for company in company_data:
+            company_id, company_name, industry = company
+            # Assuming you have a naming convention for the logo files
+            company_logo_file_name_in_s3 = f"company_id-{company_id}_logo_file"
+            # Construct the S3 URL
+            s3_location = ''  # Replace with the actual S3 location
+            logo_url = f"https://s3{s3_location}.amazonaws.com/{custombucket}/{company_logo_file_name_in_s3}"
+            companies.append({'company_name': company_name, 'industry': industry, 'logo_url': logo_url})
+
+        return jsonify(companies)
+    except Exception as e:
+        return str(e)
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=80, debug=True)
-
 
 
     
