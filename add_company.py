@@ -29,9 +29,9 @@ def home():
     return render_template('admin-add-company.html')
 
 
-@app.route("/about", methods=['POST'])
+@app.route("/manage_company", methods=['POST'])
 def about():
-    return render_template('www.tarc.edu.my')
+    return render_template('admin-manage-company.html')
 
 
 @app.route("/add_company", methods=['POST'])
