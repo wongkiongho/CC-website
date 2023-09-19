@@ -1,10 +1,11 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request
 from pymysql import connections
 import os
 import boto3
 from config import *
 from uuid import uuid4
 import json
+
 
 app = Flask(__name__)
 
@@ -17,13 +18,17 @@ db_conn = connections.Connection(
     user=customuser,
     password=custompass,
     db=customdb
+
 )
 output = {}
 table = 'company'
 
+
 @app.route("/", methods=['GET', 'POST'])
 def home():
     return render_template('admin-add-company.html')
+
+
 
 @app.route("/addcompany", methods=['POST'])
 def Addcompany():
@@ -37,8 +42,7 @@ def Addcompany():
     contact_number = request.form.get("contactNumber")
     positions = request.form.getlist("position[]")
     company_file = request.files.get("companyFile")
-    company_logo = request.files.get("companyLogo")
-    
+    company_logo  = request.files.get("companyLogo")
     # Serialize the positions list to JSON
     positions_json = json.dumps(positions)
 
@@ -48,48 +52,45 @@ def Addcompany():
     if company_file.filename == "":
         return "Please upload a company's detail file"
     if company_logo.filename == "":
-        return "Please upload a company logo"
+        return "Please upload a company logo "
 
     try:
-        # Read the file contents
-        company_details_file_data = company_file.read()
-        company_logo_file_data = company_logo.read()
 
         cursor.execute(insert_sql, (company_id, company_name, industry, company_desc, location, email, contact_number, positions_json))
         db_conn.commit()
-        
+        company_detials_file_name_in_s3 = "company_id-" + str(company_id) + "_details_file"
+        company_logo_file_name_in_s3 = "company_id-" + str(company_id) + "_logo_file"
         s3 = boto3.resource('s3')
-        s3_location = s3.meta.client.get_bucket_location(Bucket=custombucket)['LocationConstraint'] or ''
-        
-        # Upload company details file
-        company_details_file_name_in_s3 = f"company_id-{company_id}_details_file"
-        s3.Bucket(custombucket).put_object(Key=company_details_file_name_in_s3, Body=company_details_file_data)
-        
-        # Upload company logo file
-        company_logo_file_name_in_s3 = f"company_id-{company_id}_logo_file"
-        s3.Bucket(custombucket).put_object(Key=company_logo_file_name_in_s3, Body=company_logo_file_data)
+        try:
+            print("Data inserted in MySQL RDS... uploading image to S3...")
+            s3.Bucket(custombucket).put_object(Key=company_detials_file_name_in_s3, Body=company_detials_file)
+            s3.Bucket(custombucket).put_object(Key=company_logo_file_name_in_s3, Body=company_logo_file)
+            bucket_location = boto3.client('s3').get_bucket_location(Bucket=custombucket)
+            s3_location = (bucket_location['LocationConstraint'])
 
-        # Get URLs for uploaded files
-        company_details_url = f"https://s3{s3_location}.amazonaws.com/{custombucket}/{company_details_file_name_in_s3}"
-        company_logo_url = f"https://s3{s3_location}.amazonaws.com/{custombucket}/{company_logo_file_name_in_s3}"
+            if s3_location is None:
+                s3_location = ''
+            else:
+                s3_location = '-' + s3_location
 
-    except Exception as e:
-        return str(e)
+            object_url = "https://s3{0}.amazonaws.com/{1}/{2}".format(
+                s3_location,
+                custombucket,
+                company_detials_file_name_in_s3)
+
+            object_url = "https://s3{0}.amazonaws.com/{1}/{2}".format(
+                s3_location,
+                custombucket,
+                company_logo_file_name_in_s3)
+
+        except Exception as e:
+            return str(e)
 
     finally:
         cursor.close()
-        print("all modification done...")
-    # Redirect to the manage company page with the URLs
-    return render_template('AddEmpOutput.html')
-
-@app.route("/managecompany", methods=['GET'])
-def manage_company():
-    # Retrieve URLs from query parameters
-    company_name = request.args.get("company_name")
-    company_details_url = request.args.get("company_details_url")
-    company_logo_url = request.args.get("company_logo_url")
-
-    return render_template('admin-manage-company.html', name=company_name, details_url=company_details_url, logo_url=company_logo_url)
+    # If it's a GET request, simply render the form
+    print("all modification done...")
+    return render_template('admin-manage-company.html', name=company_name)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=80, debug=True)
