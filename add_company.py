@@ -74,7 +74,7 @@ def Addcompany():
             else:
                 s3_location = '-' + s3_location
 
-            object_url = "https://s3{0}.amazonaws.com/{1}/{2}&{3}".format(
+            object_url = "https://s3{0}.amazonaws.com/{1}/{2}".format(
                 s3_location,
                 custombucket,
                 company_detials_file_name_in_s3)
