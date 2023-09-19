@@ -96,7 +96,7 @@ def Addcompany():
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=80, debug=True)
 
-@app.route("/viewcompanies", methods=['GET'])
+@app.route("/viewcompanies", methods=['POST'])
 def view_companies():
     return render_template('admin-manage-company.html')
 
