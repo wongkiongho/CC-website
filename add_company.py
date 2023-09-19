@@ -123,7 +123,8 @@ def view_companies():
 
         return jsonify(companies)
     except Exception as e:
-        return str(e)
+        return jsonify({"error": str(e)}), 500
+
     
     
     
