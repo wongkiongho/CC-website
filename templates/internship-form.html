@@ -51,8 +51,16 @@
 
             <!-- Card View for Internship Form -->
             <div class="bg-white p-8 shadow-md rounded-lg hover:shadow-xl transition-shadow duration-300 ease-in-out">
+<<<<<<< Updated upstream
                 <form action="/addStudent" class=" mx-auto bg-white p-5 rounded-lg shadow" autocomplete="on" method = "POST" enctype="multipart/form-data">
                     
+=======
+                <form>
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2" for="student-name">Student Name</label>
+                        <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="student-name" name="student-name" type="text" placeholder="Enter your name">
+                    </div>
+>>>>>>> Stashed changes
                     <div class="mb-4">
                         <label class="block text-gray-700 text-sm font-bold mb-2" for="student-Id">Student ID</label>
                         <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="student-id" name="student-id" type="text" placeholder="Enter your student ID">
@@ -73,6 +81,7 @@
                     <div class="mb-4">
                         <label class="block text-gray-700 text-sm font-bold mb-2" for="company">Company</label>
                         <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="company" name="company">
+<<<<<<< Updated upstream
                             <option value="company_a">Company A</option>
                             <option value="company_b">Company B</option>
                             <option value="company_c">Company C</option>
@@ -81,6 +90,17 @@
                     <div class="mb-4">
                         <label class="block text-gray-700 text-sm font-bold mb-2" for="supervisor">supervisor</label>
                         <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="supervisor" name="supervisor" type="text" placeholder="Enter your supervisor name">
+=======
+                          {% for company in companies %}
+                            <option value="{{ company[0] }}">{{ company[0] }}</option>
+                          {% endfor %}
+
+                        </select>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2" for="supervisor">Supervisor</label>
+                        <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="supervisor" name="supervisor" type="text" placeholder="Enter your name">
+>>>>>>> Stashed changes
                     </div>
                     <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">Submit</button>
                 </form>
