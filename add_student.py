@@ -54,7 +54,7 @@ def Addstudent():
     insert_sql = "INSERT INTO student VALUES (%s, %s, %s, %s, %s)"
     cursor = db_conn.cursor()
 
-     try:
+    try:
         cursor.execute(insert_sql, (student_id, student_name, student_programme, student_course, student_supervisor))
         db_conn.commit()
         print("Student added successfully!")
