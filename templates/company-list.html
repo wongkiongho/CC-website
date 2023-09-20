@@ -52,19 +52,43 @@
                             <th class="px-4 py-2 border">Company Name</th>
                             <th class="px-4 py-2 border">Telephone No.</th>
                             <th class="px-4 py-2 border">Email Address</th>
+                            <th class="px-4 py-2 border">Industry</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td class="border px-4 py-2">Company A</td>
-                            <td class="border px-4 py-2">+123456789</td>
-                            <td class="border px-4 py-2">contact@companya.com</td>
-                        </tr>
-                        <!-- More rows as necessary -->
+                    <tbody id="companyTableBody">
+                        <!-- This will be populated using JavaScript -->
                     </tbody>
                 </table>
             </div>
         </div>
-        <script src="student.js"></script>
+        <script src="{{ url_for('static', filename='student.js') }}"></script>
+
+        <script>
+            window.onload = function() {
+                fetch('/viewcompanies')
+                .then(response => response.json())
+                .then(data => {
+                    let tableBody = document.getElementById('companyTableBody');
+        
+                    data.forEach(company => {
+                        let row = tableBody.insertRow();
+        
+                        let cellName = row.insertCell(0);
+                        let cellNumber = row.insertCell(1);
+                        let cellEmail = row.insertCell(2);
+                        let cellIndustry = row.insertCell(3);
+        
+                        cellName.innerText = company.company_name;
+                        cellNumber.innerText = company.contact_number;
+                        cellEmail.innerText = company.email;
+                        cellIndustry.innerText = company.industry;
+                    });
+                })
+                .catch(error => {
+                    console.error("Error fetching companies:", error);
+                });
+            }
+        </script>
+        
     </body>
 </html>
