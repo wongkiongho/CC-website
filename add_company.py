@@ -6,7 +6,7 @@ from config import *
 from uuid import uuid4
 import json
 from flask import jsonify
-
+from MySQLdb.cursors import DictCursor
 
 
 app = Flask(__name__)
@@ -45,7 +45,7 @@ def viewManageCompanyPage():
 @app.route("/viewcompany/<company_id>", methods=['GET'])
 def viewCompany(company_id):
     try:
-        cursor = db_conn.cursor(dictionary=True)  # Modified this line
+        cursor = db_conn.cursor(DictCursor)
         cursor.execute("SELECT * FROM internCompany WHERE company_id=%s", (company_id,))
         company = cursor.fetchone()
         cursor.close()
