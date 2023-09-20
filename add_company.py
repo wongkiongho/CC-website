@@ -41,8 +41,9 @@ def viewCompany(company_id):
         cursor.execute("SELECT * FROM company WHERE company_id=%s", (company_id,))
         company = cursor.fetchone()
         cursor.close()
+        
         if company:
-            return render_template('admin-view-company.html', company=company)
+            return render_template('admin-view-company.html', company=company,json=json, s3_location = region)
         else:
             return "Company not found", 404
     except Exception as e:
