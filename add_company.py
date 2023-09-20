@@ -25,12 +25,6 @@ db_conn = connections.Connection(
 output = {}
 table = 'company'
 
-bucket_location = boto3.client('s3').get_bucket_location(Bucket=custombucket)
-s3_location = (bucket_location['LocationConstraint'])
-if s3_location is None:
-    s3_location = ''
-else:
-    s3_location = '-' + s3_location
 
 @app.route("/", methods=['GET', 'POST'])
 def home():
@@ -50,8 +44,7 @@ def viewCompany(company_id):
         if company:
         # Deserialize the positions JSON before sending to template
             company_positions = json.loads(company['positions_json'])
-
-
+            
             return render_template('admin-view-company.html', company=company, company_positions=company_positions)
         else:
             return "Company not found", 404
@@ -99,7 +92,13 @@ def Addcompany():
             print("Data inserted in MySQL RDS... uploading image to S3...")
             s3.Bucket(custombucket).put_object(Key=company_detials_file_name_in_s3, Body=company_detials_file)
             s3.Bucket(custombucket).put_object(Key=company_logo_file_name_in_s3, Body=company_logo_file)
+            bucket_location = boto3.client('s3').get_bucket_location(Bucket=custombucket)
+            s3_location = (bucket_location['LocationConstraint'])
 
+            if s3_location is None:
+                s3_location = ''
+            else:
+                s3_location = '-' + s3_location
 
             object_url = "https://s3{0}.amazonaws.com/{1}/{2}".format(
                 s3_location,
