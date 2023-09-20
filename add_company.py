@@ -50,9 +50,10 @@ def viewCompany(company_id):
         company = cursor.fetchone()
         cursor.close()
         if company:
-
+        # Deserialize the positions JSON before sending to template
+            company_positions = json.loads(company['positions_json'])
             
-            return render_template('admin-view-company.html', company=company, json=json)
+            return render_template('admin-view-company.html', company=company, company_positions=company_positions)
         else:
             return "Company not found", 404
     except Exception as e:

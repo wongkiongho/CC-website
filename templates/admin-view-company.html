@@ -30,7 +30,7 @@
     <div class="mt-4">
         <p class="text-gray-600 font-bold">Open Positions:</p>
         <ul class="list-disc pl-5 mt-2">
-            {% for position in json.loads(company.positions_json) %}
+            {% for position in company_positions %}
             <li>{{ position }}</li>
             {% endfor %}
         </ul>
