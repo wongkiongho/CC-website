@@ -136,7 +136,7 @@ def view_companies():
     try:
         # Retrieve company data from the database
         cursor = db_conn.cursor()
-        select_sql = "SELECT company_id, company_name, industry FROM company"
+        select_sql = "SELECT company_id, company_name, industry FROM internCompany"
         cursor.execute(select_sql)
         company_data = cursor.fetchall()
         cursor.close()
