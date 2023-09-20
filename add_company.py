@@ -36,11 +36,31 @@ else:
 
 @app.route("/", methods=['GET', 'POST'])
 def home():
+    return render_template('')
+
+@app.route("/student-login.html", methods=['GET', 'POST'])
+def viewStudentLoginPage():
+    return render_template('student-login.html')
+
+@app.route("/supervisor-login.html", methods=['GET', 'POST'])
+def viewSupervisorLoginPage():
+    return render_template('supervisor-login.html')
+
+@app.route("/admin-login.html", methods=['GET', 'POST'])
+def viewAdminLoginPage():
+    return render_template('admin-login.html')
+
+@app.route("/admin-manage-company.html", methods=['GET', 'POST'])
+def viewAdminLoginPage():
     return render_template('admin-manage-company.html')
 
-@app.route("/viewManageCompanyPage", methods=['GET', 'POST'])
-def viewManageCompanyPage():
-    return render_template('admin-manage-company.html')
+@app.route("/admin-add-company.html", methods=['GET', 'POST'])
+def viewAddCompanyPage():
+    return render_template('admin-add-company.html')
+
+app.route("/admin-edit-company.html", methods=['GET', 'POST'])
+def viewAdminLoginPage():
+    return render_template('admin-edit-company.html')
 
 @app.route("/viewcompany/<company_id>", methods=['GET'])
 def viewCompany(company_id):
@@ -52,8 +72,6 @@ def viewCompany(company_id):
         if company:
         # Deserialize the positions JSON before sending to template
             company_positions = json.loads(company[7])
-            for position in company_positions:
-                print(position)
             
             return render_template('admin-view-company.html', company=company, company_positions=company_positions)
         else:
@@ -61,10 +79,91 @@ def viewCompany(company_id):
     except Exception as e:
         return str(e)
 
+@app.route("/editcompany/<company_id>", methods=['GET', 'POST'])
+def editCompany(company_id):
+    try:
+        cursor = db_conn.cursor()
 
-@app.route("/viewAddCompanyPage", methods=['GET', 'POST'])
-def viewAddCompanyPage():
-    return render_template('admin-add-company.html')
+        if request.method == 'GET':
+            # Retrieve company data based on company_id
+            cursor.execute("SELECT * FROM internCompany WHERE company_id=%s", (company_id,))
+            company = cursor.fetchone()
+            cursor.close()
+
+            if company:
+                # Pass the company data to the edit form
+                company_positions = json.loads(company[7])
+                return render_template('edit-company.html', company=company, company_positions=company_positions)
+            else:
+                return "Company not found", 404
+
+        elif request.method == 'POST':
+            # Retrieve form fields
+            company_name = request.form.get("companyName")
+            industry = request.form.get("industry")
+            company_desc = request.form.get("companyDesc")
+            location = request.form.get("location")
+            email = request.form.get("email")
+            contact_number = request.form.get("contactNumber")
+            positions = request.form.getlist("position[]")
+            company_detials_file = request.files.get("companyFile")
+            company_logo_file = request.files.get("companyLogo")
+            company_id = request.form.get("company_id")  # Retrieve company_id from the hidden input
+
+            # Serialize the positions list to JSON
+            positions_json = json.dumps(positions)
+
+            update_sql = "UPDATE internCompany SET company_name=%s, industry=%s, company_desc=%s, location=%s, email=%s, contact_number=%s, positions_json=%s, logo_url=%s, logo_url=%s WHERE company_id=%s"
+            cursor = db_conn.cursor()
+
+        if company_detials_file.filename == "":
+            return "Please upload a company's detail file"
+        if company_logo_file.filename == "":
+            return "Please upload a company logo "
+
+    
+        print("Data inserted in MySQL RDS... uploading image to S3...")
+
+
+        # Determine the content type and file extension for details file
+        details_content_type, _ = mimetypes.guess_type(company_detials_file.filename)
+        details_extension = details_content_type.split("/")[1] if details_content_type else ""
+        company_detials_file_name_in_s3_with_extension = f"company_id-{str(company_id)}_details_file.{details_extension}"
+
+        # Determine the content type and file extension for logo file
+        logo_content_type, _ = mimetypes.guess_type(company_logo_file.filename)
+        logo_extension = logo_content_type.split("/")[1] if logo_content_type else ""
+        company_logo_file_name_in_s3_with_extension = f"company_id-{str(company_id)}_logo_file.{logo_extension}"
+    
+
+        s3.Bucket(custombucket).put_object(Key=company_detials_file_name_in_s3_with_extension, Body=company_detials_file, ContentDisposition=f"attachment; filename={company_detials_file.filename}")
+        s3.Bucket(custombucket).put_object(Key=company_logo_file_name_in_s3_with_extension, Body=company_logo_file, ContentDisposition=f"attachment; filename={company_logo_file.filename}")
+
+        # Construct the URLs with the updated file names including extensions
+        logo_url = "https://s3{0}.amazonaws.com/{1}/{2}".format(
+        s3_location,
+        custombucket,
+        company_logo_file_name_in_s3_with_extension)
+
+        file_url = "https://s3{0}.amazonaws.com/{1}/{2}".format(
+        s3_location,
+        custombucket,
+        company_detials_file_name_in_s3_with_extension)
+
+
+        cursor.execute(update_sql, (company_name, industry, company_desc, location, email, contact_number, positions_json, logo_url, file_url, company_id))
+        db_conn.commit()
+        
+    except Exception as e:
+        return str(e)
+       
+    finally:
+        cursor.close()
+    # If it's a GET request, simply render the form
+    print("all modification done...")
+    return redirect(url_for('admin-manage-company.html'))
+
+
 
 
 @app.route("/addcompany", methods=['POST'])
@@ -93,9 +192,7 @@ def Addcompany():
 
     try:
         print("Data inserted in MySQL RDS... uploading image to S3...")
-        
-        company_detials_file_name_in_s3 = "company_id-" + str(company_id) + "_details_file"
-        company_logo_file_name_in_s3 = "company_id-" + str(company_id) + "_logo_file"
+
 
         # Determine the content type and file extension for details file
         details_content_type, _ = mimetypes.guess_type(company_detials_file.filename)
@@ -132,7 +229,7 @@ def Addcompany():
         cursor.close()
     # If it's a GET request, simply render the form
     print("all modification done...")
-    return redirect(url_for('viewManageCompanyPage'))
+    return redirect(url_for('admin-manage-company.html'))
 
 @app.route("/deletecompany/<string:company_id>", methods=['DELETE'])
 def delete_company(company_id):
