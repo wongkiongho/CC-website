@@ -36,15 +36,17 @@ def viewManageCompanyPage():
 
 @app.route("/viewcompany/<company_id>", methods=['GET'])
 def viewCompany(company_id):
-    cursor = db_conn.cursor()
-    cursor.execute("SELECT * FROM company WHERE company_id=%s", (company_id,))
-    company = cursor.fetchone()
-    cursor.close()
-    if company:
-        return render_template('view-company.html', company=company)
-    else:
-        return "Company not found", 404
-
+    try:
+        cursor = db_conn.cursor()
+        cursor.execute("SELECT * FROM company WHERE company_id=%s", (company_id,))
+        company = cursor.fetchone()
+        cursor.close()
+        if company:
+            return render_template('admin-view-company.html', company=company)
+        else:
+            return "Company not found", 404
+    except Exception as e:
+        return str(e)
 
 
 @app.route("/viewAddCompanyPage", methods=['GET', 'POST'])
