@@ -45,7 +45,7 @@ def viewManageCompanyPage():
 @app.route("/viewcompany/<company_id>", methods=['GET'])
 def viewCompany(company_id):
     try:
-        cursor = db_conn.cursor()
+        cursor = db_conn.cursor(dictionary=True)  # Modified this line
         cursor.execute("SELECT * FROM internCompany WHERE company_id=%s", (company_id,))
         company = cursor.fetchone()
         cursor.close()
