@@ -25,6 +25,14 @@ db_conn = connections.Connection(
 output = {}
 table = 'company'
 
+s3 = boto3.resource('s3')
+bucket_location = boto3.client('s3').get_bucket_location(Bucket=custombucket)
+s3_location = (bucket_location['LocationConstraint'])
+
+if s3_location is None:
+    s3_location = ''
+else:
+    s3_location = '-' + s3_location
 
 @app.route("/", methods=['GET', 'POST'])
 def home():
@@ -73,7 +81,7 @@ def Addcompany():
     # Serialize the positions list to JSON
     positions_json = json.dumps(positions)
 
-    insert_sql = "INSERT INTO company VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
+    insert_sql = "INSERT INTO company VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
     cursor = db_conn.cursor()
 
     if company_detials_file.filename == "":
@@ -82,37 +90,28 @@ def Addcompany():
         return "Please upload a company logo "
 
     try:
-
-        cursor.execute(insert_sql, (company_id, company_name, industry, company_desc, location, email, contact_number, positions_json))
-        db_conn.commit()
+        print("Data inserted in MySQL RDS... uploading image to S3...")
+        
         company_detials_file_name_in_s3 = "company_id-" + str(company_id) + "_details_file"
         company_logo_file_name_in_s3 = "company_id-" + str(company_id) + "_logo_file"
-        s3 = boto3.resource('s3')
-        try:
-            print("Data inserted in MySQL RDS... uploading image to S3...")
-            s3.Bucket(custombucket).put_object(Key=company_detials_file_name_in_s3, Body=company_detials_file)
-            s3.Bucket(custombucket).put_object(Key=company_logo_file_name_in_s3, Body=company_logo_file)
-            bucket_location = boto3.client('s3').get_bucket_location(Bucket=custombucket)
-            s3_location = (bucket_location['LocationConstraint'])
+        s3.Bucket(custombucket).put_object(Key=company_detials_file_name_in_s3, Body=company_detials_file)
+        s3.Bucket(custombucket).put_object(Key=company_logo_file_name_in_s3, Body=company_logo_file)
+        
+        logo_url = "https://s3{0}.amazonaws.com/{1}/{2}".format(
+            s3_location,
+            custombucket,
+            company_detials_file_name_in_s3)
 
-            if s3_location is None:
-                s3_location = ''
-            else:
-                s3_location = '-' + s3_location
+        file_url = "https://s3{0}.amazonaws.com/{1}/{2}".format(
+            s3_location,
+            custombucket,
+            company_logo_file_name_in_s3)
 
-            object_url = "https://s3{0}.amazonaws.com/{1}/{2}".format(
-                s3_location,
-                custombucket,
-                company_detials_file_name_in_s3)
-
-            object_url2 = "https://s3{0}.amazonaws.com/{1}/{2}".format(
-                s3_location,
-                custombucket,
-                company_logo_file_name_in_s3)
-
-        except Exception as e:
-            return str(e)
-
+        cursor.execute(insert_sql, (company_id, company_name, industry, company_desc, location, email, contact_number, positions_json, logo_url, file_url))
+        db_conn.commit()
+    except Exception as e:
+        return str(e)
+       
     finally:
         cursor.close()
     # If it's a GET request, simply render the form
