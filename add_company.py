@@ -52,6 +52,8 @@ def viewCompany(company_id):
         if company:
         # Deserialize the positions JSON before sending to template
             company_positions = json.loads(company['positions_json'])
+            for position in company_positions:
+                print(position)
             
             return render_template('admin-view-company.html', company=company, company_positions=company_positions)
         else:
