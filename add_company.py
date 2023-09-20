@@ -41,9 +41,10 @@ def viewCompany(company_id):
     company = cursor.fetchone()
     cursor.close()
     if company:
-        return render_template('admin-view-company.html', company=company, json=json)
+        return render_template('view-company.html', company=company)
     else:
         return "Company not found", 404
+
 
 
 @app.route("/viewAddCompanyPage", methods=['GET', 'POST'])
