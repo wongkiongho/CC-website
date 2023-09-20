@@ -51,7 +51,7 @@ def viewCompany(company_id):
         cursor.close()
         if company:
         # Deserialize the positions JSON before sending to template
-            company_positions = json.loads(company['positions_json'])
+            company_positions = json.loads(company[7])
             for position in company_positions:
                 print(position)
             
