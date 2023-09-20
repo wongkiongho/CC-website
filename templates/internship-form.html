@@ -52,14 +52,16 @@
             <!-- Card View for Internship Form -->
             <div class="bg-white p-8 shadow-md rounded-lg hover:shadow-xl transition-shadow duration-300 ease-in-out">
                 <form action="/addStudent" class=" mx-auto bg-white p-5 rounded-lg shadow" autocomplete="on" method = "POST" enctype="multipart/form-data">
+                    
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2" for="student-Id">Student ID</label>
+                        <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="student-id" name="student-id" type="text" placeholder="Enter your student ID">
+                    </div>
                     <div class="mb-4">
                         <label class="block text-gray-700 text-sm font-bold mb-2" for="student-name">Student Name</label>
                         <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="student-name" name="student-name" type="text" placeholder="Enter your name">
                     </div>
-                    <div class="mb-4">
-                        <label class="block text-gray-700 text-sm font-bold mb-2" for="student-Id">Student ID</label>
-                        <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="student-Id" name="student-Id" type="text" placeholder="Enter your student ID">
-                    </div>
+                    
                     <div class="mb-4">
                         <label class="block text-gray-700 text-sm font-bold mb-2" for="course">Course</label>
                         <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="course" name="course">
@@ -84,6 +86,8 @@
                 </form>
             </div>
         </div>
-        <script src="student.js"></script>
+        <script src="{{ url_for('static', filename='student.js') }}"></script>
+
+
     </body>
 </html>
