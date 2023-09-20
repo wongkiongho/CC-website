@@ -23,7 +23,7 @@ db_conn = connections.Connection(
 
 )
 output = {}
-table = 'internCompany'
+table = 'company'
 
 s3 = boto3.resource('s3')
 bucket_location = boto3.client('s3').get_bucket_location(Bucket=custombucket)
@@ -66,7 +66,7 @@ def viewEditCompanyPage():
 def viewCompany(company_id):
     try:
         cursor = db_conn.cursor()
-        cursor.execute("SELECT * FROM internCompany WHERE company_id=%s", (company_id,))
+        cursor.execute("SELECT * FROM company WHERE company_id=%s", (company_id,))
         company = cursor.fetchone()
         cursor.close()
         if company:
@@ -86,7 +86,7 @@ def editCompany(company_id):
 
         if request.method == 'GET':
             # Retrieve company data based on company_id
-            cursor.execute("SELECT * FROM internCompany WHERE company_id=%s", (company_id,))
+            cursor.execute("SELECT * FROM company WHERE company_id=%s", (company_id,))
             company = cursor.fetchone()
             cursor.close()
 
@@ -113,7 +113,7 @@ def editCompany(company_id):
             # Serialize the positions list to JSON
             positions_json = json.dumps(positions)
 
-            update_sql = "UPDATE internCompany SET company_name=%s, industry=%s, company_desc=%s, location=%s, email=%s, contact_number=%s, positions_json=%s, logo_url=%s, logo_url=%s WHERE company_id=%s"
+            update_sql = "UPDATE company SET company_name=%s, industry=%s, company_desc=%s, location=%s, email=%s, contact_number=%s, positions_json=%s, logo_url=%s, logo_url=%s WHERE company_id=%s"
             cursor = db_conn.cursor()
 
         if company_detials_file.filename == "":
@@ -182,7 +182,7 @@ def Addcompany():
     # Serialize the positions list to JSON
     positions_json = json.dumps(positions)
 
-    insert_sql = "INSERT INTO internCompany VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+    insert_sql = "INSERT INTO company VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
     cursor = db_conn.cursor()
 
     if company_detials_file.filename == "":
@@ -235,7 +235,7 @@ def Addcompany():
 def delete_company(company_id):
     try:
         cursor = db_conn.cursor()
-        delete_sql = "DELETE FROM internCompany WHERE company_id = %s"
+        delete_sql = "DELETE FROM company WHERE company_id = %s"
         cursor.execute(delete_sql, (company_id,))
         db_conn.commit()
         cursor.close()
@@ -249,7 +249,7 @@ def view_companies():
     try:
         # Retrieve company data from the database
         cursor = db_conn.cursor()
-        select_sql = "SELECT company_id, company_name, industry FROM internCompany"
+        select_sql = "SELECT company_id, company_name, industry FROM company"
         cursor.execute(select_sql)
         company_data = cursor.fetchall()
         cursor.close()
