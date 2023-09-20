@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Company Details</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 py-10">
+
+<div class="max-w-4xl mx-auto bg-white p-6 rounded shadow-md">
+    <h2 class="text-3xl font-bold mb-6">{{ company.company_name }}</h2>
+
+    <div class="grid grid-cols-2 gap-4">
+        <div>
+            <p><strong class="text-gray-600">Industry:</strong> {{ company.industry }}</p>
+            <p class="mt-2"><strong class="text-gray-600">Location:</strong> {{ company.location }}</p>
+        </div>
+        <div>
+            <p><strong class="text-gray-600">Email:</strong> {{ company.email }}</p>
+            <p class="mt-2"><strong class="text-gray-600">Contact Number:</strong> {{ company.contact_number }}</p>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <p class="text-gray-600 font-bold">Description:</p>
+        <p class="border p-4 rounded shadow-inner bg-gray-50 mt-2 max-h-64 overflow-y-auto">{{ company.company_desc }}</p>
+    </div>
+
+    <div class="mt-4">
+        <p class="text-gray-600 font-bold">Open Positions:</p>
+        <ul class="list-disc pl-5 mt-2">
+            {% for position in json.loads(company.positions_json) %}
+            <li>{{ position }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="mt-4">
+        <p><strong class="text-gray-600">Company Details File:</strong> <a href="https://s3{{ s3_location }}.amazonaws.com/{{ custombucket }}/company_id-{{ company.company_id }}_details_file" target="_blank" class="text-blue-600 hover:underline">Download</a></p>
+    </div>
+    
+    <div class="mt-4">
+        <p class="text-gray-600 font-bold">Company Logo:</p>
+        <img src="https://s3{{ s3_location }}.amazonaws.com/{{ custombucket }}/company_id-{{ company.company_id }}_logo_file" alt="{{ company.company_name }} logo" class="mt-2 rounded shadow w-48">
+    </div>
+
+    <div class="mt-6">
+        <a href="{{ url_for('viewManageCompanyPage') }}" class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 focus:outline-none focus:border-blue-700 focus:ring focus:ring-blue-200">Back to Manage Companies</a>
+    </div>
+</div>
+
+</body>
+</html>

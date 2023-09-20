@@ -1,5 +1,4 @@
 from flask import Flask, render_template, redirect, url_for, request
-
 from pymysql import connections
 import os
 import boto3
@@ -34,6 +33,18 @@ def home():
 @app.route("/viewManageCompanyPage", methods=['GET', 'POST'])
 def viewManageCompanyPage():
     return render_template('admin-manage-company.html')
+
+@app.route("/viewcompany/<company_id>", methods=['GET'])
+def viewCompany(company_id):
+    cursor = db_conn.cursor()
+    cursor.execute("SELECT * FROM company WHERE company_id=%s", (company_id,))
+    company = cursor.fetchone()
+    cursor.close()
+    if company:
+        return render_template('admin-view-company.html', company=company)
+    else:
+        return "Company not found", 404
+
 
 @app.route("/viewAddCompanyPage", methods=['GET', 'POST'])
 def viewAddCompanyPage():
