@@ -93,7 +93,7 @@ def editCompany(company_id):
             if company:
                 # Pass the company data to the edit form
                 company_positions = json.loads(company[7])
-                return render_template('edit-company.html', company=company, company_positions=company_positions)
+                return render_template('admin-edit-company.html', company=company, company_positions=company_positions)
             else:
                 return "Company not found", 404
 
