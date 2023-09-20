@@ -91,7 +91,6 @@
             <!-- ... Table header ... -->
             <thead>
                 <tr>
-                    <th class="border p-4 text-left">Company Logo</th>
                     <th class="border p-4 text-left">Company Name</th>
                     <th class="border p-4 text-left">Industry</th>
                     <th class="border p-4 text-center" colspan="2">Actions</th>
@@ -99,14 +98,13 @@
             </thead>
             <tbody id="company-data">
                 <tr>
-                    <td class="border p-4"><img src="company_logo_url_here" alt="Company Logo" class="w-12 h-10"></td>
                     <td class="border p-4">ABC Corp</td>
                     <td class="border p-4">Technology</td>
                     <td class="border p-4 text-center">
-                        <a href="#editURL" class="text-blue-600 hover:text-blue-800">Edit</a> <!-- Blue for edit -->
+                        <a href="/viewcompany/${company.company_id}" class="text-blue-600 hover:text-blue-800">View</a>
                     </td>
                     <td class="border p-4 text-center">
-                        <a href="#deleteURL" class="text-red-600 hover:text-red-800">Delete</a> <!-- Red for delete -->
+                        <a href="javascript:void(0);" onclick="deleteCompany();" class="text-red-600 hover:text-red-800">Delete</a>
                     </td>
                 </tr>
 
@@ -131,11 +129,69 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     function navigateToNextPage() {
-            window.location.href = "admin-add-company.html";
+            window.location.href = "/viewAddCompanyPage";
         }
-    $(document).ready(function() {
-        window.location.href = "/viewcompanies";
+
+    function fetchCompanies() {
+        fetch('/viewcompanies')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(companies => {
+            const companyTable = $('#company-data');
+
+            // Clear any existing rows
+            companyTable.empty();
+
+            companies.forEach(company => {
+                const row = `
+                    <tr data-company-id="${company.company_id}">
+                        <td class="border p-4">${company.company_name}</td>
+                        <td class="border p-4">${company.industry}</td>
+                        <td class="border p-4 text-center">
+                            <a href="/viewcompany/${company.company_id}" class="text-blue-600 hover:text-blue-800">View</a>
+                        </td>
+                        <td class="border p-4 text-center">
+                            <a href="javascript:void(0);" onclick="deleteCompany('${company.company_id}');" class="text-red-600 hover:text-red-800">Delete</a>
+                        </td>
+                    </tr>
+                `;
+
+                companyTable.append(row);
+        });
+    })
+    .catch(error => {
+        console.error('Error fetching companies:', error);
     });
+}
+function deleteCompany(companyId) {
+    console.log("function work");
+    fetch(`/deletecompany/${companyId}`, {
+        method: 'DELETE'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.error) {
+            alert(`Error deleting company: ${data.error}`);
+        } else {
+            alert(data.message);
+            fetchCompanies();  // Refresh the list after deletion
+        }
+    })
+    .catch(error => {
+        console.error('Error deleting company:', error);
+    });
+}
+
+
+$(document).ready(function() {
+    fetchCompanies();
+});
+
+    
 </script>
 
 </body>

@@ -25,7 +25,7 @@ db_conn = connections.Connection(
 
 )
 output = {}
-table = 'studentForm'
+table = 'student'
 
 
 @app.route("/", methods=['GET', 'POST'])
@@ -38,13 +38,7 @@ def viewCompanyList():
 
 @app.route("/internship-form.html", methods=['GET', 'POST'])
 def viewInternshipForm():
-    cursor = db_conn.cursor()
-    select_sql = "SELECT company_name FROM company"
-    cursor.execute(select_sql)
-    company_data = cursor.fetchall()
-    cursor.close()
-
-    return render_template('internship-form.html', companies=company_data)
+    return render_template('internship-form.html')
 
 
 @app.route("/addStudent", methods=['POST'])
@@ -59,7 +53,7 @@ def Addstudent():
     student_supervisor = request.form.get("supervisor")
    
 
-    insert_sql = "INSERT INTO studentForm (student_id, student_name, student_programme, student_course, student_supervisor) VALUES (%s, %s, %s, %s, %s)"
+    insert_sql = "INSERT INTO student (student_id, student_name, student_programme, student_course, student_supervisor) VALUES (%s, %s, %s, %s, %s)"
 
     cursor = db_conn.cursor()
 
@@ -90,8 +84,6 @@ def insert_dummy_data():
         return "Dummy data inserted successfully!"
     except Exception as e:
         return str(e)
-
-
 
 
 @app.route("/viewcompanies", methods=['GET'])

@@ -1,4 +1,8 @@
 
+
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -20,13 +24,14 @@
 </head>
 <body class="m-0 p-0 bg-gray-200">
     <!-- Header -->
-    <header class="bg-gray-800 text-white py-5 flex items-center">
+    <header class="sticky top-0  bg-gray-800 text-white py-5 flex items-center">
         <div class="logo">
             <img src="logo.png" alt="Internship Logo" class="w-12 h-12 ml-5 rounded-full">
         </div>
         <h1 class="text-2xl mt-2 ml-5 p-0">Internship</h1>
         <button id="logoutBtn" onclick="logout()" class="ml-auto mr-5 bg-red-500 hover:bg-red-700 text-white px-4 py-1 rounded">Logout</button>
     </header>
+    
 
     <!-- Side Navigation Bar -->
     <nav class="bg-gray-700 text-white w-72 fixed left-0 h-full overflow-y-auto">
@@ -39,98 +44,147 @@
                         <ul id="sub-submenu" class="py-5 pl-4">
                             <li class="mb-4"><a href="admin-add-student.html" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Add Student</a></li>
                             <li class="mb-4"><a href="admin-add-supervisor.html" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Add Supervisor</a></li>
-                            <li class="mb-4"><a href="admin-manage-student.html" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Manage Student</a></li>
-                            <li class="mb-4"><a href="admin-manage-supervisor.html" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Manage Supervisor</a></li>
                         </ul>
                     </li>
                     <li class="mb-4">
                         <a id="companyManagement" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Company Management</a>
-                        <ul id="sub-submenu2" class="py-5 pl-4">
-                            <li class="mb-4"><a href="admin-add-company.html" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Add Company</a></li>
-                            <li class="mb-4"><a href="admin-edit-company.html" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Edit Supervisor</a></li>
-                            <li class="mb-4"><a href="admin-manage-company.html" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Manage Supervisor</a></li>
-                        </ul>
+                        <!--TODO-->
                     </li>
                 </ul>
             </li>
         </ul>
     </nav>
 
-    <!-- Add student -->
+    <!-- Add company -->
     <section class="ml-72 p-5 bg-gray-100 rounded-lg shadow-md">
-        <h2 class="text-2xl md:text-3xl mb-5 text-center text-gray-800 font-bold">Add Company</h2>
+        <h2 class="text-2xl md:text-3xl mb-5 text-center text-gray-800 font-bold">Edit Company Details</h2>
         
-        <form action="process-student.php" method="POST" class="bg-white p-5 rounded-lg shadow">
+        <form action="/editcompany/{{ company.company_id }}"  class=" mx-auto bg-white p-5 rounded-lg shadow" autocomplete="on" method = "POST" enctype="multipart/form-data">
+            <input type="hidden" name="company_id" value="{{ company.company_id }}">
+            <p class="text-lg font-semibold mb-4 text-gray-800">Company Overview</p>
+
             <div class="mb-4">
-                <label for="companyName" class="block text-sm font-medium text-gray-700">Company Name:</label>
-                <input type="text" class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-orange-500 focus:ring focus:ring-orange-200 focus:ring-opacity-50" id="companyName" name="companyName" required>
+                <label for="companyName" class="block text-sm font-medium text-gray-700 mb-4">Company Name:</label>
+                <input type="text" value="{{ company[1]}}" class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-orange-500 focus:ring focus:ring-orange-200 focus:ring-opacity-50" id="companyName" name="companyName" required>
             </div>
 
             <div class="mb-4">
                 <label for="companyLogo" class="block text-sm font-medium text-gray-700 mb-4">Company Logo:</label>
-                <input type="file" id="companyLogo" name="companyLogo" required>
-
+                <img src="{{ company[8] }}" alt="{{ company[1] }} logo" class="mt-2 rounded shadow w-48">
+                <input type="file"  id="companyLogo" name="companyLogo" required>
             </div>
     
             <div class="mb-4">
                 <label for="industry" class="block text-sm font-medium text-gray-700">Industry</label>
-                <input type="text" class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-orange-500 focus:ring focus:ring-orange-200 focus:ring-opacity-50" id="industry" name="industry" required>
+                <input type="text" value="{{ company[2]}}" class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-orange-500 focus:ring focus:ring-orange-200 focus:ring-opacity-50" id="industry" name="industry" required>
             </div>
     
             <div class="mb-4">
                 <label for="companyDesc" class="block text-sm font-medium text-gray-700">Description:</label>
-                <textarea rows="3" class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-orange-500 focus:ring focus:ring-orange-200 focus:ring-opacity-50" id="companyDesc" name="companyDesc" required></textarea>
+                <textarea rows="3" value="{{ company[3]}}" class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-orange-500 focus:ring focus:ring-orange-200 focus:ring-opacity-50" id="companyDesc" name="companyDesc" required></textarea>
             </div>
     
             <div class="mb-4">
                 <label for="location" class="block text-sm font-medium text-gray-700">Location</label>
-                <input type="text" class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-orange-500 focus:ring focus:ring-orange-200 focus:ring-opacity-50" id="location" name="location" required>
+                <textarea rows="3" value="{{ company[4]}}" class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-orange-500 focus:ring focus:ring-orange-200 focus:ring-opacity-50" id="location" name="location" required></textarea>
             </div>
+
+            <p class="text-lg font-semibold mb-4 text-gray-800">Contact details</p>
     
+            <div class="mb-4">
+                <label for="email" class="block text-sm font-medium text-gray-700">Email:</label>
+                <input type="email" value="{{ company[5]}}" class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-orange-500 focus:ring focus:ring-orange-200 focus:ring-opacity-50" id="email" name="email" required>
+            </div>
+
+            <div class="mb-4">
+                <label for="contactNumber" class="block text-sm font-medium text-gray-700">Contact Number:</label>
+                <input type="tel" value="{{ company[6]}}" class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-orange-500 focus:ring focus:ring-orange-200 focus:ring-opacity-50" id="contactNumber" name="contactNumber" required>
+            </div>
+            
+
     
             
             <div class="mb-5 bg-gray-50 p-4 rounded-md" id="internshipDetails">
                 <p class="text-lg font-semibold mb-4 text-gray-800">Internship Details</p>
-                
+                <div id="positionContainer">
+
                 <!-- Each of these blocks can be repeated for each position -->
-                <div class="positionBlock bg-white p-4 mb-4 rounded-md shadow-sm border border-gray-200">
+
+                <div id="positionContainer">
+                    <!-- Existing positions from company_positions -->
+                    {% for position in company_positions %}
                     <div class="my-2">
-                        <label for="position1" class="block text-sm font-medium text-gray-700">Position</label>
-                        <input type="text" class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" id="position1" name="position[]" required>
+                        <label for="position{{ loop.index }}" class="block text-sm font-medium text-gray-700">Position {{ loop.index }}</label>
+                        <input type="text" value="{{ position }}" class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" id="position{{ loop.index }}" name="position[]">
                     </div>
-            
-                    <div class="my-2">
-                        <label for="details1" class="block text-sm font-medium text-gray-700">Details</label>
-                        <input type="text" class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" id="details1" name="details[]" required>
-                    </div>
-            
-                    <div class="my-2">
-                        <label for="salary1" class="block text-sm font-medium text-gray-700">Salary</label>
-                        <input type="text" class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" id="salary1" name="salary[]" required>
-                    </div>
-            
-                    <div class="my-2">
-                        <label for="requirements1" class="block text-sm font-medium text-gray-700">Minimum Requirements</label>
-                        <input type="text" class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" id="requirements1" name="requirements[]" required>
-                    </div>
+                    {% endfor %}
+                    <!-- ... -->
                 </div>
+            
+ 
+            </div>
     
-                <button id="addPosition" class="mb-4 py-2 px-4 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600 focus:ring-2 focus:ring-offset-2 focus:ring-blue-400" >Add Another Position</button>
+                <button type="button" id="addPosition" class="mb-4 py-2 px-4 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600 focus:ring-2 focus:ring-offset-2 focus:ring-blue-400">Add Another Position</button>
+
             </div>
             
+            <div class="mb-4">
+                <label for="companyFile" class="block text-sm font-medium text-gray-700 mb-4">More information:</label>
+                <div><a href="{{ company[9] }}" target="_blank" class="text-blue-600 hover:underline">Existing</a></div>
+                <input type="file" id="companyFile" name="companyFile" required>
+            </div>
             <div class="mt-5 flex justify-between items-center">
-                <button type="submit" class="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 focus:outline-none focus:bg-orange-700 focus:ring-2 focus:ring-offset-2 focus:ring-orange-400">Add Company</button>
-                <a href="admin-manage-company.html" class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 focus:outline-none focus:bg-gray-700 focus:ring-2 focus:ring-offset-2 focus:ring-gray-400">Back to Manage company page</a>
+                <button type="submit" class="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 focus:outline-none focus:bg-orange-700 focus:ring-2 focus:ring-offset-2 focus:ring-orange-400">Edit Company Details</button>
+                <a href="/admin-manage-company.html" class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 focus:outline-none focus:bg-gray-700 focus:ring-2 focus:ring-offset-2 focus:ring-gray-400">Back to Manage company page</a>
             </div>
             
         </form>
     </section>
-    
+
     <!-- Link to tailwind -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.1/flowbite.min.js"></script>
     <!-- Link to Tailwind Elements -->
     <script src="https://cdn.jsdelivr.net/npm/tw-elements/dist/js/tw-elements.umd.min.js"></script>
 
     <script src="admin.js"></script>
-</body>
+    <script>
+        // JavaScript function to add position input fields
+let positionCounter = 2; // Initialize a counter for position labels
+
+function addPositionField() {
+    // Create a new input element for position
+    const newPositionInput = document.createElement("input");
+    newPositionInput.type = "text";
+    newPositionInput.id = `Position ${positionCounter}`;
+    console.log(  newPositionInput.id);
+    newPositionInput.className = "mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50";
+    newPositionInput.name = "position[]"; // Use an array for multiple positions
+
+    // Create a label for the position input
+    const newPositionLabel = document.createElement("label");
+    newPositionLabel.textContent = `Position ${positionCounter}`;
+    newPositionLabel.className = "block text-sm font-medium text-gray-700";
+
+    // Create a div to contain the label and input field
+    const positionField = document.createElement("div");
+    positionField.className = "my-2";
+
+    // Add the label and input field to the container
+    positionField.appendChild(newPositionLabel);
+    positionField.appendChild(newPositionInput);
+    document.getElementById("positionContainer").appendChild(positionField);
+
+    // Increment the position counter for the next label
+    positionCounter++;
+}
+
+// Add an event listener to the "Add Another Position" button
+document.getElementById("addPosition").addEventListener("click", addPositionField);
+
+    </script>
+    </body>
 </html>
+
+
+
+
