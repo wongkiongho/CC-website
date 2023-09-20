@@ -51,7 +51,7 @@ def viewAdminLoginPage():
     return render_template('admin-login.html')
 
 @app.route("/admin-manage-company.html", methods=['GET', 'POST'])
-def viewAdminLoginPage():
+def viewManageCompanyPage():
     return render_template('admin-manage-company.html')
 
 @app.route("/admin-add-company.html", methods=['GET', 'POST'])
@@ -59,7 +59,7 @@ def viewAddCompanyPage():
     return render_template('admin-add-company.html')
 
 app.route("/admin-edit-company.html", methods=['GET', 'POST'])
-def viewAdminLoginPage():
+def viewEditCompanyPage():
     return render_template('admin-edit-company.html')
 
 @app.route("/viewcompany/<company_id>", methods=['GET'])
@@ -153,7 +153,7 @@ def editCompany(company_id):
 
         cursor.execute(update_sql, (company_name, industry, company_desc, location, email, contact_number, positions_json, logo_url, file_url, company_id))
         db_conn.commit()
-        
+
     except Exception as e:
         return str(e)
        
