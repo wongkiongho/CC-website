@@ -23,7 +23,7 @@ db_conn = connections.Connection(
 
 )
 output = {}
-table = 'company'
+table = 'internCompany'
 
 s3 = boto3.resource('s3')
 bucket_location = boto3.client('s3').get_bucket_location(Bucket=custombucket)
@@ -46,7 +46,7 @@ def viewManageCompanyPage():
 def viewCompany(company_id):
     try:
         cursor = db_conn.cursor()
-        cursor.execute("SELECT * FROM company WHERE company_id=%s", (company_id,))
+        cursor.execute("SELECT * FROM internCompany WHERE company_id=%s", (company_id,))
         company = cursor.fetchone()
         cursor.close()
         if company:
@@ -81,7 +81,7 @@ def Addcompany():
     # Serialize the positions list to JSON
     positions_json = json.dumps(positions)
 
-    insert_sql = "INSERT INTO company VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+    insert_sql = "INSERT INTO internCompany VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
     cursor = db_conn.cursor()
 
     if company_detials_file.filename == "":
@@ -122,7 +122,7 @@ def Addcompany():
 def delete_company(company_id):
     try:
         cursor = db_conn.cursor()
-        delete_sql = "DELETE FROM company WHERE company_id = %s"
+        delete_sql = "DELETE FROM internCompany WHERE company_id = %s"
         cursor.execute(delete_sql, (company_id,))
         db_conn.commit()
         cursor.close()
