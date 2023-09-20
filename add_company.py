@@ -36,7 +36,7 @@ else:
 
 @app.route("/", methods=['GET', 'POST'])
 def home():
-    return render_template('')
+    return render_template('/admin-manage-company.html')
 
 @app.route("/student-login.html", methods=['GET', 'POST'])
 def viewStudentLoginPage():
