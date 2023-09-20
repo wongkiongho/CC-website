@@ -6,7 +6,7 @@ from config import *
 from uuid import uuid4
 import json
 from flask import jsonify
-
+import mimetypes
 
 
 app = Flask(__name__)
@@ -96,18 +96,32 @@ def Addcompany():
         
         company_detials_file_name_in_s3 = "company_id-" + str(company_id) + "_details_file"
         company_logo_file_name_in_s3 = "company_id-" + str(company_id) + "_logo_file"
-        s3.Bucket(custombucket).put_object(Key=company_detials_file_name_in_s3, Body=company_detials_file)
-        s3.Bucket(custombucket).put_object(Key=company_logo_file_name_in_s3, Body=company_logo_file)
-        
+
+        # Determine the content type and file extension for details file
+        details_content_type, _ = mimetypes.guess_type(company_detials_file.filename)
+        details_extension = details_content_type.split("/")[1] if details_content_type else ""
+        company_detials_file_name_in_s3_with_extension = f"company_id-{str(company_id)}_details_file.{details_extension}"
+
+        # Determine the content type and file extension for logo file
+        logo_content_type, _ = mimetypes.guess_type(company_logo_file.filename)
+        logo_extension = logo_content_type.split("/")[1] if logo_content_type else ""
+        company_logo_file_name_in_s3_with_extension = f"company_id-{str(company_id)}_logo_file.{logo_extension}"
+    
+
+        s3.Bucket(custombucket).put_object(Key=company_detials_file_name_in_s3_with_extension, Body=company_detials_file, ContentDisposition=f"attachment; filename={company_detials_file.filename}")
+        s3.Bucket(custombucket).put_object(Key=company_logo_file_name_in_s3_with_extension, Body=company_logo_file, ContentDisposition=f"attachment; filename={company_logo_file.filename}")
+
+        # Construct the URLs with the updated file names including extensions
         logo_url = "https://s3{0}.amazonaws.com/{1}/{2}".format(
-            s3_location,
-            custombucket,
-            company_detials_file_name_in_s3)
+        s3_location,
+        custombucket,
+        company_logo_file_name_in_s3_with_extension)
 
         file_url = "https://s3{0}.amazonaws.com/{1}/{2}".format(
-            s3_location,
-            custombucket,
-            company_logo_file_name_in_s3)
+        s3_location,
+        custombucket,
+        company_detials_file_name_in_s3_with_extension)
+
 
         cursor.execute(insert_sql, (company_id, company_name, industry, company_desc, location, email, contact_number, positions_json, logo_url, file_url))
         db_conn.commit()
