@@ -161,7 +161,8 @@ def editCompany(company_id):
         cursor.close()
     # If it's a GET request, simply render the form
     print("all modification done...")
-    return redirect(url_for('/admin-manage-company.html'))
+    return render_template('admin-manage-company.html')
+
 
 
 
@@ -229,7 +230,8 @@ def Addcompany():
         cursor.close()
     # If it's a GET request, simply render the form
     print("all modification done...")
-    return redirect(url_for('/admin-manage-company.html'))
+    return render_template('admin-manage-company.html')
+
 
 @app.route("/deletecompany/<string:company_id>", methods=['DELETE'])
 def delete_company(company_id):
