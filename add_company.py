@@ -7,6 +7,7 @@ from uuid import uuid4
 import json
 from flask import jsonify
 import mimetypes
+from urllib.parse import urlparse
 
 
 app = Flask(__name__)
@@ -237,11 +238,31 @@ def Addcompany():
 def delete_company(company_id):
     try:
         cursor = db_conn.cursor()
-        delete_sql = "DELETE FROM company WHERE company_id = %s"
-        cursor.execute(delete_sql, (company_id,))
-        db_conn.commit()
-        cursor.close()
-        return jsonify({"message": "Company deleted successfully"}), 200
+        select_sql = "SELECT logo_url, file_url FROM company WHERE company_id = %s"
+        cursor.execute(select_sql, (company_id,))
+        result = cursor.fetchone()
+        if result:
+            logo_url, file_url = result
+
+            # Extract object keys from URLs
+            parsed_logo_url = urlparse(logo_url)
+            parsed_file_url = urlparse(file_url)
+            logo_object_key = parsed_logo_url.path.lstrip('/')
+            file_object_key = parsed_file_url.path.lstrip('/')
+
+            # Delete objects from S3
+            s3.delete_object(Bucket=custombucket, Key=logo_object_key)
+            s3.delete_object(Bucket=custombucket, Key=file_object_key)
+
+            # Delete the company record from the database
+            delete_sql = "DELETE FROM company WHERE company_id = %s"
+            cursor.execute(delete_sql, (company_id,))
+            db_conn.commit()
+            cursor.close()
+
+            return jsonify({"message": "Company and associated objects deleted successfully"}), 200
+        else:
+            return jsonify({"message": "Company not found"}), 404
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
