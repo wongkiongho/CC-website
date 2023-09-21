@@ -128,7 +128,7 @@ def editCompany(company_id):
                     cursor.execute("SELECT file_url FROM company WHERE company_id=%s", (company_id,))
                     result = cursor.fetchone()
                     if result:
-                        file_url = result
+                        file_url = result[0]
                         parsed_file_url = urlparse(file_url)
                         file_object_key = parsed_file_url.path.lstrip('/')
                         s3.delete_object(Bucket=custombucket, Key=file_object_key)
@@ -161,7 +161,7 @@ def editCompany(company_id):
                     cursor.execute("SELECT logo_url FROM company WHERE company_id=%s", (company_id,))
                     result = cursor.fetchone()
                     if result:
-                        logo_url = result
+                        logo_url = result[0]
                         parsed_logo_url = urlparse(logo_url)
                         logo_object_key = parsed_logo_url.path.lstrip('/')
                         s3.delete_object(Bucket=custombucket, Key=logo_object_key)
