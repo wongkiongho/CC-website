@@ -32,9 +32,14 @@ table = 'studentForm'
 def home():
     return render_template('profile.html')
 
+
 @app.route("/company-list.html", methods=['GET', 'POST'])
 def viewCompanyList():
     return render_template('company-list.html')
+@app.route("/edit-profile.html", methods=['GET','POST'])
+def edit_profile():
+    return render_template('edit-profile.html')
+
 
 @app.route("/internship-form.html", methods=['GET', 'POST'])
 def viewInternshipForm():
@@ -116,6 +121,47 @@ def view_companies():
         return jsonify(companies)
     except Exception as e:
         return str(e)
+    
+@app.route("/insert-student-dummy-data", methods=['GET'])
+def insert_student_dummy_data():
+    try:
+        # Insert dummy data into the studentDetails table
+        cursor = db_conn.cursor()
+        insert_sql = """INSERT INTO studentDetails (Id, name, email, programme, cohort)
+                        VALUES (%s, %s, %s, %s, %s)"""
+        cursor.execute(insert_sql, (1, "John Doe", "johndoe@example.com", "RSW3", "2023"))
+        db_conn.commit()
+        cursor.close()
+
+        return "Dummy student data inserted successfully!"
+    except Exception as e:
+        return str(e)
+    
+@app.route("/profile/<student_id>", methods=['GET'])
+def profile(student_id):
+    try:
+        cursor = db_conn.cursor()
+
+        # Retrieve student data based on student_id
+        cursor.execute("SELECT * FROM studentDetails WHERE student_id=%s", (student_id,))
+
+        student = cursor.fetchone()
+        cursor.close()
+        print(student)
+        if student:
+            # Extract details from the tuple
+            student_id, name, email, programme, cohort = student
+
+            # Pass the student details to the profile template
+            return render_template('profile.html', student_id=student_id, name=name, email=email, programme=programme, cohort=cohort)
+        else:
+            return "Student not found", 404
+   
+
+    except Exception as e:
+        print(e)
+        return "Error occurred while fetching student details", 500
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=80, debug=True)

@@ -52,18 +52,22 @@
         <div class="mb-4">
             <h2 class="text-lg font-semibold">Personal Information</h2>
         </div>
-        <div class="mb-2">
-            <span class="font-medium">Name:</span> John Doe
-        </div>
-        <div class="mb-2">
-            <span class="font-medium">Student Id:</span> 2102985
-        </div>
-        <div class="mb-2">
-            <span class="font-medium">Programme:</span> RSW3
-        </div>
-        <div class="mb-2">
-            <span class="font-medium">Email:</span> johndoe@example.com
-        </div>
+        
+<div class="mb-2">
+    <span class="font-medium">Name:</span> {{ name }}
+</div>
+<div class="mb-2">
+    <span class="font-medium">Student Id:</span> {{ student_id }}
+</div>
+<div class="mb-2">
+    <span class="font-medium">Programme:</span> {{ programme }}
+</div>
+<div class="mb-2">
+    <span class="font-medium">Email:</span> {{ email }}
+</div>
+<div class="mb-2">
+    <span class="font-medium">Cohort:</span> {{ cohort }}
+</div>
         <div class="mt-6">
             <button onclick="location.href='edit-profile.html'" class="bg-blue-500 hover:bg-blue-700 text-white px-4 py-1 rounded">Edit Profile</button>
 

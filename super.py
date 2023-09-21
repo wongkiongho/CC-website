@@ -28,11 +28,11 @@ table = 'company'
 
 @app.route("/", methods=['GET', 'POST'])
 def home():
-    return render_template('admin-manage-company.html')
+    return render_template('supervisor-application.html')
 
 @app.route("/viewAddCompanyPage", methods=['GET', 'POST'])
 def viewAddCompanyPage():
-    return render_template('admin-add-company.html')
+    return render_template('supervisor-application.html')
 
 
 @app.route("/addcompany", methods=['POST'])

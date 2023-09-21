@@ -59,7 +59,7 @@
     <section class="ml-72 p-5 bg-gray-100 rounded-lg shadow-md">
         <h2 class="text-2xl md:text-3xl mb-5 text-center text-gray-800 font-bold">Edit Company Details</h2>
         
-        <form action="/editcompany/{{ company.company_id }}"  class=" mx-auto bg-white p-5 rounded-lg shadow" autocomplete="on" method = "POST" enctype="multipart/form-data">
+        <form action="/editcompany/{{ company[0]}}"  class=" mx-auto bg-white p-5 rounded-lg shadow" autocomplete="on" method = "POST" enctype="multipart/form-data">
             <input type="hidden" name="company_id" value="{{ company.company_id }}">
             <p class="text-lg font-semibold mb-4 text-gray-800">Company Overview</p>
 
@@ -71,7 +71,7 @@
             <div class="mb-4">
                 <label for="companyLogo" class="block text-sm font-medium text-gray-700 mb-4">Company Logo:</label>
                 <img src="{{ company[8] }}" alt="{{ company[1] }} logo" class="mt-2 rounded shadow w-48">
-                <input type="file"  id="companyLogo" name="companyLogo" required>
+                <input type="file"  id="companyLogo" name="companyLogo">
             </div>
     
             <div class="mb-4">
@@ -81,13 +81,14 @@
     
             <div class="mb-4">
                 <label for="companyDesc" class="block text-sm font-medium text-gray-700">Description:</label>
-                <textarea rows="3" value="{{ company[3]}}" class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-orange-500 focus:ring focus:ring-orange-200 focus:ring-opacity-50" id="companyDesc" name="companyDesc" required></textarea>
+                <textarea rows="3" class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-orange-500 focus:ring focus:ring-orange-200 focus:ring-opacity-50" id="companyDesc" name="companyDesc" required>{{ company[3] }}</textarea>
             </div>
-    
+            
             <div class="mb-4">
                 <label for="location" class="block text-sm font-medium text-gray-700">Location</label>
-                <textarea rows="3" value="{{ company[4]}}" class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-orange-500 focus:ring focus:ring-orange-200 focus:ring-opacity-50" id="location" name="location" required></textarea>
+                <textarea rows="3" class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-orange-500 focus:ring focus:ring-orange-200 focus:ring-opacity-50" id="location" name="location" required>{{ company[4] }}</textarea>
             </div>
+            
 
             <p class="text-lg font-semibold mb-4 text-gray-800">Contact details</p>
     
@@ -130,8 +131,16 @@
             
             <div class="mb-4">
                 <label for="companyFile" class="block text-sm font-medium text-gray-700 mb-4">More information:</label>
-                <div><a href="{{ company[9] }}" target="_blank" class="text-blue-600 hover:underline">Existing</a></div>
-                <input type="file" id="companyFile" name="companyFile" required>
+                <div class="mt-4">
+                    <a href="{{ company[9] }}" target="_blank" class="text-blue-600 hover:underline">
+                    <div class="border p-4 rounded shadow-inner bg-gray-50">
+                        <p class="text-blue-600 font-bold">Existing File</p>
+                    </div>
+                </a>
+                </div>
+                
+                
+                <input type="file" id="companyFile" name="companyFile">
             </div>
             <div class="mt-5 flex justify-between items-center">
                 <button type="submit" class="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 focus:outline-none focus:bg-orange-700 focus:ring-2 focus:ring-offset-2 focus:ring-orange-400">Edit Company Details</button>
