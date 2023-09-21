@@ -314,7 +314,7 @@ def search_companies():
             # Modify your SQL query to search for companies by name or industry
             search_sql = "SELECT id, company_name, industry FROM company WHERE company_name LIKE %s"
             
-            cursor.execute(search_sql, (f"%{search_query}%"))
+            cursor.execute(search_sql, (f"%{search_query}%",))  # Change this line
             companies = cursor.fetchall()
             cursor.close()
 
@@ -326,6 +326,7 @@ def search_companies():
 
     finally:
         cursor.close()
+
 
 
 @app.route("/viewcompanies", methods=['GET'])
