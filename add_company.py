@@ -112,6 +112,16 @@ def editCompany(company_id):
             company_logo_file  = request.files.get("companyLogo")
             # Serialize the positions list to JSON
             positions_json = json.dumps(positions)
+            print(f"company_name: '{company_name}'")
+            print(f"industry: '{industry}'")
+            print(f"company_desc: '{company_desc}'")
+            print(f"location: '{location}'")
+            print(f"industry: '{industry}'")
+            print(f"company_detials_file: '{company_detials_file}'")
+            print(f"company_logo_file: '{company_logo_file}'")
+                        
+            # Add similar print statements for other variables
+
 
             # Check if files are uploaded
             if company_detials_file and company_logo_file:
