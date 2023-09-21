@@ -130,7 +130,15 @@
             
             <div class="mb-4">
                 <label for="companyFile" class="block text-sm font-medium text-gray-700 mb-4">More information:</label>
-                <div><a href="{{ company[9] }}" target="_blank" class="text-blue-600 hover:underline">Existing</a></div>
+                <div class="mt-4">
+                    <a href="{{ company[9] }}" target="_blank" class="text-blue-600 hover:underline">
+                    <div class="border p-4 rounded shadow-inner bg-gray-50">
+                        <p class="text-blue-600 font-bold">Existing File</p>
+                    </div>
+                </a>
+                </div>
+                
+                
                 <input type="file" id="companyFile" name="companyFile" required>
             </div>
             <div class="mt-5 flex justify-between items-center">
