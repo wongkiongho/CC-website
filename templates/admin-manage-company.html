@@ -75,10 +75,13 @@
 
     <!-- Search & Filter -->
     <section class="bg-white p-5 rounded-lg shadow-md">
-        <div class="flex items-center space-x-4">
-            <input type="text" placeholder="Search Companies..." class="border p-2 flex-grow rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
-            <button class="bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400">Search</button>
-        </div>
+        <form method="POST" action="/searchcompanies">
+            <div class="flex items-center space-x-4">
+                <input type="text" name="searchQuery" placeholder="Search Companies..." class="border p-2 flex-grow rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
+                <button type="submit" class="bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400">Search</button>
+            </div>
+        </form>
+        
     </section>
 
     <!-- Company Listing Table -->
