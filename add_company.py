@@ -251,9 +251,9 @@ def delete_company(company_id):
             logo_object_key = parsed_logo_url.path.lstrip('/')
             file_object_key = parsed_file_url.path.lstrip('/')
 
-            # Delete objects from S3
-            s3.delete_object(Bucket=custombucket, Key=logo_object_key)
-            s3.delete_object(Bucket=custombucket, Key=file_object_key)
+            # Delete objects from S3 using the S3 client
+            s3_client.delete_object(Bucket=custombucket, Key=logo_object_key)
+            s3_client.delete_object(Bucket=custombucket, Key=file_object_key)
 
             # Delete the company record from the database
             delete_sql = "DELETE FROM company WHERE company_id = %s"
