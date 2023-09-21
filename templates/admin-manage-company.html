@@ -75,12 +75,13 @@
 
     <!-- Search & Filter -->
     <section class="bg-white p-5 rounded-lg shadow-md">
-        <form method="POST" action="/searchcompanies">
+        <form method="POST" id="searchForm">
             <div class="flex items-center space-x-4">
-                <input type="text" name="searchQuery" placeholder="Search Companies..." class="border p-2 flex-grow rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
+                <input type="text" name="searchQuery" id="searchQuery" placeholder="Search Companies..." class="border p-2 flex-grow rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
                 <button type="submit" class="bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400">Search</button>
             </div>
         </form>
+        
         
     </section>
 
@@ -131,6 +132,65 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
+    $(document).ready(function() {
+    // Handle the search form submission
+    $('#searchForm').submit(function(event) {
+        event.preventDefault(); // Prevent the default form submission
+
+        // Get the search query from the input field
+        const searchQuery = $('#searchQuery').val();
+
+        // Call the searchCompanies function with the search query
+        searchCompanies(searchQuery);
+    });
+
+    // Fetch the initial list of companies
+    fetchCompanies();
+});
+
+function searchCompanies(searchQuery) {
+    // Make an AJAX request to the server to perform the search
+    fetch('/searchcompanies', {
+        method: 'POST',
+        body: JSON.stringify({ searchQuery: searchQuery }),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(companies => {
+        const companyTable = $('#company-data');
+
+        // Clear any existing rows
+        companyTable.empty();
+
+        companies.forEach(company => {
+            const row = `
+                <tr data-company-id="${company.company_id}">
+                    <td class="border p-4">${company.company_name}</td>
+                    <td class="border p-4">${company.industry}</td>
+                    <td class="border p-4 text-center">
+                        <a href="/viewcompany/${company.company_id}" class="text-blue-600 hover:text-blue-800">View</a>
+                    </td>
+                    <td class="border p-4 text-center">
+                        <a href="javascript:void(0);" onclick="deleteCompany('${company.company_id}');" class="text-red-600 hover:text-red-800">Delete</a>
+                    </td>
+                </tr>
+            `;
+
+            companyTable.append(row);
+        });
+    })
+    .catch(error => {
+        console.error('Error fetching companies:', error);
+    });
+}
+
     function navigateToNextPage() {
             window.location.href = "/admin-add-company.html";
         }
@@ -170,6 +230,43 @@
         console.error('Error fetching companies:', error);
     });
 }
+
+function searchCompanies(searchQuery) {
+        fetch('/searchcompanies')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(companies => {
+            const companyTable = $('#company-data');
+
+            // Clear any existing rows
+            companyTable.empty();
+
+            companies.forEach(company => {
+                const row = `
+                    <tr data-company-id="${company.company_id}">
+                        <td class="border p-4">${company.company_name}</td>
+                        <td class="border p-4">${company.industry}</td>
+                        <td class="border p-4 text-center">
+                            <a href="/viewcompany/${company.company_id}" class="text-blue-600 hover:text-blue-800">View</a>
+                        </td>
+                        <td class="border p-4 text-center">
+                            <a href="javascript:void(0);" onclick="deleteCompany('${company.company_id}');" class="text-red-600 hover:text-red-800">Delete</a>
+                        </td>
+                    </tr>
+                `;
+
+                companyTable.append(row);
+        });
+    })
+    .catch(error => {
+        console.error('Error fetching companies:', error);
+    });
+}
+
 function deleteCompany(companyId) {
     console.log("function work");
     fetch(`/deletecompany/${companyId}`, {
