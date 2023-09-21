@@ -109,9 +109,8 @@ def editCompany(company_id):
             contact_number = request.form.get("contactNumber")
             positions = request.form.getlist("position[]")
             company_detials_file = request.files.get("companyFile")
-            company_logo_file = request.files.get("companyLogo")
-            company_id = request.form.get("company_id")  # Retrieve company_id from the hidden input
-                # Serialize the positions list to JSON
+            company_logo_file  = request.files.get("companyLogo")
+            # Serialize the positions list to JSON
             positions_json = json.dumps(positions)
 
             # Check if files are uploaded
