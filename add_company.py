@@ -131,7 +131,7 @@ def editCompany(company_id):
                         file_url = result[0]
                         parsed_file_url = urlparse(file_url)
                         file_object_key = parsed_file_url.path.lstrip('/')
-                        s3.delete_object(Bucket=custombucket, Key=file_object_key)
+                        s3_client.delete_object(Bucket=custombucket, Key=file_object_key)
 
                     details_content_type, _ = mimetypes.guess_type(company_detials_file.filename)
                     details_extension = details_content_type.split("/")[1] if details_content_type else ""
@@ -164,7 +164,7 @@ def editCompany(company_id):
                         logo_url = result[0]
                         parsed_logo_url = urlparse(logo_url)
                         logo_object_key = parsed_logo_url.path.lstrip('/')
-                        s3.delete_object(Bucket=custombucket, Key=logo_object_key)
+                        s3_client.delete_object(Bucket=custombucket, Key=logo_object_key)
 
                     # Determine the content type and file extension for logo file
                     logo_content_type, _ = mimetypes.guess_type(company_logo_file.filename)
