@@ -312,9 +312,9 @@ def search_companies():
             search_query = request.form.get("searchQuery")
 
             # Modify your SQL query to search for companies by name or industry
-            search_sql = "SELECT id, company_name, industry FROM company WHERE company_name LIKE %s OR industry LIKE %s"
+            search_sql = "SELECT id, company_name, industry FROM company WHERE company_name LIKE %s"
             
-            cursor.execute(search_sql, (f"%{search_query}%", f"%{search_query}%"))
+            cursor.execute(search_sql, (f"%{search_query}%"))
             companies = cursor.fetchall()
             cursor.close()
 
