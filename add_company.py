@@ -112,60 +112,9 @@ def editCompany(company_id):
             company_logo_file  = request.files.get("companyLogo")
             # Serialize the positions list to JSON
             positions_json = json.dumps(positions)
-            print(f"company_name: '{company_name}'")
-            print(f"industry: '{industry}'")
-            print(f"company_desc: '{company_desc}'")
-            print(f"location: '{location}'")
-            print(f"industry: '{industry}'")
-            print(f"company_detials_file: '{company_detials_file}'")
-            print(f"company_logo_file: '{company_logo_file}'")
                         
             # Add similar print statements for other variables
-
-
-            # Check if files are uploaded
-            if company_detials_file and company_logo_file:
-                # Determine the content type and file extension for details file
-                details_content_type, _ = mimetypes.guess_type(company_detials_file.filename)
-                details_extension = details_content_type.split("/")[1] if details_content_type else ""
-                company_detials_file_name_in_s3_with_extension = f"company_id-{str(company_id)}_details_file.{details_extension}"
-
-                # Determine the content type and file extension for logo file
-                logo_content_type, _ = mimetypes.guess_type(company_logo_file.filename)
-                logo_extension = logo_content_type.split("/")[1] if logo_content_type else ""
-                company_logo_file_name_in_s3_with_extension = f"company_id-{str(company_id)}_logo_file.{logo_extension}"
-
-                s3.Bucket(custombucket).put_object(
-                    Key=company_detials_file_name_in_s3_with_extension,
-                    Body=company_detials_file,
-                    ContentDisposition=f"attachment; filename={company_detials_file.filename}"
-                )
-                s3.Bucket(custombucket).put_object(
-                    Key=company_logo_file_name_in_s3_with_extension,
-                    Body=company_logo_file,
-                    ContentDisposition=f"attachment; filename={company_logo_file.filename}"
-                )
-
-                # Construct the URLs with the updated file names including extensions
-                logo_url = "https://s3{0}.amazonaws.com/{1}/{2}".format(
-                    s3_location,
-                    custombucket,
-                    company_logo_file_name_in_s3_with_extension)
-
-                file_url = "https://s3{0}.amazonaws.com/{1}/{2}".format(
-                    s3_location,
-                    custombucket,
-                    company_detials_file_name_in_s3_with_extension)
-
-                # Update company information including URLs
-                update_sql = "UPDATE company SET company_name=%s, industry=%s, company_desc=%s, location=%s, email=%s, contact_number=%s, positions_json=%s, logo_url=%s, file_url=%s WHERE company_id=%s"
-                cursor = db_conn.cursor()
-                cursor.execute(
-                    update_sql, (company_name, industry, company_desc, location, email, contact_number, positions_json,
-                                logo_url, file_url, company_id))
-                db_conn.commit()
-
-            else:
+            if not company_detials_file and not company_logo_file:
                 # Update company information without changing the URLs
                 update_sql = "UPDATE company SET company_name=%s, industry=%s, company_desc=%s, location=%s, email=%s, contact_number=%s, positions_json=%s WHERE company_id=%s"
                 cursor = db_conn.cursor()
@@ -173,6 +122,62 @@ def editCompany(company_id):
                     update_sql, (company_name, industry, company_desc, location, email, contact_number, positions_json,
                                 company_id))
                 db_conn.commit()
+            
+            else:
+                if company_detials_file:
+                    details_content_type, _ = mimetypes.guess_type(company_detials_file.filename)
+                    details_extension = details_content_type.split("/")[1] if details_content_type else ""
+                    company_detials_file_name_in_s3_with_extension = f"company_id-{str(company_id)}_details_file.{details_extension}"
+
+                    
+                    s3.Bucket(custombucket).put_object(
+                        Key=company_detials_file_name_in_s3_with_extension,
+                        Body=company_detials_file,
+                        ContentDisposition=f"attachment; filename={company_detials_file.filename}"
+                    )
+                    file_url = "https://s3{0}.amazonaws.com/{1}/{2}".format(
+                    s3_location,
+                    custombucket,
+                    company_detials_file_name_in_s3_with_extension)
+
+                    # Update company information including URLs
+                    update_sql = "UPDATE company SET company_name=%s, industry=%s, company_desc=%s, location=%s, email=%s, contact_number=%s, positions_json=%s, file_url=%s WHERE company_id=%s"
+                    cursor = db_conn.cursor()
+                    cursor.execute(
+                        update_sql, (company_name, industry, company_desc, location, email, contact_number, positions_json,
+                                    file_url, company_id))
+                    db_conn.commit()
+
+                # Check if files are uploaded
+                if company_logo_file:
+
+                    # Determine the content type and file extension for logo file
+                    logo_content_type, _ = mimetypes.guess_type(company_logo_file.filename)
+                    logo_extension = logo_content_type.split("/")[1] if logo_content_type else ""
+                    company_logo_file_name_in_s3_with_extension = f"company_id-{str(company_id)}_logo_file.{logo_extension}"
+
+                    s3.Bucket(custombucket).put_object(
+                        Key=company_logo_file_name_in_s3_with_extension,
+                        Body=company_logo_file,
+                        ContentDisposition=f"attachment; filename={company_logo_file.filename}"
+                    )
+
+                    # Construct the URLs with the updated file names including extensions
+                    logo_url = "https://s3{0}.amazonaws.com/{1}/{2}".format(
+                        s3_location,
+                        custombucket,
+                        company_logo_file_name_in_s3_with_extension)
+
+
+
+                    # Update company information including URLs
+                    update_sql = "UPDATE company SET company_name=%s, industry=%s, company_desc=%s, location=%s, email=%s, contact_number=%s, positions_json=%s, logo_url=%s WHERE company_id=%s"
+                    cursor = db_conn.cursor()
+                    cursor.execute(
+                        update_sql, (company_name, industry, company_desc, location, email, contact_number, positions_json,
+                                    logo_url, company_id))
+                    db_conn.commit()
+                
 
     except Exception as e:
         return str(e)
