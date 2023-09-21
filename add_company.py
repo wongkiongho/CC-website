@@ -317,7 +317,8 @@ def search_companies():
         # Modify your SQL query to search for companies by name or industry
         search_sql = "SELECT company_id, company_name, industry FROM company WHERE company_name LIKE %s"
         
-        cursor.execute(search_sql, (f"%{search_query}%",))  # Change this line
+        cursor.execute(search_sql, (f"%{search_query}%",))  # Add a comma after (f"%{search_query}%")
+
         company_data = cursor.fetchall()
         cursor.close()
 
