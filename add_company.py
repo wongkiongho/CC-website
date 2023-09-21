@@ -27,6 +27,7 @@ output = {}
 table = 'company'
 
 s3 = boto3.resource('s3')
+s3_client = boto3.client('s3')
 bucket_location = boto3.client('s3').get_bucket_location(Bucket=custombucket)
 s3_location = (bucket_location['LocationConstraint'])
 
