@@ -124,7 +124,15 @@ def editCompany(company_id):
                 db_conn.commit()
             
             else:
-                if company_detials_file:
+                if company_detials_file:     
+                    cursor.execute("SELECT file_url FROM company WHERE company_id=%s", (company_id,))
+                    result = cursor.fetchone()
+                    if result:
+                        file_url = result
+                        parsed_file_url = urlparse(file_url)
+                        file_object_key = parsed_file_url.path.lstrip('/')
+                        s3.delete_object(Bucket=custombucket, Key=file_object_key)
+
                     details_content_type, _ = mimetypes.guess_type(company_detials_file.filename)
                     details_extension = details_content_type.split("/")[1] if details_content_type else ""
                     company_detials_file_name_in_s3_with_extension = f"company_id-{str(company_id)}_details_file.{details_extension}"
@@ -150,6 +158,13 @@ def editCompany(company_id):
 
                 # Check if files are uploaded
                 if company_logo_file:
+                    cursor.execute("SELECT logo_url FROM company WHERE company_id=%s", (company_id,))
+                    result = cursor.fetchone()
+                    if result:
+                        logo_url = result
+                        parsed_logo_url = urlparse(logo_url)
+                        logo_object_key = parsed_logo_url.path.lstrip('/')
+                        s3.delete_object(Bucket=custombucket, Key=logo_object_key)
 
                     # Determine the content type and file extension for logo file
                     logo_content_type, _ = mimetypes.guess_type(company_logo_file.filename)
