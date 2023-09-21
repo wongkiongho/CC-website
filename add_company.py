@@ -303,32 +303,42 @@ def delete_company(company_id):
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+
+
+
 @app.route("/searchcompanies", methods=['POST'])
 def search_companies():
     try:
         cursor = db_conn.cursor()
 
-        if request.method == 'POST':
-            search_query = request.form.get("searchQuery")
 
-            # Modify your SQL query to search for companies by name or industry
-            search_sql = "SELECT id, company_name, industry FROM company WHERE company_name LIKE %s"
+        search_query = request.form.get("searchQuery")
+
+        # Modify your SQL query to search for companies by name or industry
+        search_sql = "SELECT company_id, company_name, industry FROM company WHERE company_name LIKE %s"
+        
+        cursor.execute(search_sql, (f"%{search_query}%",))  # Change this line
+        company_data = cursor.fetchall()
+        cursor.close()
+
+        # Create a list to store the company details
+        companies = []
+
+        # Loop through the retrieved data and fetch S3 URLs for logos
+        for company in company_data:
+            company_id, company_name, industry = company
+            # Assuming you have a naming convention for the logo files
             
-            cursor.execute(search_sql, (f"%{search_query}%",))
-            companies = cursor.fetchall()
-            cursor.close()
+            companies.append({'company_id': company_id,'company_name': company_name, 'industry': industry})
 
-            # Return the search results as JSON
-            return jsonify(companies)
+        # Return the search results as JSON
+        return jsonify(companies)
 
     except Exception as e:
-        return jsonify({"error": str(e)})
+        return str(e)
 
     finally:
         cursor.close()
-
-
-
 
 @app.route("/viewcompanies", methods=['GET'])
 def view_companies():
