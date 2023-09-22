@@ -57,14 +57,14 @@ def Addstudent():
     
     # Retrieve form fields
     student_id = request.form.get("student-id")
-    resume_url = request.files.get("resume")
+    resume_file = request.files.get("resume")
     company_id = request.form.get("company-id")
     file_id = str(uuid4())
     application_id = str(uuid4())
 
     
     # Check if resume file is provided
-    if not resume_url or resume_url.filename == "":
+    if not resume_file or resume_file.filename == "":
         return "Please upload your resume."
 
     # Generate a unique name for the resume (using student_id and current timestamp for uniqueness)
@@ -73,7 +73,7 @@ def Addstudent():
 
     try:
         # Upload resume to S3
-        s3.Bucket("yewshuhan-bucket").put_object(Key=resume_file_name_in_s3, Body=resume_url, ContentDisposition=f"attachment; filename={resume_url.filename}")
+        s3.Bucket("yewshuhan-bucket").put_object(Key=resume_file_name_in_s3, Body=resume_file, ContentDisposition=f"attachment; filename={resume_file.filename}")
         
         # Construct the S3 URL for the uploaded resume
         resume_url = f"https://s3{s3_location}.amazonaws.com/{custombucket}/{resume_file_name_in_s3}"
@@ -81,7 +81,7 @@ def Addstudent():
         # Your SQL to insert data into studentForm
         insert_sql = "INSERT INTO application (student_id, company_id) VALUES (%s, %s)"
         insert_sql_application_file = "INSERT INTO applicationFile (file_id, application_id) VALUES (%s, %s)"
-        insert_sql_file = "INSERT INTO file (file_id, resume_url) VALUES (%s, %s)"
+        insert_sql_file = "INSERT INTO applicationFile (file_id, resume_url) VALUES (%s, %s)"
 
 
         cursor = db_conn.cursor()
