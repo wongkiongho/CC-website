@@ -62,16 +62,11 @@ def viewInternshipForm():
     return render_template('internship-form.html', companies=company_data)
 
 
-
 @app.route("/addStudent", methods=['POST'])
 def Addstudent():
     
     # Retrieve form fields
     student_id = request.form.get("student-id")
-    student_name = request.form.get("student-name")
-    student_programme = request.form.get("company")
-    student_course = request.form.get("course")
-    student_supervisor = request.form.get("supervisor")
     resume_file = request.files.get("resume")
     internship_id = str(uuid4())
     
@@ -91,9 +86,9 @@ def Addstudent():
         resume_url = f"https://s3{s3_location}.amazonaws.com/{custombucket}/{resume_file_name_in_s3}"
         
         # Your SQL to insert data into studentForm
-        insert_sql = "INSERT INTO studentForm (student_id, student_name, student_programme, student_course, student_supervisor, resume_url, internship_id) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+        insert_sql = "INSERT INTO application (student_id, resume_url, internship_id) VALUES (%s, %s, %s)"
         cursor = db_conn.cursor()
-        cursor.execute(insert_sql, (student_id, student_name, student_programme, student_course, student_supervisor, resume_url,internship_id))
+        cursor.execute(insert_sql, (student_id, resume_url, internship_id))
         db_conn.commit()
         print("Student and resume added successfully!")
         return redirect(url_for('home'))
@@ -129,6 +124,32 @@ def view_companies():
         return jsonify(companies)
     except Exception as e:
         return str(e)
+    
+@app.route("/viewstudents/<student_id>", methods=['GET'])
+def view_students(student_id):
+    try:
+        # Retrieve student data from the database for a specific student_id
+        cursor = db_conn.cursor()
+        select_sql = "SELECT student_id, name, programme, email FROM studentDetails WHERE student_id = %s"
+        cursor.execute(select_sql, (student_id,))
+        student = cursor.fetchone()
+        cursor.close()
+
+        if not student:
+            return jsonify({"error": "Student not found"}), 404
+
+        student_id, name, programme, email = student
+        student_details = {
+            'student-id': student_id,
+            'student-name': name,
+            'programme': programme,
+            'email': email
+        }
+
+        return jsonify(student_details)
+    except Exception as e:
+        return str(e), 500
+
     
 @app.route("/insert-student-dummy-data", methods=['GET'])
 def insert_student_dummy_data():
