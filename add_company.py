@@ -253,7 +253,7 @@ def Addcompany():
     if not company_logo_file or company_logo_file.filename == "":
         return "Please upload company logo "
     
-    if not company_files or company_files.filename == "":
+    if not company_files:
         return "Please upload information file "
     
     try:
