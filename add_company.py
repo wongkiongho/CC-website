@@ -10,6 +10,7 @@ import mimetypes
 from urllib.parse import urlparse
 
 
+
 app = Flask(__name__)
 
 bucket = custombucket
@@ -216,58 +217,64 @@ def Addcompany():
     email = request.form.get("email")
     contact_number = request.form.get("contactNumber")
     positions = request.form.getlist("position[]")
-    company_detials_file = request.files.get("companyFile")
-    company_logo_file  = request.files.get("companyLogo")
+    company_files = request.files.getlist("companyFile")
+    company_logo_file = request.files.get("companyLogo")
+    
     # Serialize the positions list to JSON
     positions_json = json.dumps(positions)
 
-    insert_sql = "INSERT INTO company VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
     cursor = db_conn.cursor()
-
-    if company_detials_file.filename == "":
-        return "Please upload a company's detail file"
-    if company_logo_file.filename == "":
+    
+    if not company_logo_file or company_logo_file.filename == "":
         return "Please upload a company logo "
-
+    
     try:
-        print("Data inserted in MySQL RDS... uploading image to S3...")
+        # Insert company details into the company table
+        insert_company_sql = "INSERT INTO company VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
+        cursor.execute(insert_company_sql, (company_id, company_name, industry, company_desc, location, email, contact_number, positions_json))
+        db_conn.commit()
 
-
-        # Determine the content type and file extension for details file
-        details_content_type, _ = mimetypes.guess_type(company_detials_file.filename)
-        details_extension = details_content_type.split("/")[1] if details_content_type else ""
-        company_detials_file_name_in_s3_with_extension = f"company_id-{str(company_id)}_details_file.{details_extension}"
-
-        # Determine the content type and file extension for logo file
+        # Process company logo
         logo_content_type, _ = mimetypes.guess_type(company_logo_file.filename)
         logo_extension = logo_content_type.split("/")[1] if logo_content_type else ""
-        company_logo_file_name_in_s3_with_extension = f"company_id-{str(company_id)}_logo_file.{logo_extension}"
-    
+        company_logo_file_name_in_s3 = f"company_id-{company_id}_logo.{logo_extension}"
 
-        s3.Bucket(custombucket).put_object(Key=company_detials_file_name_in_s3_with_extension, Body=company_detials_file, ContentDisposition=f"attachment; filename={company_detials_file.filename}")
-        s3.Bucket(custombucket).put_object(Key=company_logo_file_name_in_s3_with_extension, Body=company_logo_file, ContentDisposition=f"attachment; filename={company_logo_file.filename}")
-
-        # Construct the URLs with the updated file names including extensions
-        logo_url = "https://s3{0}.amazonaws.com/{1}/{2}".format(
-        s3_location,
-        custombucket,
-        company_logo_file_name_in_s3_with_extension)
-
-        file_url = "https://s3{0}.amazonaws.com/{1}/{2}".format(
-        s3_location,
-        custombucket,
-        company_detials_file_name_in_s3_with_extension)
-
-
-        cursor.execute(insert_sql, (company_id, company_name, industry, company_desc, location, email, contact_number, positions_json, logo_url, file_url))
+        s3.Bucket(custombucket).put_object(
+            Key=company_logo_file_name_in_s3, 
+            Body=company_logo_file, 
+            ContentDisposition=f"attachment; filename={company_logo_file.filename}"
+        )
+        logo_url = f"https://s3{s3_location}.amazonaws.com/{custombucket}/{company_logo_file_name_in_s3}"
+        logo_file_id = str(uuid4())
+        cursor.execute("INSERT INTO companyFile (file_id, company_id) VALUES (%s, %s)", (logo_file_id, company_id))
+        cursor.execute("INSERT INTO file (file_id, file_url, file_type, file_date) VALUES (%s, %s, %s, NOW())", (logo_file_id, logo_url, "logo"))
         db_conn.commit()
+
+        # Process company detail files
+        for detail_file in company_files:
+            if detail_file.filename != "":
+                details_content_type, _ = mimetypes.guess_type(detail_file.filename)
+                details_extension = details_content_type.split("/")[1] if details_content_type else ""
+                detail_file_name_in_s3 = f"company_id-{company_id}_file.{details_extension}"
+
+                s3.Bucket(custombucket).put_object(
+                    Key=detail_file_name_in_s3, 
+                    Body=detail_file, 
+                    ContentDisposition=f"attachment; filename={detail_file.filename}"
+                )
+                file_url = f"https://s3{s3_location}.amazonaws.com/{custombucket}/{detail_file_name_in_s3}"
+                file_id = str(uuid4())
+                cursor.execute("INSERT INTO companyFile (file_id, company_id) VALUES (%s, %s)", (file_id, company_id))
+                cursor.execute("INSERT INTO file (file_id, file_url, file_type, file_date) VALUES (%s, %s, %s, NOW())", (file_id, file_url, "details"))
+                db_conn.commit()
+
     except Exception as e:
         return str(e)
        
     finally:
         cursor.close()
-    # If it's a GET request, simply render the form
-    print("all modification done...")
+    
+    print("All modifications done...")
     return render_template('admin-manage-company.html')
 
 
