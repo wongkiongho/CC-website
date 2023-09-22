@@ -68,7 +68,8 @@ def Addstudent():
     # Retrieve form fields
     student_id = request.form.get("student-id")
     resume_file = request.files.get("resume")
-    internship_id = str(uuid4())
+    company_id = request.form.get("company-id")
+
     
     # Check if resume file is provided
     if not resume_file or resume_file.filename == "":
@@ -88,7 +89,7 @@ def Addstudent():
         # Your SQL to insert data into studentForm
         insert_sql = "INSERT INTO application (student_id, resume_url, internship_id) VALUES (%s, %s, %s)"
         cursor = db_conn.cursor()
-        cursor.execute(insert_sql, (student_id, resume_url, internship_id))
+        cursor.execute(insert_sql, (student_id, resume_url, company_id))
         db_conn.commit()
         print("Student and resume added successfully!")
         return redirect(url_for('home'))

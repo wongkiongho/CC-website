@@ -72,7 +72,7 @@
                         <label class="block text-gray-700 text-sm font-bold mb-2" for="company">Company</label>
                         <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="company" name="company">
                             {% for company in companies %}
-                                <option value="{{ company[0] }}">{{ company[0] }}</option>
+                                    <option value="{{ company['company_id'] }}">{{ company['company_name'] }}</option>
                             {% endfor %}
                         </select>
                     </div>
