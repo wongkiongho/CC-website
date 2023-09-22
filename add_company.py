@@ -162,7 +162,7 @@ def editCompany(company_id):
             positions_json = json.dumps(positions)
 
             # Insert company details into the company table
-            update_company_sql = "UPDATE company SET company_name=%s, industry=%s, company_desc=%s, location=%s, email=%s, contact_number=%s, positions_json=%s WHERE company_id=%s"
+            update_company_sql = "UPDATE company SET company_name=%s, industry=%s, company_desc=%s, location=%s, email=%s, contact_number=%s, position_json=%s WHERE company_id=%s"
             cursor.execute(update_company_sql, (company_name, industry, company_desc, location, email, contact_number, positions_json, company_id))
             db_conn.commit()
 
@@ -251,7 +251,10 @@ def Addcompany():
     cursor = db_conn.cursor()
     
     if not company_logo_file or company_logo_file.filename == "":
-        return "Please upload a company logo "
+        return "Please upload company logo "
+    
+    if not company_files or company_files.filename == "":
+        return "Please upload information file "
     
     try:
         # Insert company details into the company table
