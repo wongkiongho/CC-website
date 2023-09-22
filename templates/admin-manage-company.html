@@ -193,6 +193,7 @@ function searchCompanies() {
         return response.json();
     })
     .then(companies => {
+        console.log('Response Text:', companies);
         const companyTable = $('#company-data');
 
         // Clear any existing rows
