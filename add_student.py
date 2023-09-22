@@ -81,7 +81,7 @@ def Addstudent():
         # Your SQL to insert data into studentForm
         insert_sql = "INSERT INTO application (student_id, company_id) VALUES (%s, %s)"
         insert_sql_application_file = "INSERT INTO applicationFile (file_id, application_id) VALUES (%s, %s)"
-        insert_sql_file = "INSERT INTO applicationFile (file_id, resume_url) VALUES (%s, %s)"
+        insert_sql_file = "INSERT INTO file (file_id, resume_url) VALUES (%s, %s)"
 
 
         cursor = db_conn.cursor()
