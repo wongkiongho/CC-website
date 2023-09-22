@@ -45,7 +45,8 @@ def approve_reject():
     return render_template('supervisor-ApproveOrReject.html')
 
 @app.route("/studentlist", methods=['GET'])
-def student_list():
+
+def studentList():
     try:
         cursor = db_conn.cursor()
         select_sql = "SELECT * FROM studentDetails"  # Adjust this SQL to match your actual table name and columns
