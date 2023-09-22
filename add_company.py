@@ -202,40 +202,6 @@ def editCompany(company_id):
                                 # Update other company information in the database without changing the URLs
    
 
-            # Handle company files
-            if company_files:
-                for company_file in company_files:
-                    # Determine the content type and file extension for company file
-                    file_content_type, _ = mimetypes.guess_type(company_file.filename)
-                    file_extension = file_content_type.split("/")[1] if file_content_type else ""
-                    company_file_name_in_s3_with_extension = f"company_id-{str(company_id)}_{str(uuid4())}.{file_extension}"
-
-                    s3.Bucket(custombucket).put_object(
-                        Key=company_file_name_in_s3_with_extension,
-                        Body=company_file,
-                        ContentDisposition=f"attachment; filename={company_file.filename}"
-                    )
-
-                    # Construct the file URL with the updated file name including extension
-                    file_url = "https://s3{0}.amazonaws.com/{1}/{2}".format(
-                        s3_location,
-                        custombucket,
-                        company_file_name_in_s3_with_extension
-                    )
-
-                    # Insert the file record into the database
-                    cursor.execute("INSERT INTO file (file_id, file_url, file_type, file_name) VALUES (%s, %s, %s, %s)",
-                                   (str(uuid4()), file_url, file_content_type, company_file.filename))
-
-                    # Insert the company-file relationship into the companyFile table
-                    cursor.execute("INSERT INTO companyFile (file_id, company_id) VALUES (%s, %s)",
-                                   (cursor.lastrowid, company_id))
-
-            # Update other company information in the database without changing the URLs
-            update_sql = "UPDATE company SET company_name=%s, industry=%s, company_desc=%s, location=%s, email=%s, contact_number=%s, positions_json=%s WHERE company_id=%s"
-            cursor.execute(
-                update_sql, (company_name, industry, company_desc, location, email, contact_number, positions_json,
-                            company_id))
             db_conn.commit()
 
     except Exception as e:
