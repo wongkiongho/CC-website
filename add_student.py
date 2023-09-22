@@ -127,14 +127,16 @@ def view_companies():
 @app.route("/internship-form/<student_id>", methods=['GET'])
 def internship_form(student_id):
     try:
-        # Retrieve student data from the database for a specific student_id
+        # Set up a cursor for database interaction
         cursor = db_conn.cursor()
+
+        # Retrieve student data from the database for a specific student_id
         select_sql = "SELECT student_id, name, programme, email FROM studentDetails WHERE student_id = %s"
         cursor.execute(select_sql, (student_id,))
         student = cursor.fetchone()
-        cursor.close()
 
         if not student:
+            cursor.close()
             return "Student not found", 404
 
         student_id, name, programme, email = student
@@ -145,10 +147,15 @@ def internship_form(student_id):
             'email': email
         }
 
-        return render_template("internship-form.html", student=student_details)
+        # Fetch list of companies
+        cursor.execute("SELECT company_name FROM company")
+        companies = cursor.fetchall()
+
+        cursor.close()
+
+        return render_template("internship-form.html", student=student_details, companies=companies)
     except Exception as e:
         return str(e), 500
-
 
     
 @app.route("/insert-student-dummy-data", methods=['GET'])
