@@ -9,7 +9,7 @@ import json
 from flask import jsonify
 from pymysql import MySQLError
 import traceback
-import datetime
+from datetime import datetime
 
 
 
