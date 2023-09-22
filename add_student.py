@@ -73,6 +73,7 @@ def Addstudent():
     student_course = request.form.get("course")
     student_supervisor = request.form.get("supervisor")
     resume_file = request.files.get("resume")
+    internship_id = str(uuid4())
     
     # Check if resume file is provided
     if not resume_file or resume_file.filename == "":
@@ -90,9 +91,9 @@ def Addstudent():
         resume_url = f"https://s3{s3_location}.amazonaws.com/{custombucket}/{resume_file_name_in_s3}"
         
         # Your SQL to insert data into studentForm
-        insert_sql = "INSERT INTO studentForm (student_id, student_name, student_programme, student_course, student_supervisor, resume_url) VALUES (%s, %s, %s, %s, %s, %s)"
+        insert_sql = "INSERT INTO studentForm (student_id, student_name, student_programme, student_course, student_supervisor, resume_url, internship_id) VALUES (%s, %s, %s, %s, %s, %s, %s)"
         cursor = db_conn.cursor()
-        cursor.execute(insert_sql, (student_id, student_name, student_programme, student_course, student_supervisor, resume_url))
+        cursor.execute(insert_sql, (student_id, student_name, student_programme, student_course, student_supervisor, resume_url,internship_id))
         db_conn.commit()
         print("Student and resume added successfully!")
         return redirect(url_for('home'))
