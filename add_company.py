@@ -162,8 +162,8 @@ def editCompany(company_id):
             positions_json = json.dumps(positions)
 
             # Insert company details into the company table
-            insert_company_sql = "INSERT INTO company VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
-            cursor.execute(insert_company_sql, (company_id, company_name, industry, company_desc, location, email, contact_number, positions_json))
+            update_company_sql = "UPDATE company SET company_name=%s, industry=%s, company_desc=%s, location=%s, email=%s, contact_number=%s, positions_json=%s WHERE company_id=%s"
+            cursor.execute(update_company_sql, (company_name, industry, company_desc, location, email, contact_number, positions_json, company_id))
             db_conn.commit()
 
             # Delete previous company files from S3 and database
