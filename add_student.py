@@ -72,12 +72,6 @@ def Addstudent():
     student_programme = request.form.get("company")
     student_course = request.form.get("course")
     student_supervisor = request.form.get("supervisor")
-    resume_file = request.files.get("resume")
-
-    if not resume_file or resume_file.filename == "":
-        return "Please upload your resume."
-    
-    
    
 
     insert_sql = "INSERT INTO studentForm (student_id, student_name, student_programme, student_course, student_supervisor) VALUES (%s, %s, %s, %s, %s)"
