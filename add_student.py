@@ -194,16 +194,17 @@ def edit_profile(student_id):
             email = request.form.get('email')
             programme = request.form.get('programme')
             cohort = request.form.get('cohort')
+            password = request.form.get('password')
             
             # Update the student data in the database
             update_sql = """
                 UPDATE studentDetails
-                SET name=%s, email=%s, programme=%s, cohort=%s
+                SET name=%s, email=%s, programme=%s, cohort=%s, password=%s
                 WHERE student_id=%s
             """
             
             with db_conn.cursor() as cursor:
-                cursor.execute(update_sql, (name, email, programme, cohort, student_id))
+                cursor.execute(update_sql, (name, email, programme, cohort,password, student_id))
                 db_conn.commit()
 
             # Redirect back to the profile view after successful update
@@ -212,7 +213,7 @@ def edit_profile(student_id):
         else:
             # Handle GET request - this is for displaying the form
             with db_conn.cursor() as cursor:
-                cursor.execute("SELECT student_id, name, email, programme, cohort FROM studentDetails WHERE student_id=%s", (student_id,))
+                cursor.execute("SELECT student_id, name, email, programme, cohort, password FROM studentDetails WHERE student_id=%s", (student_id,))
                 print(f"Attempting to fetch data for student_id: {student_id}")
                 student = cursor.fetchone()
                 print(f"Queried student: {student}")
@@ -223,7 +224,8 @@ def edit_profile(student_id):
                                  'name': student[1],
                                  'email': student[2],
                                  'programme': student[3],
-                                 'cohort': student[4]
+                                 'cohort': student[4],
+                                 'password': student[5]
                                 }
                 return render_template('edit-profile.html', student=student_dict)
             else:
