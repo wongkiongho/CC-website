@@ -45,23 +45,20 @@ def approve_reject():
     return render_template('supervisor-ApproveOrReject.html')
 
 @app.route("/studentlist", methods=['GET'])
-
-def studentList():
+def student_list_route():
     try:
-        cursor = db_conn.cursor()
-        select_sql = "SELECT * FROM studentDetails"  # Adjust this SQL to match your actual table name and columns
-        cursor.execute(select_sql)
-        student_data = cursor.fetchall()
-        cursor.close()
+        with db_conn.cursor() as cursor:
+            select_sql = "SELECT * FROM studentDetails"
+            cursor.execute(select_sql)
+            student_data = cursor.fetchall()
 
         students = []
         for student in student_data:
-            # Map the fetched data to a dictionary, adjust the keys to match your actual column names
             students.append({'student_id': student[0], 'name': student[1], 'email': student[2], 'programme': student[3], 'cohort': student[4]})
 
         return render_template('supervisor-studentList.html', students=students)
     except Exception as e:
-        return str(e)
+        return f"An error occurred: {str(e)}"
 
 
 
