@@ -42,24 +42,24 @@
     </nav>
 
     <!-- Main Content -->
-    <div class="main-content ml-72 mt-5 p-5 bg-white shadow-md rounded-lg p-6">
-        <h1 class="text-xl font-bold mb-4">Student List</h1>
-        <ul>
-          {% for student in students %}
-            <li class="border-b border-gray-200">
-				<div class="flex justify-between p-2 cursor-pointer" onclick="toggleDetails('student1')">
-				  <h2>student.student_id</h2>
-			  </div>
-				      <div id="student1" class="transition-all overflow-hidden max-h-0 p-0 pl-10">
-				        <p class="py-2">Name: {{ student.name }}</p>
-				        <p class="py-2">Email Address: {{ student.email }}</p>
-				        <p class="py-2">Programme: {{ student.programme }}</p>
-				        <p class="py-2">Cohort: {{ student.cohort }}</p>
-				      </div>
-			      </li>  
-          {% endfor %}
-        </ul>
-    </div>
+    div class="main-content ml-72 mt-5 p-5 bg-white shadow-md rounded-lg p-6">
+    <h1 class="text-xl font-bold mb-4">Student List</h1>
+    <ul>
+      {% for student in students %}
+        <li class="border-b border-gray-200">
+            <div class="flex justify-between p-2 cursor-pointer" onclick="toggleDetails('student{{ student.student_id }}')">
+              <h2>{{ student.student_id }}</h2>
+            </div>
+            <div id="student{{ student.student_id }}" class="transition-all overflow-hidden max-h-0 p-0 pl-10">
+                <p class="py-2">Name: {{ student.name }}</p>
+                <p class="py-2">Email Address: {{ student.email }}</p>
+                <p class="py-2">Programme: {{ student.programme }}</p>
+                <p class="py-2">Cohort: {{ student.cohort }}</p>
+            </div>
+        </li>  
+      {% endfor %}
+    </ul>
+</div>
 
     <script>
 		 function toggleMenu() {
