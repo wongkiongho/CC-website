@@ -45,7 +45,7 @@ def approve_reject():
     return render_template('supervisor-ApproveOrReject.html')
 
 @app.route("/studentlist", methods=['GET'])
-def student_list_route():
+def student_list_page():
     try:
         with db_conn.cursor() as cursor:
             select_sql = "SELECT * FROM studentDetails"
