@@ -54,6 +54,7 @@ def student_list_page():
         cursor.execute(select_sql)
         student_data = cursor.fetchall()
         print("SQL executed, data fetched:", student_data)  # Debugging line
+        cursor.close()
 
         students = []
         for student in student_data:
@@ -61,7 +62,7 @@ def student_list_page():
             students.append({'student_id': student_id, 'name': name, 'email': email, 'programme': programme, 'cohort': cohort})
         
         print("Returning response")  # Debugging line
-        return render_template('supervisor-studentList.html', students=students)
+        return jsonify(students)
     except Exception as e:
         print("An error occurred:", e)  # Debugging line
         return f"An error occurred: {str(e)}"
