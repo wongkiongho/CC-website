@@ -120,12 +120,17 @@ def editCompany(company_id):
             # Retrieve company data based on company_id
             cursor.execute("SELECT * FROM company WHERE company_id=%s", (company_id,))
             company = cursor.fetchone()
+
+            # Retrieve associated company files
+            cursor.execute("SELECT f.file_url, f.file_name FROM companyFile cf JOIN file f ON cf.file_id = f.file_id WHERE cf.company_id=%s", (company_id,))
+            files_list = [{'file_url': row[0], 'file_name': row[1]} for row in cursor.fetchall()]
+
             cursor.close()
 
             if company:
-                # Pass the company data to the edit form
+                # Pass the company data and associated files to the edit form
                 company_positions = json.loads(company[7])
-                return render_template('admin-edit-company.html', company=company, company_positions=company_positions)
+                return render_template('admin-edit-company.html', company=company, company_positions=company_positions, files_list=files_list)
             else:
                 return "Company not found", 404
 
@@ -138,100 +143,111 @@ def editCompany(company_id):
             email = request.form.get("email")
             contact_number = request.form.get("contactNumber")
             positions = request.form.getlist("position[]")
-            company_detials_file = request.files.get("companyFile")
-            company_logo_file  = request.files.get("companyLogo")
+            company_files = request.files.getlist("companyFile")
+            company_logo_file = request.files.get("companyLogo")
+
             # Serialize the positions list to JSON
             positions_json = json.dumps(positions)
-                        
-            # Add similar print statements for other variables
-            if not company_detials_file and not company_logo_file:
-                # Update company information without changing the URLs
-                update_sql = "UPDATE company SET company_name=%s, industry=%s, company_desc=%s, location=%s, email=%s, contact_number=%s, positions_json=%s WHERE company_id=%s"
-                cursor = db_conn.cursor()
-                cursor.execute(
-                    update_sql, (company_name, industry, company_desc, location, email, contact_number, positions_json,
-                                company_id))
-                db_conn.commit()
-            
-            else:
-                if company_detials_file:     
-                    cursor.execute("SELECT file_url FROM company WHERE company_id=%s", (company_id,))
-                    result = cursor.fetchone()
-                    if result:
-                        file_url = result[0]
-                        parsed_file_url = urlparse(file_url)
-                        file_object_key = parsed_file_url.path.lstrip('/')
-                        s3_client.delete_object(Bucket=custombucket, Key=file_object_key)
 
-                    details_content_type, _ = mimetypes.guess_type(company_detials_file.filename)
-                    details_extension = details_content_type.split("/")[1] if details_content_type else ""
-                    company_detials_file_name_in_s3_with_extension = f"company_id-{str(company_id)}_details_file.{details_extension}"
+            # Delete previous company files from S3 and database
+            cursor.execute("SELECT file_id FROM companyFile WHERE company_id=%s", (company_id,))
+            file_ids_to_delete = [row[0] for row in cursor.fetchall()]
 
-                    
-                    s3.Bucket(custombucket).put_object(
-                        Key=company_detials_file_name_in_s3_with_extension,
-                        Body=company_detials_file,
-                        ContentDisposition=f"attachment; filename={company_detials_file.filename}"
-                    )
-                    file_url = "https://s3{0}.amazonaws.com/{1}/{2}".format(
+            if file_ids_to_delete:
+                # Delete files from S3 and database
+                cursor.execute("SELECT file_url FROM file WHERE file_id IN %s", (tuple(file_ids_to_delete),))
+                urls_to_delete = [row[0] for row in cursor.fetchall()]
+
+                for url in urls_to_delete:
+                    parsed_url = urlparse(url)
+                    object_key = parsed_url.path.lstrip('/')
+                    s3_client.delete_object(Bucket=custombucket, Key=object_key)
+
+                # Delete records from companyFile and file tables
+                cursor.execute("DELETE FROM companyFile WHERE company_id=%s", (company_id,))
+                cursor.execute("DELETE FROM file WHERE file_id IN %s", (tuple(file_ids_to_delete),))
+
+            # Handle company logo file
+            if company_logo_file:
+                # Determine the content type and file extension for logo file
+                logo_content_type, _ = mimetypes.guess_type(company_logo_file.filename)
+                logo_extension = logo_content_type.split("/")[1] if logo_content_type else ""
+                company_logo_file_name_in_s3_with_extension = f"company_id-{str(company_id)}_logo_file.{logo_extension}"
+
+                s3.Bucket(custombucket).put_object(
+                    Key=company_logo_file_name_in_s3_with_extension,
+                    Body=company_logo_file,
+                    ContentDisposition=f"attachment; filename={company_logo_file.filename}"
+                )
+
+                # Construct the logo URL with the updated file name including extension
+                logo_url = "https://s3{0}.amazonaws.com/{1}/{2}".format(
                     s3_location,
                     custombucket,
-                    company_detials_file_name_in_s3_with_extension)
+                    company_logo_file_name_in_s3_with_extension
+                )
 
-                    # Update company information including URLs
-                    update_sql = "UPDATE company SET company_name=%s, industry=%s, company_desc=%s, location=%s, email=%s, contact_number=%s, positions_json=%s, file_url=%s WHERE company_id=%s"
-                    cursor = db_conn.cursor()
-                    cursor.execute(
-                        update_sql, (company_name, industry, company_desc, location, email, contact_number, positions_json,
-                                    file_url, company_id))
-                    db_conn.commit()
+                # Insert or update the logo URL in the database
+                cursor.execute("SELECT logo_url FROM company WHERE company_id=%s", (company_id,))
+                result = cursor.fetchone()
 
-                # Check if files are uploaded
-                if company_logo_file:
-                    cursor.execute("SELECT logo_url FROM company WHERE company_id=%s", (company_id,))
-                    result = cursor.fetchone()
-                    if result:
-                        logo_url = result[0]
-                        parsed_logo_url = urlparse(logo_url)
-                        logo_object_key = parsed_logo_url.path.lstrip('/')
-                        s3_client.delete_object(Bucket=custombucket, Key=logo_object_key)
-
-                    # Determine the content type and file extension for logo file
-                    logo_content_type, _ = mimetypes.guess_type(company_logo_file.filename)
-                    logo_extension = logo_content_type.split("/")[1] if logo_content_type else ""
-                    company_logo_file_name_in_s3_with_extension = f"company_id-{str(company_id)}_logo_file.{logo_extension}"
-
-                    s3.Bucket(custombucket).put_object(
-                        Key=company_logo_file_name_in_s3_with_extension,
-                        Body=company_logo_file,
-                        ContentDisposition=f"attachment; filename={company_logo_file.filename}"
-                    )
-
-                    # Construct the URLs with the updated file names including extensions
-                    logo_url = "https://s3{0}.amazonaws.com/{1}/{2}".format(
-                        s3_location,
-                        custombucket,
-                        company_logo_file_name_in_s3_with_extension)
-
-
-
-                    # Update company information including URLs
+                if result:
+                    # Update the existing logo URL
                     update_sql = "UPDATE company SET company_name=%s, industry=%s, company_desc=%s, location=%s, email=%s, contact_number=%s, positions_json=%s, logo_url=%s WHERE company_id=%s"
-                    cursor = db_conn.cursor()
                     cursor.execute(
                         update_sql, (company_name, industry, company_desc, location, email, contact_number, positions_json,
                                     logo_url, company_id))
-                    db_conn.commit()
-                
+                else:
+                    # Insert a new record with the logo URL
+                    insert_sql = "INSERT INTO company (company_id, company_name, industry, company_desc, location, email, contact_number, positions_json, logo_url) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
+                    cursor.execute(
+                        insert_sql, (company_id, company_name, industry, company_desc, location, email, contact_number,
+                                    positions_json, logo_url))
+
+            # Handle company files
+            if company_files:
+                for company_file in company_files:
+                    # Determine the content type and file extension for company file
+                    file_content_type, _ = mimetypes.guess_type(company_file.filename)
+                    file_extension = file_content_type.split("/")[1] if file_content_type else ""
+                    company_file_name_in_s3_with_extension = f"company_id-{str(company_id)}_{str(uuid4())}.{file_extension}"
+
+                    s3.Bucket(custombucket).put_object(
+                        Key=company_file_name_in_s3_with_extension,
+                        Body=company_file,
+                        ContentDisposition=f"attachment; filename={company_file.filename}"
+                    )
+
+                    # Construct the file URL with the updated file name including extension
+                    file_url = "https://s3{0}.amazonaws.com/{1}/{2}".format(
+                        s3_location,
+                        custombucket,
+                        company_file_name_in_s3_with_extension
+                    )
+
+                    # Insert the file record into the database
+                    cursor.execute("INSERT INTO file (file_id, file_url, file_type, file_name) VALUES (%s, %s, %s, %s)",
+                                   (str(uuid4()), file_url, file_content_type, company_file.filename))
+
+                    # Insert the company-file relationship into the companyFile table
+                    cursor.execute("INSERT INTO companyFile (file_id, company_id) VALUES (%s, %s)",
+                                   (cursor.lastrowid, company_id))
+
+            # Update other company information in the database without changing the URLs
+            update_sql = "UPDATE company SET company_name=%s, industry=%s, company_desc=%s, location=%s, email=%s, contact_number=%s, positions_json=%s WHERE company_id=%s"
+            cursor.execute(
+                update_sql, (company_name, industry, company_desc, location, email, contact_number, positions_json,
+                            company_id))
+            db_conn.commit()
 
     except Exception as e:
         return str(e)
 
     finally:
         cursor.close()
-    # If it's a GET request, simply render the form
-    print("all modification done...")
+
     return render_template('admin-manage-company.html')
+
 
 
 

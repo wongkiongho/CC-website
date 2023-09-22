@@ -132,10 +132,19 @@
             <div class="mb-4">
                 <label for="companyFile" class="block text-sm font-medium text-gray-700 mb-4">More information:</label>
                 <div class="mt-4">
-                    <a href="{{ company[9] }}" target="_blank" class="text-blue-600 hover:underline">
                     <div class="border p-4 rounded shadow-inner bg-gray-50">
-                        <p class="text-blue-600 font-bold">Existing File</p>
+                       
+                        <ul>
+                            {% for file in files_list %}
+                                <li class="flex items-center space-x-2 mt-2">
+                                    <a href="{{ file.file_url }}" target="_blank" class="text-blue-600 hover:underline flex items-center">
+                                        <span class="ml-2">{{ file.file_name }}</span>
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
                     </div>
+
                 </a>
                 </div>
                 
@@ -161,31 +170,52 @@
 let positionCounter = 2; // Initialize a counter for position labels
 
 function addPositionField() {
-    // Create a new input element for position
-    const newPositionInput = document.createElement("input");
-    newPositionInput.type = "text";
-    newPositionInput.id = `Position ${positionCounter}`;
-    console.log(  newPositionInput.id);
-    newPositionInput.className = "mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50";
-    newPositionInput.name = "position[]"; // Use an array for multiple positions
+    // Create a div to contain the label and the nested flex container
+    const positionField = document.createElement("div");
+    positionField.className = "my-2 flex flex-col"; 
 
     // Create a label for the position input
     const newPositionLabel = document.createElement("label");
     newPositionLabel.textContent = `Position ${positionCounter}`;
-    newPositionLabel.className = "block text-sm font-medium text-gray-700";
-
-    // Create a div to contain the label and input field
-    const positionField = document.createElement("div");
-    positionField.className = "my-2";
-
-    // Add the label and input field to the container
+    newPositionLabel.className = "text-sm font-medium text-gray-700 mb-1"; // Added margin-bottom for spacing
     positionField.appendChild(newPositionLabel);
-    positionField.appendChild(newPositionInput);
+
+    // Create a nested flex container for the input and delete button
+    const inputContainer = document.createElement("div");
+    inputContainer.className = "flex items-center";
+    positionField.appendChild(inputContainer);
+
+    // Create a new input element for position
+    const newPositionInput = document.createElement("input");
+    newPositionInput.type = "text";
+    newPositionInput.id = `Position ${positionCounter}`;
+    newPositionInput.className = "flex-grow mt-1 px-4 py-2 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50";
+    newPositionInput.name = "position[]";
+    inputContainer.appendChild(newPositionInput);
+
+    // Create a delete button
+    const deleteButton = document.createElement("button");
+    deleteButton.textContent = "Delete";
+    deleteButton.className = "ml-4 py-1 px-2 bg-red-500 text-white rounded-md hover:bg-red-600";
+    deleteButton.type = "button";
+    deleteButton.onclick = function() {
+        if (positionCounter == 2) {
+            // Handle a specific case if positionCounter is 2; e.g., showing a warning or doing nothing
+        } else {
+            positionField.remove();
+            positionCounter--;
+        }
+    }
+    inputContainer.appendChild(deleteButton);
+
+    // Add the whole position container to the main container
     document.getElementById("positionContainer").appendChild(positionField);
 
     // Increment the position counter for the next label
     positionCounter++;
 }
+
+
 
 // Add an event listener to the "Add Another Position" button
 document.getElementById("addPosition").addEventListener("click", addPositionField);
