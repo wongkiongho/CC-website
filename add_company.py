@@ -193,7 +193,7 @@ def editCompany(company_id):
 
                 # Insert the file record into the database
                 cursor.execute("INSERT INTO file (file_id, file_url, file_type, file_name) VALUES (%s, %s, %s, %s)",
-                                (str(uuid4()), logo_url, file_content_type, company_logo_file.filename))
+                                (str(uuid4()), logo_url, logo_content_type, company_logo_file.filename))
 
                 # Insert the company-file relationship into the companyFile table
                 cursor.execute("INSERT INTO companyFile (file_id, company_id) VALUES (%s, %s)",
