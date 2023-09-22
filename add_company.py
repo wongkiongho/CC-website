@@ -264,7 +264,7 @@ def Addcompany():
                 )
                 file_url = f"https://s3{s3_location}.amazonaws.com/{custombucket}/{detail_file_name_in_s3}"
                 file_id = str(uuid4())
-                cursor.execute("INSERT INTO company_file (file_id, company_id) VALUES (%s, %s)", (file_id, company_id))
+                cursor.execute("INSERT INTO companyFile (file_id, company_id) VALUES (%s, %s)", (file_id, company_id))
                 cursor.execute("INSERT INTO file (file_id, file_url, file_type, file_date) VALUES (%s, %s, %s, NOW())", (file_id, file_url, "details"))
                 db_conn.commit()
 
