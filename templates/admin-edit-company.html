@@ -60,7 +60,7 @@
         <h2 class="text-2xl md:text-3xl mb-5 text-center text-gray-800 font-bold">Edit Company Details</h2>
         
         <form action="/editcompany/{{ company[0]}}"  class=" mx-auto bg-white p-5 rounded-lg shadow" autocomplete="on" method = "POST" enctype="multipart/form-data">
-            <input type="hidden" name="company_id" value="{{ company.company_id }}">
+            <input type="hidden" name="company_id" value="{{ company[0]] }}">
             <p class="text-lg font-semibold mb-4 text-gray-800">Company Overview</p>
 
             <div class="mb-4">
