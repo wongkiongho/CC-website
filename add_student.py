@@ -79,13 +79,15 @@ def Addstudent():
         resume_url = f"https://s3{s3_location}.amazonaws.com/{custombucket}/{resume_file_name_in_s3}"
         
         # Your SQL to insert data into studentForm
-        insert_sql = "INSERT INTO application (student_id, resume_url, company_id) VALUES (%s, %s, %s)"
+        insert_sql = "INSERT INTO application (student_id, company_id) VALUES (%s, %s)"
         insert_sql_application_file = "INSERT INTO applicationFile (file_id, application_id) VALUES (%s, %s)"
+        insert_sql_file = "INSERT INTO applicationFile (file_id, resume_url) VALUES (%s, %s)"
 
 
         cursor = db_conn.cursor()
-        cursor.execute(insert_sql, (student_id, resume_url, company_id))
-        cursor.execute(insert_sql_application_file, (file_id, application_id, resume_url))
+        cursor.execute(insert_sql, (student_id, company_id))
+        cursor.execute(insert_sql_application_file, (file_id, application_id))
+        cursor.execute(insert_sql_file, (file_id, resume_url))
         db_conn.commit()
         print("Student and resume added successfully!")
         return redirect(url_for('home'))
