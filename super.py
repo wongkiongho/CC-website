@@ -28,7 +28,7 @@ table = 'company'
 
 @app.route("/", methods=['GET', 'POST'])
 def home():
-    return render_template('supervisor-application.html')
+    return render_template('admin-view-company.html')
 
 @app.route('/student_list')
 def student_list():
@@ -63,7 +63,29 @@ def student_list_page():
     except Exception as e:
         return f"An error occurred: {str(e)}"
 
+@app.route("/viewcompanies", methods=['GET'])
+def view_companies():
+    try:
+        # Retrieve company data from the database
+        cursor = db_conn.cursor()
+        select_sql = "SELECT company_id, company_name, industry FROM company"
+        cursor.execute(select_sql)
+        company_data = cursor.fetchall()
+        cursor.close()
 
+        # Create a list to store the company details
+        companies = []
+
+        # Loop through the retrieved data and fetch S3 URLs for logos
+        for company in company_data:
+            company_id, company_name, industry = company
+            # Assuming you have a naming convention for the logo files
+            
+            companies.append({'company_id': company_id,'company_name': company_name, 'industry': industry})
+
+        return jsonify(companies)
+    except Exception as e:
+        return str(e)
 
 @app.route("/viewAddCompanyPage", methods=['GET', 'POST'])
 def viewAddCompanyPage():
@@ -145,29 +167,6 @@ def delete_company(company_id):
         return jsonify({"error": str(e)}), 500
 
 
-@app.route("/viewcompanies", methods=['GET'])
-def view_companies():
-    try:
-        # Retrieve company data from the database
-        cursor = db_conn.cursor()
-        select_sql = "SELECT company_id, company_name, industry FROM company"
-        cursor.execute(select_sql)
-        company_data = cursor.fetchall()
-        cursor.close()
-
-        # Create a list to store the company details
-        companies = []
-
-        # Loop through the retrieved data and fetch S3 URLs for logos
-        for company in company_data:
-            company_id, company_name, industry = company
-            # Assuming you have a naming convention for the logo files
-            
-            companies.append({'company_id': company_id,'company_name': company_name, 'industry': industry})
-
-        return jsonify(companies)
-    except Exception as e:
-        return str(e)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=80, debug=True)
