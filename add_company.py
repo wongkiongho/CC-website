@@ -191,22 +191,16 @@ def editCompany(company_id):
                     company_logo_file_name_in_s3_with_extension
                 )
 
-                # Insert or update the logo URL in the database
-                cursor.execute("SELECT logo_url FROM company WHERE company_id=%s", (company_id,))
-                result = cursor.fetchone()
+                # Insert the file record into the database
+                cursor.execute("INSERT INTO file (file_id, file_url, file_type, file_name) VALUES (%s, %s, %s, %s)",
+                                (str(uuid4()), logo_url, file_content_type, company_logo_file.filename))
 
-                if result:
-                    # Update the existing logo URL
-                    update_sql = "UPDATE company SET company_name=%s, industry=%s, company_desc=%s, location=%s, email=%s, contact_number=%s, positions_json=%s, logo_url=%s WHERE company_id=%s"
-                    cursor.execute(
-                        update_sql, (company_name, industry, company_desc, location, email, contact_number, positions_json,
-                                    logo_url, company_id))
-                else:
-                    # Insert a new record with the logo URL
-                    insert_sql = "INSERT INTO company (company_id, company_name, industry, company_desc, location, email, contact_number, positions_json, logo_url) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
-                    cursor.execute(
-                        insert_sql, (company_id, company_name, industry, company_desc, location, email, contact_number,
-                                    positions_json, logo_url))
+                # Insert the company-file relationship into the companyFile table
+                cursor.execute("INSERT INTO companyFile (file_id, company_id) VALUES (%s, %s)",
+                                (cursor.lastrowid, company_id))
+
+                                # Update other company information in the database without changing the URLs
+   
 
             # Handle company files
             if company_files:
