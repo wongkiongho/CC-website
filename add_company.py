@@ -121,8 +121,12 @@ def editCompany(company_id):
             cursor.execute("SELECT * FROM company WHERE company_id=%s", (company_id,))
             company = cursor.fetchone()
 
+            # Retrieve the company's logo URL from the file table
+            cursor.execute("SELECT f.file_url FROM companyFile cf JOIN file f ON cf.file_id = f.file_id WHERE cf.company_id=%s AND f.file_type='logo'", (company_id,))
+            logo_url = cursor.fetchone()[0] if cursor.rowcount > 0 else None
+
             # Retrieve associated company files
-            cursor.execute("SELECT f.file_url, f.file_name FROM companyFile cf JOIN file f ON cf.file_id = f.file_id WHERE cf.company_id=%s", (company_id,))
+            cursor.execute("SELECT f.file_url, f.file_name FROM companyFile cf JOIN file f ON cf.file_id = f.file_id WHERE cf.company_id=%s AND f.file_type<>'logo'", (company_id,))
             files_list = [{'file_url': row[0], 'file_name': row[1]} for row in cursor.fetchall()]
 
             cursor.close()
@@ -130,7 +134,7 @@ def editCompany(company_id):
             if company:
                 # Pass the company data and associated files to the edit form
                 company_positions = json.loads(company[7])
-                return render_template('admin-edit-company.html', company=company, company_positions=company_positions, files_list=files_list)
+                return render_template('admin-edit-company.html', company=company, company_positions=company_positions, files_list=files_list, logo_url=logo_url)
             else:
                 return "Company not found", 404
 
