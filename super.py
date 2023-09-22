@@ -49,24 +49,24 @@ def approve_reject():
 def student_list_page():
     try:
         print("Student list page accessed")  # Debugging line
-        cursor = db_conn.cursor()
-        select_sql = "SELECT * FROM studentDetails"
-        cursor.execute(select_sql)
-        student_data = cursor.fetchall()
-        print("SQL executed, data fetched:", student_data)  # Debugging line
-        cursor.close()
+        with db_conn.cursor() as cursor:
+            select_sql = "SELECT * FROM studentDetails"
+            cursor.execute(select_sql)
+            student_data = cursor.fetchall()
+            print("SQL executed, data fetched:", student_data)  # Debugging line
 
         students = []
         for student in student_data:
             student_id, name, email, programme, cohort = student
             students.append({'student_id': student_id, 'name': name, 'email': email, 'programme': programme, 'cohort': cohort})
-        
+
         print("Returning response")  # Debugging line
-        return jsonify(students)
+        return render_template('supervisor-studentList.html', students=students)
     except Exception as e:
         print("An error occurred:", e)  # Debugging line
         return f"An error occurred: {str(e)}"
-
+    
+    
 @app.route("/viewcompanies", methods=['GET'])
 def view_companies():
     try:
