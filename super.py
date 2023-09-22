@@ -44,6 +44,7 @@ def application():
 def approve_reject():
     return render_template('supervisor-ApproveOrReject.html')
 
+
 @app.route("/studentlist", methods=['GET'])
 def student_list_page():
     try:
@@ -51,11 +52,13 @@ def student_list_page():
             select_sql = "SELECT * FROM studentDetails"
             cursor.execute(select_sql)
             student_data = cursor.fetchall()
+            print(student_data)  # Debugging line
 
         students = []
         for student in student_data:
             students.append({'student_id': student[0], 'name': student[1], 'email': student[2], 'programme': student[3], 'cohort': student[4]})
-
+        
+        print(students)  # Debugging line
         return render_template('supervisor-studentList.html', students=students)
     except Exception as e:
         return f"An error occurred: {str(e)}"
