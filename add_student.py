@@ -87,7 +87,7 @@ def Addstudent():
         resume_url = f"https://s3{s3_location}.amazonaws.com/{custombucket}/{resume_file_name_in_s3}"
         
         # Your SQL to insert data into studentForm
-        insert_sql = "INSERT INTO application (student_id, resume_url, internship_id) VALUES (%s, %s, %s)"
+        insert_sql = "INSERT INTO application (student_id, resume_url, company_id) VALUES (%s, %s, %s)"
         cursor = db_conn.cursor()
         cursor.execute(insert_sql, (student_id, resume_url, company_id))
         db_conn.commit()
