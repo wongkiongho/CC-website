@@ -59,7 +59,7 @@ def studentList():
             # Map the fetched data to a dictionary, adjust the keys to match your actual column names
             students.append({'student_id': student[0], 'name': student[1], 'email': student[2], 'programme': student[3], 'cohort': student[4]})
 
-        return render_template('student_list.html', students=students)
+        return render_template('supervisor-studentList.html', students=students)
     except Exception as e:
         return str(e)
 
