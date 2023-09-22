@@ -69,18 +69,47 @@ def viewEditCompanyPage():
 def viewCompany(company_id):
     try:
         cursor = db_conn.cursor()
+
+        # Get company details
         cursor.execute("SELECT * FROM company WHERE company_id=%s", (company_id,))
         company = cursor.fetchone()
-        cursor.close()
-        if company:
-        # Deserialize the positions JSON before sending to template
-            company_positions = json.loads(company[7])
-            
-            return render_template('admin-view-company.html', company=company, company_positions=company_positions)
-        else:
+
+        if not company:
+            cursor.close()
             return "Company not found", 404
+
+        # Deserialize the positions JSON
+        company_positions = json.loads(company[7])
+
+        # Get related files
+        cursor.execute("SELECT f.file_id, f.file_url, f.file_type, f.file_name, f.file_date FROM file f INNER JOIN companyFile cf ON f.file_id = cf.file_id WHERE cf.company_id = %s", (company_id,))
+        files = cursor.fetchall()
+        
+        # Prepare the list of files and identify the company logo
+        logo_url = None
+        files_list = []
+        for file in files:
+            if file[2] == "logo":
+                logo_url = file[1]
+            else:
+                files_list.append({
+                    "file_url": file[1],
+                    "file_name": file[3]
+                })
+
+        # Close the database cursor
+        cursor.close()
+
+        return render_template(
+            'admin-view-company.html', 
+            company=company, 
+            company_positions=company_positions, 
+            files_list=files_list,
+            logo_url=logo_url
+        )
     except Exception as e:
         return str(e)
+
 
 @app.route("/editcompany/<company_id>", methods=['GET', 'POST'])
 def editCompany(company_id):
@@ -247,7 +276,7 @@ def Addcompany():
         logo_url = f"https://s3{s3_location}.amazonaws.com/{custombucket}/{company_logo_file_name_in_s3}"
         logo_file_id = str(uuid4())
         cursor.execute("INSERT INTO companyFile (file_id, company_id) VALUES (%s, %s)", (logo_file_id, company_id))
-        cursor.execute("INSERT INTO file (file_id, file_url, file_type, file_date) VALUES (%s, %s, %s, NOW())", (logo_file_id, logo_url, "logo"))
+        cursor.execute("INSERT INTO file (file_id, file_url, file_type, file_name, file_date) VALUES (%s, %s, %s, %s, NOW())", (logo_file_id, logo_url, "logo", company_logo_file.filename))
         db_conn.commit()
 
         # Process company detail files
@@ -265,7 +294,7 @@ def Addcompany():
                 file_url = f"https://s3{s3_location}.amazonaws.com/{custombucket}/{detail_file_name_in_s3}"
                 file_id = str(uuid4())
                 cursor.execute("INSERT INTO companyFile (file_id, company_id) VALUES (%s, %s)", (file_id, company_id))
-                cursor.execute("INSERT INTO file (file_id, file_url, file_type, file_date) VALUES (%s, %s, %s, NOW())", (file_id, file_url, "details"))
+                cursor.execute("INSERT INTO file (file_id, file_url, file_type, file_name, file_date) VALUES (%s, %s, %s, %s, NOW())", (file_id, file_url, "details", detail_file.filename))
                 db_conn.commit()
 
     except Exception as e:
@@ -276,6 +305,7 @@ def Addcompany():
     
     print("All modifications done...")
     return render_template('admin-manage-company.html')
+
 
 
 @app.route("/deletecompany/<string:company_id>", methods=['DELETE'])
