@@ -125,6 +125,25 @@ def view_companies():
         return jsonify(companies)
     except Exception as e:
         return str(e)
+    
+def get_student_files(student_id):
+    try:
+        with db_conn.cursor() as cursor:
+            # Join studentFile with file to retrieve file_url based on student_id
+            query = """
+            SELECT f.file_url
+            FROM studentFile AS sf
+            JOIN file AS f ON sf.file_id = f.file_id
+            WHERE sf.student_id = %s
+            """
+            cursor.execute(query, (student_id,))
+            student_files = cursor.fetchall()
+
+            return [file[0] for file in student_files]
+    except MySQLError as e:
+        print(f"Database Error: {e}")
+        return []
+
 @app.route("/internship-form/<student_id>", methods=['GET'])
 def internship_form(student_id):
     try:
@@ -159,38 +178,33 @@ def internship_form(student_id):
     except Exception as e:
         return str(e), 500
 
-    
+#... (All the previous imports and initializations remain unchanged)
 @app.route("/profile/<student_id>", methods=['GET'])
 def profile(student_id):
     try:
         cursor = db_conn.cursor()
-
-        # Retrieve student data based on student_id
         cursor.execute("SELECT student_id, name, email, programme, cohort FROM studentDetails WHERE student_id=%s", (student_id,))
-
         student = cursor.fetchone()
         cursor.close()
 
         if student:
             student_id, name, email, programme, cohort = student
-            return render_template('profile.html', student_id=student_id, name=name, email=email, programme=programme, cohort=cohort)
+            
+            # Use the helper function here
+            student_files = get_student_files(student_id)
+
+            return render_template('profile.html', student_id=student_id, name=name, email=email, programme=programme, cohort=cohort, files=student_files)
         else:
             return "Student not found", 404
     except Exception as e:
         print(e)
         return "Error occurred while fetching student details", 500
 
-   
-
-    except Exception as e:
-        print(e)
-        return "Error occurred while fetching student details", 500
-    
 @app.route("/edit-profile/<student_id>", methods=['GET', 'POST'])
 def edit_profile(student_id):
     try:
         if request.method == 'POST':
-            # Handle form submission here
+            # Handling form submission
             name = request.form.get('name')
             email = request.form.get('email')
             programme = request.form.get('programme')
@@ -205,33 +219,51 @@ def edit_profile(student_id):
             """
             
             with db_conn.cursor() as cursor:
-                cursor.execute(update_sql, (name, email, programme, cohort,password, student_id))
+                cursor.execute(update_sql, (name, email, programme, cohort, password, student_id))
                 db_conn.commit()
 
-            # Redirect back to the profile view after successful update
+            # If the progress file is uploaded, save it to S3 and the database.
+            progress_file = request.files.get('progress')
+            if progress_file and progress_file.filename:
+                timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+                progress_file_name_in_s3 = f"progress_{student_id}_{timestamp}.pdf"
+                s3.Bucket("yewshuhan-bucket").put_object(Key=progress_file_name_in_s3, Body=progress_file, ContentDisposition=f"attachment; filename={progress_file.filename}")
+                progress_file_url = f"https://s3{s3_location}.amazonaws.com/{custombucket}/{progress_file_name_in_s3}"
+
+                # Insert file_url into the `file` table
+                insert_file_sql = "INSERT INTO file (file_url) VALUES (%s)"
+                with db_conn.cursor() as cursor:
+                    cursor.execute(insert_file_sql, (progress_file_url,))
+                    file_id = cursor.lastrowid
+                    db_conn.commit()
+
+                # Now, link the student with the file_id in the `studentFile` table
+                insert_student_file_sql = "INSERT INTO studentFile (student_id, file_id) VALUES (%s, %s)"
+                with db_conn.cursor() as cursor:
+                    cursor.execute(insert_student_file_sql, (student_id, file_id))
+                    db_conn.commit()
+
+            # Redirect to profile after successful update
             return redirect(url_for('profile', student_id=student_id))
         
         else:
-            # Handle GET request - this is for displaying the form
             with db_conn.cursor() as cursor:
                 cursor.execute("SELECT student_id, name, email, programme, cohort, password FROM studentDetails WHERE student_id=%s", (student_id,))
-                print(f"Attempting to fetch data for student_id: {student_id}")
                 student = cursor.fetchone()
-                print(f"Queried student: {student}")
 
             if student:
                 student_dict = {
-                                 'student_id': student[0],
-                                 'name': student[1],
-                                 'email': student[2],
-                                 'programme': student[3],
-                                 'cohort': student[4],
-                                 'password': student[5]
-                                }
+                    'student_id': student[0],
+                    'name': student[1],
+                    'email': student[2],
+                    'programme': student[3],
+                    'cohort': student[4],
+                    'password': student[5]
+                }
                 return render_template('edit-profile.html', student=student_dict)
             else:
                 return "Student not found", 404
-    
+
     except MySQLError as e:
         print(f"Database Error: {e}")
         return "Database error occurred", 500
@@ -239,7 +271,11 @@ def edit_profile(student_id):
     except Exception as e:
         print("Exception occurred:", e)
         traceback.print_exc()
-        return "Error occurred while fetching student details", 500
+        return "Error occurred while fetching or updating student details", 500
+
+
+
+
 
 
 if __name__ == "__main__":

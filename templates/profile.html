@@ -69,6 +69,18 @@
 <div class="mb-2">
     <span class="font-medium">Cohort:</span> {{ cohort }}
 </div>
+
+<!-- ... other HTML code ... -->
+
+<h3>Student Files:</h3>
+<ul>
+    {% for file_url in files %}
+    <li><a href="{{ file_url }}" target="_blank">View File</a></li>
+    {% endfor %}
+</ul>
+
+<!-- ... other HTML code ... -->
+
         <div class="mt-6">
             <button class="bg-blue-500 hover:bg-blue-700 text-white px-4 py-1 rounded"><a href="{{ url_for('edit_profile', student_id=student_id) }}" class="bg-blue-500 hover:bg-blue-700 text-white px-4 py-1 rounded block text-center">
                 Edit Profile
