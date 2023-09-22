@@ -231,7 +231,7 @@ def edit_profile(student_id):
                 progress_file_url = f"https://s3{s3_location}.amazonaws.com/{custombucket}/{progress_file_name_in_s3}"
 
                 # Insert file_url into the `file` table
-                file_id = cursor.lastrowid
+                file_id = str(uuid4())
                 insert_file_sql = "INSERT INTO file (file_id,file_url) VALUES (%s,%s)"
                 with db_conn.cursor() as cursor:
                     cursor.execute(insert_file_sql, (file_id,progress_file_url))
