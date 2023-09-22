@@ -4,13 +4,11 @@ from pymysql import connections
 import os
 import boto3
 from config import *
+from uuid import uuid4
 import json
 from flask import jsonify
 from pymysql import MySQLError
 import traceback
-from datetime import datetime
-from uuid import uuid4
-import mimetypes
 
 
 
@@ -63,44 +61,39 @@ def viewInternshipForm():
     return render_template('internship-form.html', companies=company_data)
 
 
+
 @app.route("/addStudent", methods=['POST'])
 def Addstudent():
     # Retrieve form fields
     student_id = request.form.get("student-id")
     student_name = request.form.get("student-name")
+    print("Student ID:", student_id)
+    print("Student Name:", student_name)
     student_programme = request.form.get("company")
     student_course = request.form.get("course")
     student_supervisor = request.form.get("supervisor")
     resume_file = request.files.get("resume")
-    
-    # Check if resume file is provided
+
     if not resume_file or resume_file.filename == "":
         return "Please upload your resume."
+    
+    
+   
 
-    # Generate a unique name for the resume (using student_id and current timestamp for uniqueness)
-    timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
-    resume_file_name_in_s3 = f"resume_{student_id}_{timestamp}.pdf"
+    insert_sql = "INSERT INTO studentForm (student_id, student_name, student_programme, student_course, student_supervisor) VALUES (%s, %s, %s, %s, %s)"
+
+    cursor = db_conn.cursor()
 
     try:
-        # Upload resume to S3
-        s3.Bucket(custombucket).put_object(Key=resume_file_name_in_s3, Body=resume_file, ContentDisposition=f"attachment; filename={resume_file.filename}")
-        
-        # Construct the S3 URL for the uploaded resume
-        resume_url = f"https://s3{s3_location}.amazonaws.com/{custombucket}/{resume_file_name_in_s3}"
-        
-        # Your SQL to insert data into studentForm
-        insert_sql = "INSERT INTO studentForm (student_id, student_name, student_programme, student_course, student_supervisor, resume_url) VALUES (%s, %s, %s, %s, %s, %s)"
-        cursor = db_conn.cursor()
-        cursor.execute(insert_sql, (student_id, student_name, student_programme, student_course, student_supervisor, resume_url))
+        cursor.execute(insert_sql, (student_id, student_name, student_programme, student_course, student_supervisor))
         db_conn.commit()
-        print("Student and resume added successfully!")
+        print("Student added successfully!")
         return redirect(url_for('home'))
     except MySQLError as e:
+        # db_conn.rollback()
         print(f"Error while inserting into the database: {e}")
         return jsonify(status="error", message=str(e)), 500
-    except Exception as e:  # Generic exception for other errors, like S3 upload
-        print(f"Error: {e}")
-        return str(e)
+
     finally:
         cursor.close()
 
