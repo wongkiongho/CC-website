@@ -166,19 +166,20 @@ def profile(student_id):
         cursor = db_conn.cursor()
 
         # Retrieve student data based on student_id
-        cursor.execute("SELECT * FROM studentDetails WHERE student_id=%s", (student_id,))
+        cursor.execute("SELECT student_id, name, email, programme, cohort FROM studentDetails WHERE student_id=%s", (student_id,))
 
         student = cursor.fetchone()
         cursor.close()
-        print(student)
-        if student:
-            # Extract details from the tuple
-            student_id, name, email, programme, cohort = student
 
-            # Pass the student details to the profile template
+        if student:
+            student_id, name, email, programme, cohort = student
             return render_template('profile.html', student_id=student_id, name=name, email=email, programme=programme, cohort=cohort)
         else:
             return "Student not found", 404
+    except Exception as e:
+        print(e)
+        return "Error occurred while fetching student details", 500
+
    
 
     except Exception as e:
