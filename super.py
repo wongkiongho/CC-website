@@ -30,6 +30,24 @@ table = 'company'
 def home():
     return render_template('supervisor-application.html')
 
+@app.route('/student_list')
+def student_list():
+    return render_template('supervisor-studentList.html')
+
+
+@app.route('/application')
+def application():
+    return render_template('supervisor-application.html')
+
+
+@app.route('/approve_reject')
+def approve_reject():
+    return render_template('supervisor-ApproveOrReject.html')
+
+
+
+
+
 @app.route("/viewAddCompanyPage", methods=['GET', 'POST'])
 def viewAddCompanyPage():
     return render_template('supervisor-application.html')
