@@ -51,16 +51,6 @@ def edit_profile_view():
     return render_template('edit-profile.html')
 
 
-@app.route("/internship-form.html", methods=['GET', 'POST'])
-def viewInternshipForm():
-    cursor = db_conn.cursor()
-    select_sql = "SELECT company_name FROM company"
-    cursor.execute(select_sql)
-    company_data = cursor.fetchall()
-    cursor.close()
-
-    return render_template('internship-form.html', companies=company_data)
-
 
 @app.route("/addStudent", methods=['POST'])
 def Addstudent():
@@ -159,21 +149,6 @@ def internship_form(student_id):
     except Exception as e:
         return str(e), 500
 
-    
-@app.route("/insert-student-dummy-data", methods=['GET'])
-def insert_student_dummy_data():
-    try:
-        # Insert dummy data into the studentDetails table
-        cursor = db_conn.cursor()
-        insert_sql = """INSERT INTO studentDetails (Id, name, email, programme, cohort)
-                        VALUES (%s, %s, %s, %s, %s)"""
-        cursor.execute(insert_sql, (1, "John Doe", "johndoe@example.com", "RSW3", "2023"))
-        db_conn.commit()
-        cursor.close()
-
-        return "Dummy student data inserted successfully!"
-    except Exception as e:
-        return str(e)
     
 @app.route("/profile/<student_id>", methods=['GET'])
 def profile(student_id):
