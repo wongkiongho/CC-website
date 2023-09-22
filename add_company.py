@@ -311,13 +311,12 @@ def search_companies():
     try:
         cursor = db_conn.cursor()
 
-
         search_query = request.form.get("searchQuery")
 
         # Modify your SQL query to search for companies by name or industry
         search_sql = "SELECT company_id, company_name, industry FROM company WHERE company_name LIKE %s"
         
-        cursor.execute(search_sql, (search_query,))  # Add a comma after (f"%{search_query}%")
+        cursor.execute(search_sql, (f"%{search_query}%",))
 
         company_data = cursor.fetchall()
         cursor.close()
@@ -331,15 +330,16 @@ def search_companies():
             # Assuming you have a naming convention for the logo files
             
             companies.append({'company_id': company_id,'company_name': company_name, 'industry': industry})
-        print("search_query ="+search_query)
+        print("search_query =" + search_query)
         # Return the search results as JSON
         return jsonify(companies)
 
     except Exception as e:
         return str(e)
 
-    finally:
-        cursor.close()
+    # No need to close the cursor here
+
+
 
 @app.route("/viewcompanies", methods=['GET'])
 def view_companies():
