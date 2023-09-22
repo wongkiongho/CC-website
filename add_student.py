@@ -73,7 +73,7 @@ def Addstudent():
 
     try:
         # Upload resume to S3
-        s3.Bucket("yewshuhan-bucket").put_object(Key=resume_file_name_in_s3, Body=file_url, ContentDisposition=f"attachment; filename={ resume_file.filename}")
+        s3.Bucket("yewshuhan-bucket").put_object(Key=resume_file_name_in_s3, Body=resume_file, ContentDisposition=f"attachment; filename={ resume_file.filename}")
         
         # Construct the S3 URL for the uploaded resume
         file_url = f"https://s3{s3_location}.amazonaws.com/{custombucket}/{resume_file_name_in_s3}"
