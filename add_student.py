@@ -8,6 +8,7 @@ from uuid import uuid4
 import json
 from flask import jsonify
 from pymysql import MySQLError
+import traceback
 
 
 
@@ -27,17 +28,15 @@ db_conn = connections.Connection(
 output = {}
 table = 'studentForm'
 
-
-@app.route("/", methods=['GET', 'POST'])
+@app.route("/", methods=['GET'])
 def home():
-    return render_template('profile.html')
-
+    return redirect(url_for('profile', student_id=1))
 
 @app.route("/company-list.html", methods=['GET', 'POST'])
 def viewCompanyList():
     return render_template('company-list.html')
 @app.route("/edit-profile.html", methods=['GET','POST'])
-def edit_profile():
+def edit_profile_view():
     return render_template('edit-profile.html')
 
 
@@ -160,6 +159,59 @@ def profile(student_id):
 
     except Exception as e:
         print(e)
+        return "Error occurred while fetching student details", 500
+    
+@app.route("/edit-profile/<student_id>", methods=['GET', 'POST'])
+def edit_profile(student_id):
+    try:
+        if request.method == 'POST':
+            # Handle form submission here
+            name = request.form.get('name')
+            email = request.form.get('email')
+            programme = request.form.get('programme')
+            cohort = request.form.get('cohort')
+            
+            # Update the student data in the database
+            update_sql = """
+                UPDATE studentDetails
+                SET name=%s, email=%s, programme=%s, cohort=%s
+                WHERE student_id=%s
+            """
+            
+            with db_conn.cursor() as cursor:
+                cursor.execute(update_sql, (name, email, programme, cohort, student_id))
+                db_conn.commit()
+
+            # Redirect back to the profile view after successful update
+            return redirect(url_for('profile', student_id=student_id))
+        
+        else:
+            # Handle GET request - this is for displaying the form
+            with db_conn.cursor() as cursor:
+                cursor.execute("SELECT student_id, name, email, programme, cohort FROM studentDetails WHERE student_id=%s", (student_id,))
+                print(f"Attempting to fetch data for student_id: {student_id}")
+                student = cursor.fetchone()
+                print(f"Queried student: {student}")
+
+            if student:
+                student_dict = {
+                                 'student_id': student[0],
+                                 'name': student[1],
+                                 'email': student[2],
+                                 'programme': student[3],
+                                 'cohort': student[4]
+                                }
+                return render_template('edit-profile.html', student=student_dict)
+            else:
+                return "Student not found", 404
+    
+    except MySQLError as e:
+        print(f"Database Error: {e}")
+        return "Database error occurred", 500
+    
+    except Exception as e:
+        print("Exception occurred:", e)
+        traceback.print_exc()
         return "Error occurred while fetching student details", 500
 
 

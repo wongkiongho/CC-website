@@ -23,7 +23,7 @@
         <!-- Header -->
         <header class="bg-gray-800 text-white py-5 flex items-center">
             <div class="logo">
-                <img src="logo.png" alt="Internship Logo" class="w-12 h-12 ml-5 rounded-full">
+                <img src="{{ url_for('static', filename='logo.png') }}" class="w-12 h-12 ml-5 rounded-full">
             </div>
             <h1 class="text-2xl mt-2 ml-5 p-0">Internship</h1>
             <button id="logoutBtn" onclick="logout()" class="ml-auto mr-5 bg-red-500 hover:bg-red-700 text-white px-4 py-1 rounded">Logout</button>
@@ -35,9 +35,9 @@
                 <li class="mb-4">
                     <a id="studentMenu" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Student</a>
                     <ul id="studentSubmenu" class=" py-5 pl-4">
-                        <li class="mb-4"><a href="profile.html" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Profile</a></li>
-                        <li class="mb-4"><a href="company-list.html" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Company List</a></li>
-                        <li class="mb-4"><a href="internship-form.html" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Internship Form</a></li>
+                        <li class="mb-4"><a href="/profile.html" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Profile</a></li>
+                        <li class="mb-4"><a href="/company-list.html" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Company List</a></li>
+                        <li class="mb-4"><a href="/internship-form.html" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Internship Form</a></li>
                     </ul>
                 </li>
             </ul>
