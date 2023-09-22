@@ -15,7 +15,7 @@ import datetime
 
 app = Flask(__name__)
 
-bucket = custombucket
+bucket = "yewshuhan-bucket"
 region = customregion
 
 db_conn = connections.Connection(
@@ -31,7 +31,7 @@ table = 'studentForm'
 
 s3 = boto3.resource('s3')
 s3_client = boto3.client('s3')
-bucket_location = boto3.client('s3').get_bucket_location(Bucket=custombucket)
+bucket_location = boto3.client('s3').get_bucket_location(Bucket="yewshuhan-bucket")
 s3_location = (bucket_location['LocationConstraint'])
 
 if s3_location is None:
@@ -84,7 +84,7 @@ def Addstudent():
 
     try:
         # Upload resume to S3
-        s3.Bucket(custombucket).put_object(Key=resume_file_name_in_s3, Body=resume_file, ContentDisposition=f"attachment; filename={resume_file.filename}")
+        s3.Bucket("yewshuhan-bucket").put_object(Key=resume_file_name_in_s3, Body=resume_file, ContentDisposition=f"attachment; filename={resume_file.filename}")
         
         # Construct the S3 URL for the uploaded resume
         resume_url = f"https://s3{s3_location}.amazonaws.com/{custombucket}/{resume_file_name_in_s3}"

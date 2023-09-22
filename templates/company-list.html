@@ -46,7 +46,9 @@
             <!-- Main Content -->
             <div class="ml-80 w-3/4 bg-gray-100 p-8">
                 <h1 class="text-xl font-semibold">Company List</h1>
-                <table class="w-full table-auto mt-4">
+                <input type="text" id="searchInput" class="p-2 border rounded w-1/2" placeholder="Search for company..." onkeyup="searchFunction()">
+
+                <table id="companyTable" class="w-full table-auto mt-4">
                     <thead>
                         <tr>
                             <th class="px-4 py-2 border">Company Name</th>
@@ -82,12 +84,42 @@
                         cellNumber.innerText = company.contact_number;
                         cellEmail.innerText = company.email;
                         cellIndustry.innerText = company.industry;
+
+                        cellName.classList.add('border');
+                        cellNumber.classList.add('border');
+                        cellEmail.classList.add('border');
+                        cellIndustry.classList.add('border');
                     });
                 })
                 .catch(error => {
                     console.error("Error fetching companies:", error);
                 });
             }
+
+            function searchFunction() {
+    // Get input element and table
+    let input = document.getElementById("searchInput");
+    let filter = input.value.toUpperCase();
+    let table = document.getElementById("companyTable");
+    let tr = table.getElementsByTagName("tr");
+
+    // Loop through all table rows
+    for (let i = 1; i < tr.length; i++) {
+        tr[i].style.display = "none"; // hide all rows
+
+        let td = tr[i].getElementsByTagName("td");
+        for (let j = 0; j < td.length; j++) {
+            if (td[j]) {
+                let txtValue = td[j].textContent || td[j].innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                    break;
+                }
+            }
+        }
+    }
+}
+
         </script>
         
     </body>
