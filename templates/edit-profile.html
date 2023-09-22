@@ -46,7 +46,7 @@
         
         <!-- Edit Profile Form -->
         <div class="bg-white shadow-md rounded-lg p-6">
-            <form action="{{ url_for('edit_profile', student_id=student.student_id) }}" method="post">
+            <form action="{{ url_for('edit_profile', student_id=student.student_id) }}" method="post" enctype="multipart/form-data">
 
 
                 <div class="mb-4">
