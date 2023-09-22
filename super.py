@@ -28,7 +28,7 @@ table = 'company'
 
 @app.route("/", methods=['GET', 'POST'])
 def home():
-    return render_template('admin-view-company.html')
+    return render_template('supervisor-application.html')
 
 @app.route('/student_list')
 def student_list():
@@ -48,19 +48,21 @@ def approve_reject():
 @app.route("/studentlist", methods=['GET'])
 def student_list_page():
     try:
+        print("Student list page accessed")  # Debugging line
         with db_conn.cursor() as cursor:
             select_sql = "SELECT * FROM studentDetails"
             cursor.execute(select_sql)
             student_data = cursor.fetchall()
-            print(student_data)  # Debugging line
+            print("SQL executed, data fetched:", student_data)  # Debugging line
 
         students = []
         for student in student_data:
             students.append({'student_id': student[0], 'name': student[1], 'email': student[2], 'programme': student[3], 'cohort': student[4]})
         
-        print(students)  # Debugging line
+        print("Returning response")  # Debugging line
         return render_template('supervisor-studentList.html', students=students)
     except Exception as e:
+        print("An error occurred:", e)  # Debugging line
         return f"An error occurred: {str(e)}"
 
 @app.route("/viewcompanies", methods=['GET'])
@@ -165,7 +167,6 @@ def delete_company(company_id):
         return jsonify({"message": "Company deleted successfully"}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-
 
 
 if __name__ == "__main__":
