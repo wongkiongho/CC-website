@@ -51,10 +51,11 @@ def student_list_page():
         print("Student list page accessed")  # Debugging line
         with db_conn.cursor() as cursor:
             select_sql = "SELECT * FROM studentDetails"
-            cursor.execute(select_sql)
+            cursor.execute("SELECT * FROM studentDetails")
             student_data = cursor.fetchall()
             print("SQL executed, data fetched:", student_data)  # Debugging line
-
+            cursor.close()
+            
         students = []
         for student in student_data:
             students.append({'student_id': student[0], 'name': student[1], 'email': student[2], 'programme': student[3], 'cohort': student[4]})
