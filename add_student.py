@@ -149,7 +149,8 @@ def internship_form(student_id):
         }
 
         # Fetch list of companies
-        cursor.execute("SELECT company_name FROM company")
+        cursor.execute("SELECT company_id, company_name FROM company")
+
         companies = cursor.fetchall()
 
         cursor.close()
