@@ -9,6 +9,7 @@ import json
 from flask import jsonify
 from pymysql import MySQLError
 import traceback
+import datetime
 
 
 
@@ -27,6 +28,16 @@ db_conn = connections.Connection(
 )
 output = {}
 table = 'studentForm'
+
+s3 = boto3.resource('s3')
+s3_client = boto3.client('s3')
+bucket_location = boto3.client('s3').get_bucket_location(Bucket=custombucket)
+s3_location = (bucket_location['LocationConstraint'])
+
+if s3_location is None:
+    s3_location = ''
+else:
+    s3_location = '-' + s3_location
 
 @app.route("/", methods=['GET'])
 def home():
@@ -54,48 +65,45 @@ def viewInternshipForm():
 
 @app.route("/addStudent", methods=['POST'])
 def Addstudent():
+    
     # Retrieve form fields
     student_id = request.form.get("student-id")
     student_name = request.form.get("student-name")
-    print("Student ID:", student_id)
-    print("Student Name:", student_name)
     student_programme = request.form.get("company")
     student_course = request.form.get("course")
     student_supervisor = request.form.get("supervisor")
-   
+    resume_file = request.files.get("resume")
+    
+    # Check if resume file is provided
+    if not resume_file or resume_file.filename == "":
+        return "Please upload your resume."
 
-    insert_sql = "INSERT INTO studentForm (student_id, student_name, student_programme, student_course, student_supervisor) VALUES (%s, %s, %s, %s, %s)"
-
-    cursor = db_conn.cursor()
+    # Generate a unique name for the resume (using student_id and current timestamp for uniqueness)
+    timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+    resume_file_name_in_s3 = f"resume_{student_id}_{timestamp}.pdf"
 
     try:
-        cursor.execute(insert_sql, (student_id, student_name, student_programme, student_course, student_supervisor))
+        # Upload resume to S3
+        s3.Bucket(custombucket).put_object(Key=resume_file_name_in_s3, Body=resume_file, ContentDisposition=f"attachment; filename={resume_file.filename}")
+        
+        # Construct the S3 URL for the uploaded resume
+        resume_url = f"https://s3{s3_location}.amazonaws.com/{custombucket}/{resume_file_name_in_s3}"
+        
+        # Your SQL to insert data into studentForm
+        insert_sql = "INSERT INTO studentForm (student_id, student_name, student_programme, student_course, student_supervisor, resume_url) VALUES (%s, %s, %s, %s, %s, %s)"
+        cursor = db_conn.cursor()
+        cursor.execute(insert_sql, (student_id, student_name, student_programme, student_course, student_supervisor, resume_url))
         db_conn.commit()
-        print("Student added successfully!")
+        print("Student and resume added successfully!")
         return redirect(url_for('home'))
     except MySQLError as e:
-        # db_conn.rollback()
         print(f"Error while inserting into the database: {e}")
         return jsonify(status="error", message=str(e)), 500
-
+    except Exception as e:  # Generic exception for other errors, like S3 upload
+        print(f"Error: {e}")
+        return str(e)
     finally:
         cursor.close()
-
-@app.route("/insert-dummy-data", methods=['GET'])
-def insert_dummy_data():
-    try:
-        # Insert dummy data into the database
-        cursor = db_conn.cursor()
-        insert_sql = """INSERT INTO company (company_name, contact_number, email, industry)
-                        VALUES (%s, %s, %s, %s)"""
-        cursor.execute(insert_sql, ("Dummy Company", "+123456789", "dummy@company.com", "Dummy Industry"))
-        db_conn.commit()
-        cursor.close()
-
-        return "Dummy data inserted successfully!"
-    except Exception as e:
-        return str(e)
-
 
 @app.route("/viewcompanies", methods=['GET'])
 def view_companies():
