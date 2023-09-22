@@ -179,7 +179,8 @@
     });
 }
 
-function searchCompanies(searchQuery) {
+function searchCompanies() {
+    document.getElementById("searchQuery").value;
     // Make an AJAX POST request to the server to perform the search
     fetch('/searchcompanies', {
         method: 'POST',

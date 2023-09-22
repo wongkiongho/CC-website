@@ -325,7 +325,7 @@ def search_companies():
         # Create a list to store the company details
         companies = []
 
-        # Loop through the retrieved data and fetch S3 URLs for logos
+        # Loop through the retrieved data and fetch 2S3 URLs for logos
         for company in company_data:
             company_id, company_name, industry = company
             # Assuming you have a naming convention for the logo files
