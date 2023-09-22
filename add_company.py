@@ -311,7 +311,7 @@ def search_companies():
     try:
         cursor = db_conn.cursor()
 
-        search_query = request.form.get("searchQuery")
+        search_query = request.json.get("searchQuery")  # Get the search query from the JSON request    
 
         # Modify your SQL query to search for companies by name or industry
         search_sql = "SELECT company_id, company_name, industry FROM company WHERE company_name LIKE %s"

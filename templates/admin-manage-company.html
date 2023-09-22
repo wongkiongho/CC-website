@@ -179,17 +179,17 @@
     });
 }
 
+
+
 function searchCompanies() {
     const searchQuery = document.getElementById("searchQuery").value;
 
-    console.log("searchQuery ="+ searchQuery);
-    // Make an AJAX POST request to the server to perform the search
     fetch('/searchcompanies', {
         method: 'POST',
-        body: JSON.stringify({ searchQuery: searchQuery }), // Send searchQuery in the request body
         headers: {
-            'Content-Type': 'application/json'
-        }
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ searchQuery }), // Send the search query as JSON
     })
     .then(response => {
         if (!response.ok) {
@@ -198,11 +198,11 @@ function searchCompanies() {
         return response.json();
     })
     .then(companies => {
-        console.log('Response Text:', companies);
-        const companyTable = $('#company-data');
+        // Handle the response and update the HTML to display the search results
+        const companyTable = document.getElementById("company-data");
 
         // Clear any existing rows
-        companyTable.empty();
+        companyTable.innerHTML = "";
 
         companies.forEach(company => {
             const row = `
@@ -218,14 +218,13 @@ function searchCompanies() {
                 </tr>
             `;
 
-            companyTable.append(row);
+            companyTable.innerHTML += row;
         });
     })
     .catch(error => {
         console.error('Error searching companies:', error);
     });
 }
-
 
 
 function deleteCompany(companyId) {
