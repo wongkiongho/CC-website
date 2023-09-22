@@ -59,8 +59,10 @@ def Addstudent():
     student_id = request.form.get("student-id")
     resume_file = request.files.get("resume")
     company_id = request.form.get("company-id")
+    details = request.form.get("details")
     file_id = str(uuid4())
     application_id = str(uuid4())
+
 
     
     # Check if resume file is provided
@@ -79,13 +81,13 @@ def Addstudent():
         file_url = f"https://s3{s3_location}.amazonaws.com/{custombucket}/{resume_file_name_in_s3}"
         
         # Your SQL to insert data into studentForm
-        insert_sql = "INSERT INTO application (student_id, company_id) VALUES (%s, %s)"
+        insert_sql = "INSERT INTO application (student_id, company_id, details) VALUES (%s, %s, %s)"
         insert_sql_application_file = "INSERT INTO applicationFile (file_id, application_id) VALUES (%s, %s)"
         insert_sql_file = "INSERT INTO file (file_id, file_url,file_type,file_date) VALUES (%s, %s,'Resume','22/2/2022')"
 
 
         cursor = db_conn.cursor()
-        cursor.execute(insert_sql, (student_id, company_id))
+        cursor.execute(insert_sql, (student_id, company_id, details))
         cursor.execute(insert_sql_application_file, (file_id, application_id))
         cursor.execute(insert_sql_file, (file_id, file_url))
         db_conn.commit()
