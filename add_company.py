@@ -331,7 +331,7 @@ def search_companies():
             # Assuming you have a naming convention for the logo files
             
             companies.append({'company_id': company_id,'company_name': company_name, 'industry': industry})
-        print("search_query ="+search_query+company_id)
+        print("search_query ="+search_query)
         # Return the search results as JSON
         return jsonify(companies)
 
