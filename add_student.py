@@ -124,9 +124,8 @@ def view_companies():
         return jsonify(companies)
     except Exception as e:
         return str(e)
-    
-@app.route("/viewstudents/<student_id>", methods=['GET'])
-def view_students(student_id):
+@app.route("/internship-form/<student_id>", methods=['GET'])
+def internship_form(student_id):
     try:
         # Retrieve student data from the database for a specific student_id
         cursor = db_conn.cursor()
@@ -136,7 +135,7 @@ def view_students(student_id):
         cursor.close()
 
         if not student:
-            return jsonify({"error": "Student not found"}), 404
+            return "Student not found", 404
 
         student_id, name, programme, email = student
         student_details = {
@@ -146,9 +145,10 @@ def view_students(student_id):
             'email': email
         }
 
-        return jsonify(student_details)
+        return render_template("internship-form.html", student=student_details)
     except Exception as e:
         return str(e), 500
+
 
     
 @app.route("/insert-student-dummy-data", methods=['GET'])
