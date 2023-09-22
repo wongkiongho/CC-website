@@ -66,7 +66,23 @@ def student_list_page():
         print("An error occurred:", e)  # Debugging line
         return f"An error occurred: {str(e)}"
     
-    
+@app.route("/applications", methods=['GET'])
+def applications_page():
+    try:
+        with db_conn.cursor() as cursor:
+            select_sql = "SELECT student_id, company_id FROM application"
+            cursor.execute(select_sql)
+            application_data = cursor.fetchall()
+
+        applications = []
+        for application in application_data:
+            student_id, company_id = application
+            applications.append({'student_id': student_id, 'company_id': company_id})
+
+        return render_template('supervisor-application.html', applications=applications)
+    except Exception as e:
+        return f"An error occurred: {str(e)}"
+
 @app.route("/viewcompanies", methods=['GET'])
 def view_companies():
     try:
