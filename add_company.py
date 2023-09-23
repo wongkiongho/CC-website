@@ -638,10 +638,10 @@ def get_student_files(student_id):
         print(f"Database Error: {e}")
         return []
 
-@app.route("/internship-form/<student_id>", methods=['GET'])
+@app.route("/internship-form", methods=['GET'])
 def internship_form(student_id):
     
-
+    student_id=session.get('student_id')
     try:
         # Set up a cursor for database interaction
         cursor = db_conn.cursor()
