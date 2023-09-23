@@ -74,7 +74,7 @@
         <!-- Search & Filter -->
         <section class="bg-white p-5 rounded-lg shadow-md">
             <div class="flex items-center space-x-4">
-                <input type="text" placeholder="Search Companies..." class="border p-2 flex-grow rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
+                <input type="text" placeholder="Search student..." class="border p-2 flex-grow rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
                 <button class="bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400">Search</button>
             </div>
         </section>
@@ -144,6 +144,7 @@
                     studentList.forEach(studentDetails => {
                         const row = `
                             <tr data-student-id="${studentDetails.student_id}">
+                                <td class="border p-4">${studentDetails.student_id}</td>
                                 <td class="border p-4">${studentDetails.name}</td>
                                 <td class="border p-4">${studentDetails.email}</td>
                                 <td class="border p-4 text-center">
