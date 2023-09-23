@@ -639,7 +639,7 @@ def get_student_files(student_id):
         return []
 
 @app.route("/internship-form", methods=['GET'])
-def internship_form(student_id):
+def internship_form():
     
     student_id=session.get('student_id')
     try:
