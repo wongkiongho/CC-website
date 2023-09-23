@@ -569,7 +569,7 @@ def Addstudent():
 
     try:
         # Upload resume to S3
-        s3.Bucket("yewshuhan-bucket").put_object(Key=resume_file_name_in_s3, Body=resume_file, ContentDisposition=f"attachment; filename={ resume_file.filename}")
+        s3.Bucket(custombucket).put_object(Key=resume_file_name_in_s3, Body=resume_file, ContentDisposition=f"attachment; filename={ resume_file.filename}")
         
         # Construct the S3 URL for the uploaded resume
         file_url = f"https://s3{s3_location}.amazonaws.com/{custombucket}/{resume_file_name_in_s3}"
@@ -585,13 +585,16 @@ def Addstudent():
         cursor.execute(insert_sql_application_file, (file_id, application_id))
         cursor.execute(insert_sql_file, (file_id, file_url))
         db_conn.commit()
-        cursor.close()
         print("Student and resume added successfully!")
         return redirect(url_for('home'))
+    except MySQLError as e:
+        print(f"Error while inserting into the database: {e}")
+        return jsonify(status="error", message=str(e)), 500
     except Exception as e:  # Generic exception for other errors, like S3 upload
         print(f"Error: {e}")
         return str(e)
-
+    finally:
+        cursor.close()
 
 @app.route("/viewcompanies", methods=['GET'])
 def view_companies():
@@ -722,7 +725,7 @@ def edit_profile():
             if progress_file and progress_file.filename:
                 timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
                 progress_file_name_in_s3 = progress_file.filename
-                s3.Bucket("yewshuhan-bucket").put_object(Key=progress_file_name_in_s3, Body=progress_file, ContentDisposition=f"attachment; filename={progress_file.filename}")
+                s3.Bucket(custombucket).put_object(Key=progress_file_name_in_s3, Body=progress_file, ContentDisposition=f"attachment; filename={progress_file.filename}")
                 progress_file_url =  progress_file_name_in_s3
 
                 # Insert file_url into the `file` table
