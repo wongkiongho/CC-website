@@ -32,9 +32,9 @@
             <li class="mb-4">
                 <a id="studentMenu" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Student</a>
                 <ul id="studentSubmenu" class=" py-5 pl-4">
-                    <li class="mb-4"><a href="/profile.html" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Profile</a></li>
+                    <li class="mb-4"><a href="{{ url_for('profile', student_id=['student-id']) }}" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Profile</a></li>
                     <li class="mb-4"><a href="/company-list.html" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Company List</a></li>
-                    <li class="mb-4"> <a href="{{ url_for('internship_form', student_id=session['student_id']) }}" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Internship Form</a></li>
+                    <li class="mb-4"> <a href="{{ url_for('internship_form', student_id=['student_id']) }}" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Internship Form</a></li>
                 </ul>
             </li>
         </ul>
@@ -46,7 +46,7 @@
         
         <!-- Edit Profile Form -->
         <div class="bg-white shadow-md rounded-lg p-6">
-            <form action="{{ url_for('edit_profile', student_id=student.student_id) }}" method="post">
+            <form action="{{ url_for('edit_profile', student_id=student.student_id) }}" method="post" enctype="multipart/form-data">
 
 
                 <div class="mb-4">

@@ -59,15 +59,18 @@
         <section class="ml-72 p-5 bg-gray-100 rounded-lg shadow-md">
             <h2 class="text-2xl md:text-3xl mb-5 text-center text-gray-800 font-bold">Add Student</h2>
             
-            <form action="process-student.php" method="POST" class=" mx-auto bg-white p-5 rounded-lg shadow">
-                <label for="full-name" class="block text-lg font-medium text-gray-700">Full Name:</label>
-                <input type="text" class="w-full px-4 py-2 mb-8 border border-gray-300 rounded-lg text-lg" id="first-name" name="first-name" required>
+            <form action="/addstudent" autocomplete="on" method = "POST" class=" mx-auto bg-white p-5 rounded-lg shadow">
+                <label for="name" class="block text-lg font-medium text-gray-700">Full Name:</label>
+                <input type="text" class="w-full px-4 py-2 mb-8 border border-gray-300 rounded-lg text-lg" id="name" name="name" required>
 
-                <label for="id" class="block text-lg font-medium text-gray-700">ID:</label>
-                <input type="text" class="w-full px-4 py-2 mb-8 border border-gray-300 rounded-lg text-lg" id="username" name="username" required>
+                <label for="email" class="block text-lg font-medium text-gray-700">Email:</label>
+                <input type="text" class="w-full px-4 py-2 mb-8 border border-gray-300 rounded-lg text-lg" id="email" name="email" required>
+                
+                <label for="student_id" class="block text-lg font-medium text-gray-700">ID:</label>
+                <input type="text" class="w-full px-4 py-2 mb-8 border border-gray-300 rounded-lg text-lg" id="student_id" name="student_id" required>
 
                 <label for="password" class="block text-lg font-medium text-gray-700">Password:</label>
-                <input type="password" class="w-full px-4 py-2 mb-8 border border-gray-300 rounded-lg text-lg" id="password" name="password" required>
+                <input type="text" class="w-full px-4 py-2 mb-8 border border-gray-300 rounded-lg text-lg" id="password" name="password" required>
 
                 <button type="submit" class="w-40 py-2 mx-auto block bg-orange-500 text-white rounded-lg focus:outline-none hover:bg-orange-600">Add Student</button>
             </form>

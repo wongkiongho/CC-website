@@ -36,20 +36,20 @@
             <li class="mb-4">
                 <a id="studentMenu" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Student</a>
                 <ul id="studentSubmenu" class=" py-5 pl-4">
-                    <li class="mb-4"><a href="/profile.html" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Profile</a></li>
+                    <li class="mb-4"><a href="{{ url_for('profile', student_id=['student-id']) }}" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Profile</a></li>
                     <li class="mb-4"><a href="/company-list.html" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Company List</a></li>
-                    <li class="mb-4"> <a href="{{ url_for('internship_form', student_id=session['student_id']) }}" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Internship Form</a></li>
+                    <li class="mb-4"> <a href="{{ url_for('internship_form', student_id=['student_id']) }}" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Internship Form</a></li>
                 </ul>
             </li>
         </ul>
     </nav>
 
-    <div class="min-w-screen min-h-screen bg-gray-100 flex items-center justify-center px-5 py-5">
+    <div class="ml-72 min-h-screen bg-gray-100 flex items-center justify-center px-5 py-5">
         <div class="w-full mx-auto rounded-lg shadow-lg overflow-hidden">
             <div class="flex items-center justify-between px-5 py-3 bg-gray-700 text-white">
                 <h3 class="text-lg font-bold uppercase">Application Status</h3>
             </div>
-            <table class="w-full bg-white">
+            <table class="w-full table-auto bg-white">
                 <thead>
                     <tr class="text-gray-600 text-left">
                         <th class="px-4 py-2 text-sm font-semibold">Student Name</th>
@@ -60,16 +60,17 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Sample Row (repeat for each application) -->
+                    {% for app in applications %}
                     <tr class="border-b text-gray-600">
-                        <td class="px-4 py-2 text-sm">John Doe</td>
-                        <td class="px-4 py-2 text-sm">Web Developer Intern</td>
-                        <td class="px-4 py-2 text-sm">Tech Corp.</td>
-                        <td class="px-4 py-2 text-sm">Tech Corp.@gmail.com</td>
-                        <td class="px-4 py-2 text-sm text-green-500">Accepted</td>
+                        <td class="px-4 py-2 text-sm">{{ app.student_name }}</td>
+                        <td class="px-4 py-2 text-sm">{{ app.internship_details }}</td>
+                        <td class="px-4 py-2 text-sm">{{ app.company_name }}</td>
+                        <td class="px-4 py-2 text-sm">{{ app.company_email }}</td>
+                        <td class="px-4 py-2 text-sm text-green-500">{{ app.status }}</td>
                     </tr>
-                    <!-- End of Sample Row -->
+                    {% endfor %}
                 </tbody>
+                
             </table>
         </div>
     </div>

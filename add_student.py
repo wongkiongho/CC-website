@@ -231,10 +231,11 @@ def edit_profile(student_id):
                 progress_file_url = f"https://s3{s3_location}.amazonaws.com/{custombucket}/{progress_file_name_in_s3}"
 
                 # Insert file_url into the `file` table
-                insert_file_sql = "INSERT INTO file (file_url) VALUES (%s)"
+                file_id = str(uuid4())
+                insert_file_sql = "INSERT INTO file (file_id,file_url) VALUES (%s,%s)"
                 with db_conn.cursor() as cursor:
-                    cursor.execute(insert_file_sql, (progress_file_url,))
-                    file_id = cursor.lastrowid
+                    cursor.execute(insert_file_sql, (file_id,progress_file_url))
+                    
                     db_conn.commit()
 
                 # Now, link the student with the file_id in the `studentFile` table
@@ -272,8 +273,50 @@ def edit_profile(student_id):
         print("Exception occurred:", e)
         traceback.print_exc()
         return "Error occurred while fetching or updating student details", 500
+@app.route("/application-status/<student_id>", methods=['GET'])
+def application_status(student_id):
+    try:
+        cursor = db_conn.cursor()
+        
+        # SQL query to fetch application details
+        query = """
+        SELECT 
+            s.name, 
+            a.details, 
+            c.company_name, 
+            c.email, 
+            a.status
+        FROM 
+            application AS a
+        JOIN 
+            studentDetails AS s ON a.student_id = s.student_id
+        JOIN 
+            company AS c ON a.company_id = c.company_id
+        WHERE 
+            a.student_id = %s;
+        """
+        
+        cursor.execute(query, (student_id,))
+        raw_applications = cursor.fetchall()
+        cursor.close()
 
+        # Convert the fetched data into a list of dictionaries
+        applications_list = []
+        for app in raw_applications:
+            app_dict = {
+                "student_name": app[0],
+                "internship_details": app[1] if app[1] else "N/A",  # Handle None values
+                "company_name": app[2],
+                "company_email": app[3],
+                "status": app[4] if app[4] else "Pending"  # Handle None values
+            }
+            applications_list.append(app_dict)
 
+        return render_template('application-status.html', applications=applications_list)
+
+    except Exception as e:
+        print(e)
+        return "Error occurred while fetching application status", 500
 
 
 
