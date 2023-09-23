@@ -34,7 +34,7 @@
                 <a id="studentMenu" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500" onclick="toggleMenu()">Supervisor</a>
                 <ul id="studentSubmenu" class="hidden py-5 pl-4">
                     <li class="mb-4"><a href="/studentlist" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">View Student List</a></li>
-                    <li class="mb-4"><a href="{{ url_for('application') }}" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Student Application</a></li>
+                    <li class="mb-4"><a href="/applications" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Student Application</a></li>
                     <li class="mb-4"><a href="{{ url_for('approve_reject') }}" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Approve / Reject Application</a></li>
                 </ul>
             </li>
@@ -49,9 +49,9 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {% for application in student_applications %}
                 <div class="bg-white p-5 rounded shadow">
-                    <h3 class="text-xl font-bold mb-3">{{ application.student_name }}</h3>
-                    <p><strong>Programme:</strong> {{ application.programme }}</p>
-                    <p><strong>Application Date:</strong> {{ application.application_date }}</p>
+                    <h3 class="text-xl font-bold mb-3">{{ applications.student_name }}</h3>
+                    <p><strong>Programme:</strong> {{ applications.company_id }}</p>
+                    <p><strong>Application Date:</strong> {{ application.student_id }}</p>
                     <p><strong>Status:</strong> {{ application.status }}</p>
                 </div>
             {% endfor %}
