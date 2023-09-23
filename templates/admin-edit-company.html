@@ -29,7 +29,7 @@
             <img src="logo.png" alt="Internship Logo" class="w-12 h-12 ml-5 rounded-full">
         </div>
         <h1 class="text-2xl mt-2 ml-5 p-0">Internship</h1>
-        <button id="logoutBtn" onclick="logout()" class="ml-auto mr-5 bg-red-500 hover:bg-red-700 text-white px-4 py-1 rounded">Logout</button>
+        <a href="/logoutAdmin" class="ml-auto mr-5 bg-red-500 hover:bg-red-700 text-white px-4 py-1 rounded">Logout</a>
     </header>
     
 
@@ -42,13 +42,12 @@
                     <li class="mb-4">
                         <a id="userManagement" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">User Management</a>
                         <ul id="sub-submenu" class="py-5 pl-4">
-                            <li class="mb-4"><a href="admin-add-student.html" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Add Student</a></li>
-                            <li class="mb-4"><a href="admin-add-supervisor.html" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Add Supervisor</a></li>
+                            <li class="mb-4"><a href="/admin-manage-student.html" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Manage Student</a></li>
+                            <li class="mb-4"><a href="/admin-manage-supervisor.html" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Manage Supervisor</a></li>
                         </ul>
                     </li>
                     <li class="mb-4">
-                        <a id="companyManagement" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Company Management</a>
-                        <!--TODO-->
+                        <a href="/admin-manage-company.html" id="companyManagement" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Company Management</a>
                     </li>
                 </ul>
             </li>

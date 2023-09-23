@@ -44,7 +44,11 @@ else:
 
 @app.route("/", methods=['GET', 'POST'])
 def home():
-    return render_template('/admin-manage-company.html')
+    return render_template('/student-login.html')
+
+@app.route("/student-login.html", methods=['GET', 'POST'])
+def viewStudentLoginPage():
+    return render_template('student-login.html')
 
 @app.route("/student-login.html", methods=['GET', 'POST'])
 def viewStudentLoginPage():
@@ -57,6 +61,14 @@ def viewSupervisorLoginPage():
 @app.route("/admin-login.html", methods=['GET', 'POST'])
 def viewAdminLoginPage():
     return render_template('admin-login.html')
+
+@app.route("/admin-manage-supervisor.html", methods=['GET', 'POST'])
+def viewManageCompanyPage():
+    return render_template('admin-manage-supervisor.html')
+
+@app.route("/admin-manage-student.html", methods=['GET', 'POST'])
+def viewManageCompanyPage():
+    return render_template('admin-manage-student.html')
 
 @app.route("/admin-manage-company.html", methods=['GET', 'POST'])
 def viewManageCompanyPage():
