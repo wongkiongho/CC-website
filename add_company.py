@@ -402,7 +402,7 @@ def view_companies():
         return str(e)
     
 @app.route("/login", methods=['Post'])
-def view_companies():
+def login():
     try:
         # Retrieve company data from the database
         cursor = db_conn.cursor()
