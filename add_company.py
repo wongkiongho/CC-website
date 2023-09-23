@@ -401,17 +401,118 @@ def view_companies():
     except Exception as e:
         return str(e)
     
+@app.route("/student-login", methods=['GET', 'POST'])
+def studentLogin():
+    try:
+        cursor = db_conn.cursor()
 
+        if request.method == 'POST':
+            student_id = request.form.get("student_id")
+            password = request.form.get("password")
+            print("student_id="+ student_id)
+            print("password="+ password)
+
+            # Fetch supervisor based on ID
+            cursor.execute("SELECT password FROM studentDetails WHERE student_id=%s", (student_id,))
+            result = cursor.fetchone()
+
+            # If supervisor does not exist or password doesn't match
+            if not result or result[0] != password:
+                return "Invalid student ID or password!", 401
+
+            # If successful, you can redirect the supervisor to their dashboard with a message
+            return redirect(url_for('profile', message="login_successful"))
+
+        # If it's a GET request, render the login form
+        return render_template('student-login.html', )
+
+    except Exception as e:
+        return str(e)
+
+    finally:
+        cursor.close()
+
+@app.route("/profile")
+def profile():
+    message = request.args.get("message")
+    return render_template('profile.html', message=message)
+
+@app.route("/supervisor-login", methods=['GET', 'POST'])
+def supervisorLogin():
+    try:
+        cursor = db_conn.cursor()
+
+        if request.method == 'POST':
+            supervisor_id = request.form.get("supervisor_id")
+            password = request.form.get("password")
+            print("supervisor_id="+ supervisor_id)
+            print("password="+ password)
+
+            # Fetch supervisor based on ID
+            cursor.execute("SELECT password FROM supervisor WHERE supervisor_id=%s", (supervisor_id,))
+            result = cursor.fetchone()
+
+            # If supervisor does not exist or password doesn't match
+            if not result or result[0] != password:
+                return "Invalid student ID or password!", 401
+
+            # If successful, you can redirect the supervisor to their dashboard with a message
+            return redirect(url_for('studentList', message="login_successful"))
+
+        # If it's a GET request, render the login form
+        return render_template('supervisor-login.html', )
+
+    except Exception as e:
+        return str(e)
+
+    finally:
+        cursor.close()
+
+@app.route("/supervisor-studentList.html")
+def studentList():
+    message = request.args.get("message")
+    return render_template('supervisor-studentList.html', message=message)
+
+@app.route("/admin-login", methods=['GET', 'POST'])
+def adminLogin():
+    try:
+        cursor = db_conn.cursor()
+
+        if request.method == 'POST':
+            admin_id = request.form.get("admin_id")
+            password = request.form.get("password")
+            print("admin_id="+ admin_id)
+            print("password="+ password)
+
+            # Fetch supervisor based on ID
+            cursor.execute("SELECT password FROM admin WHERE admin_id=%s", (admin_id,))
+            result = cursor.fetchone()
+
+            # If supervisor does not exist or password doesn't match
+            if not result or result[0] != password:
+                return "Invalid student ID or password!", 401
+
+            # If successful, you can redirect the supervisor to their dashboard with a message
+            return redirect(url_for('manageStudent', message="login_successful"))
+
+        # If it's a GET request, render the login form
+        return render_template('supervisor-login.html', )
+
+    except Exception as e:
+        return str(e)
+
+    finally:
+        cursor.close()
+
+@app.route("/supervisor-studentList.html")
+def manageStudent():
+    message = request.args.get("message")
+    return render_template('supervisor-studentList.html', message=message)
+    
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=80, debug=True)
 
-'''
-company_logo_file_name_in_s3 = f"company_id-{company_id}_logo_file"
-            # Construct the S3 URL
-            s3_location = ''  # Replace with the actual S3 location
-            logo_url = f"https://s3{s3_location}.amazonaws.com/{custombucket}/{company_logo_file_name_in_s3}"
-'''
-    
+
     
     
