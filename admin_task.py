@@ -69,7 +69,7 @@ def Addstudent():
     student_id = request.form.get("student_id")
     password = request.form.get("password")
 
-    insert_sql = "INSERT INTO studentDetails VALUES (%s, %s, %s, %s. %s, %s, %s)"
+    insert_sql = "INSERT INTO studentDetails VALUES (%s, %s, %s, %s, %s, %s, %s)"
     cursor = db_conn.cursor()
 
     try:
