@@ -35,7 +35,7 @@
                 <ul id="studentSubmenu" class="hidden py-5 pl-4">
                     <li class="mb-4"><a href="/studentlist" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">View Student List</a></li>
                     <li class="mb-4"><a href="/applications" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Student Application</a></li>
-                    <li class="mb-4"><a href="{{ url_for('approve_reject') }}" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Approve / Reject Application</a></li>
+                    <li class="mb-4"><a href="/approveOrReject" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Approve / Reject Application</a></li>
                 </ul>
             </li>
         </ul>
@@ -49,20 +49,19 @@
             
             <!-- Applications List -->
             <div class="applications-list mb-5">
-                <!-- Each item in this list represents an application. You can duplicate this block for each application. -->
-                <div class="application-item flex justify-between items-center mb-2">
-                    <div>
-                        <span class="font-bold">Student Name:</span> John Doe
-                        <span class="font-bold ml-4">ID:</span> 12345
-                        <span class="font-bold ml-4">Company Name:</span> ABC Corp
+                {% for application in student_applications %}
+                    <div class="application-item flex justify-between items-center mb-2">
+                        <div>
+                            <span class="font-bold">Student ID:</span> {{ application.student_id }}
+                            <span class="font-bold ml-4">Company ID:</span> {{ application.company_id }}
+                        </div>
+                        <div class="flex items-end space-x-5">
+                            <button class="approve-button bg-green-500 text-white p-2 rounded" onclick="approveApplication('{{ application.student_id }}')">Approve</button>
+                            <button class="reject-button bg-red-500 text-white p-2 rounded" onclick="rejectApplication('{{ application.student_id }}')">Reject</button>
+                        </div>
                     </div>
-                    <div class="flex items-end space-x-5">
-                        <button class="approve-button bg-green-500 text-white p-2 rounded" onclick="approveApplication('12345')">Approve</button>
-                        <button class="reject-button bg-red-500 text-white p-2 rounded" onclick="rejectApplication('12345')">Reject</button>
-                    </div>
-                </div>
-                <!-- Repeat similar blocks for other applications -->
-            </div>
+                {% endfor %}
+            </div>            
         </section>
     </div>
 
