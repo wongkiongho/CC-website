@@ -36,6 +36,9 @@
                   <li class="mb-4"><a href="{{ url_for('student_list') }}" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Student List</a></li>
                   <li class="mb-4"><a href="{{ url_for('application') }}" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Student Application</a></li>
                   <li class="mb-4"><a href="{{ url_for('approve_reject') }}" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Approve / Reject Application</a></li>
+                  <li class="mb-4">
+                    <a href="/studentlist" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">View Student List</a>
+                </li>
               </ul>
             </li>
         </ul>
@@ -49,7 +52,7 @@
       {% for student in students %}
         <li class="border-b border-gray-200">
             <div class="flex justify-between p-2 cursor-pointer" onclick="toggleDetails('student{{ student.student_id }}')">
-              <h2>{{ student[0] }}</h2>
+                <h2>{{ student.student_id }}</h2>
             </div>
             <div id="student{{ student.student_id }}" class="transition-all overflow-hidden max-h-0 p-0 pl-10">
                 <p class="py-2">Name: {{ student.name }}</p>
