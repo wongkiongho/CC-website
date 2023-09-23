@@ -49,8 +49,8 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {% for application in student_applications %}
                 <div class="bg-white p-5 rounded shadow">
-                    <h3 class="text-xl font-bold mb-3">{{ applications.student_name }}</h3>
-                    <p><strong>Programme:</strong> {{ applications.company_id }}</p>
+                    <h3 class="text-xl font-bold mb-3">{{ application.student_id }}</h3>
+                    <p><strong>Programme:</strong> {{ application.company_id }}</p>
                     <p><strong>Application Date:</strong> {{ application.student_id }}</p>
                     <p><strong>Status:</strong> {{ application.status }}</p>
                 </div>
