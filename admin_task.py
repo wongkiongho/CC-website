@@ -159,6 +159,11 @@ def VerifyStudentLogin():
     student_id = request.form.get("student_id")
     password = request.form.get("password")
 
+    print(f"Received student_id: {student_id}")
+    print(f"Received password: {password}")
+    print(f"Stored hashed password: {stored_password}")
+    print(f"Computed hashed password: {hashed_input_password}")
+
     db_conn = None  # Initialize the variable outside the try block
 
     try:
