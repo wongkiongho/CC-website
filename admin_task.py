@@ -9,6 +9,7 @@ from uuid import uuid4
 import json
 from flask import jsonify
 import mimetypes
+import bcrypt
 
 app = Flask(__name__)
 
@@ -96,7 +97,10 @@ def Addstudent():
     name = request.form.get("name")
     email = request.form.get("email")
     student_id = request.form.get("student_id")
-    password = request.form.get("password")
+    inputpassword = request.form.get("password")
+
+    # Hash the password
+    password = bcrypt.hashpw(inputpassword.encode('utf-8'), bcrypt.gensalt())
     
     try:
         insert_sql = "INSERT INTO studentDetails (student_id, name, email, password) VALUES (%s, %s, %s, %s)"
@@ -159,8 +163,6 @@ def VerifyStudentLogin():
     student_id = request.form.get("student_id")
     password = request.form.get("password")
 
-    
-
     db_conn = None  # Initialize the variable outside the try block
 
     try:
@@ -175,7 +177,7 @@ def VerifyStudentLogin():
 
         if result:
             # Compare the hashed password with the input password
-            stored_password = result[0]  # Assuming the password is in the first column
+            stored_password = result[4]  # Assuming the password is in the first column
             hashed_input_password = hashlib.sha256(password.encode()).hexdigest()
 
             if hashed_input_password == stored_password:
@@ -189,10 +191,6 @@ def VerifyStudentLogin():
             return jsonify({"error": "Student not found"}), 404
 
     except Exception as e:
-        print(f"Received student_id: {student_id}")
-        print(f"Received password: {password}")
-        print(f"Stored hashed password: {stored_password}")
-        print(f"Computed hashed password: {hashed_input_password}")
         return jsonify({"error": str(e)}), 500
     finally:
         if db_conn:
