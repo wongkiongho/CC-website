@@ -274,6 +274,33 @@ def edit_profile(student_id):
         traceback.print_exc()
         return "Error occurred while fetching or updating student details", 500
 
+@app.route("/application-status/<student_id>", methods=['GET'])
+def application_status(student_id):
+    try:
+        cursor = db_conn.cursor()
+
+        # SQL query to join the application, studentDetails, and company tables
+        query = """
+        SELECT 
+            s.name AS student_name,
+            a.details AS internship_details,
+            c.company_name,
+            c.email AS company_email,
+            a.status
+        FROM application a
+        JOIN studentDetails s ON a.student_id = s.student_id
+        JOIN company c ON a.company_id = c.company_id
+        WHERE a.student_id = %s;
+        """
+
+        cursor.execute(query, (student_id,))
+        applications = cursor.fetchall()
+        cursor.close()
+        
+        return render_template('application-status.html', applications=applications)
+    except Exception as e:
+        print(e)
+        return "Error occurred while fetching application status", 500
 
 
 
