@@ -213,7 +213,7 @@ def get_supervisor_count():
     finally:
         cursor.close()
     
-# view supervisor
+# view list of supervisor
 @app.route("/viewsupervisors", methods=['GET'])
 def view_supervisors():
     try:
