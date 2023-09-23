@@ -287,7 +287,7 @@ def application_status(student_id):
             c.company_email, 
             a.status
         FROM 
-            applications AS a
+            application AS a
         JOIN 
             studentDetails AS s ON a.student_id = s.student_id
         JOIN 
