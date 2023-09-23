@@ -97,10 +97,7 @@ def Addstudent():
     name = request.form.get("name")
     email = request.form.get("email")
     student_id = request.form.get("student_id")
-    inputpassword = request.form.get("password")
-
-    # Hash the password
-    password = bcrypt.hashpw(inputpassword.encode('utf-8'), bcrypt.gensalt())
+    password = request.form.get("password")
     
     try:
         insert_sql = "INSERT INTO studentDetails (student_id, name, email, password) VALUES (%s, %s, %s, %s)"
@@ -108,12 +105,32 @@ def Addstudent():
         cursor.execute(insert_sql, (student_id, name, email, password))
         db_conn.commit()
 
+        # Fetch the updated student count from the database
+        fetch_count_sql = "SELECT COUNT(*) FROM studentDetails"
+        cursor.execute(fetch_count_sql)
+        updated_count = cursor.fetchone()[0]
+
         print("Data inserted in MySQL RDS...")
         return jsonify({"message": "Student information added successfully"}), 200
 
     except Exception as e:
         print(f"Error: {e}")
         return str(e)
+    finally:
+        cursor.close()
+
+# update number of student
+@app.route("/getStudentCount", methods=['GET'])
+def get_student_count():
+    try:
+        cursor = db_conn.cursor()
+        fetch_count_sql = "SELECT COUNT(*) FROM studentDetails"
+        cursor.execute(fetch_count_sql)
+        student_count = cursor.fetchone()[0]
+
+        return jsonify({"studentCount": student_count}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
     finally:
         cursor.close()
 
