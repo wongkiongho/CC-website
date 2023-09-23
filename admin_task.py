@@ -69,12 +69,12 @@ def Addstudent():
     student_id = request.form.get("student_id")
     password = request.form.get("password")
 
-    insert_sql = "INSERT INTO studentDetails VALUES (%s, %s, %s, %s)"
+    insert_sql = "INSERT INTO studentDetails VALUES (%s, %s, %s, %s. %s, %s, %s)"
     cursor = db_conn.cursor()
 
     try:
         print("Data inserted in MySQL RDS...")
-        cursor.execute(insert_sql, (name, email, student_id, password))
+        cursor.execute(insert_sql, (student_id, name, email, None, None, password, None))
         db_conn.commit()
 
     except Exception as e:
