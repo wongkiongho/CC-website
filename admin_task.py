@@ -1,6 +1,7 @@
 import hashlib
 from flask import Flask, render_template, redirect, url_for, request
 from pymysql import connections
+import pymysql
 import os
 import boto3
 from config import *
