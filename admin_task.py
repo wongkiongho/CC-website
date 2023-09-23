@@ -41,37 +41,37 @@ def home():
     return render_template('/admin-add-student.html')
 
 # student profile
-app.route("/profile.html", methods=['GET', 'POST'])
+@app.route("/profile.html", methods=['GET', 'POST'])
 def viewStudentProfilePage():
     return render_template('profile.html')
 
 # add student page
-app.route("/admin-add-student.html", methods=['GET', 'POST'])
+@app.route("/admin-add-student.html", methods=['GET', 'POST'])
 def viewAddStudentPage():
     return render_template('admin-add-student.html')
 
 # manage student page
-app.route("/admin-manage-student.html", methods=['GET', 'POST'])
+@app.route("/admin-manage-student.html", methods=['GET', 'POST'])
 def viewManageStudentPage():
-    return render_template('/admin-manage-student.html')
+    return render_template('admin-manage-student.html')
 
 # add supervisor page
-app.route("/admin-add-supervisor.html", methods=['GET', 'POST'])
+@app.route("/admin-add-supervisor.html", methods=['GET', 'POST'])
 def viewAddSupervisorPage():
     return render_template('admin-add-supervisor.html')
 
 # manage supervisor page
-app.route("/admin-manage-supervisor.html", methods=['GET', 'POST'])
+@app.route("/admin-manage-supervisor.html", methods=['GET', 'POST'])
 def viewManageSupervisorPage():
     return render_template('admin-manage-supervisor.html')
 
 # student login page
-app.route("student-login.html", methods=['GET', 'POST'])
+@app.route("/student-login.html", methods=['GET', 'POST'])
 def viewStudentLoginPage():
     return render_template('student-login.html')
 
 # supervisor login page
-app.route("supervisor-login.html", methods=['GET', 'POST'])
+@app.route("/supervisor-login.html", methods=['GET', 'POST'])
 def viewSupervisorLoginPage():
     return render_template('supervisor-login.html')
 

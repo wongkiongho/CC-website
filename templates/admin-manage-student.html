@@ -74,7 +74,7 @@
         <!-- Search & Filter -->
         <section class="bg-white p-5 rounded-lg shadow-md">
             <div class="flex items-center space-x-4">
-                <input type="text" placeholder="Search Companies..." class="border p-2 flex-grow rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
+                <input type="text" placeholder="Search student..." class="border p-2 flex-grow rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
                 <button class="bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400">Search</button>
             </div>
         </section>
@@ -97,17 +97,17 @@
                 </thead>
                 <tbody id="student-data">
                     <!-- This is a sample row, replicate this structure for each company -->
-                    <tr>
+                    <!-- <tr>
                         <td class="border p-4">2101234</td>
                         <td class="border p-4">ABC Corp</td>
                         <td class="border p-4">Technology</td>
-                        <!-- <td class="border p-4 text-center">
-                            <a href="/viewstudent/${student_account.student_id}" class="text-blue-600 hover:text-blue-800">View</a>
-                        </td> -->
                         <td class="border p-4 text-center">
-                            <a href="javascript:void(0);" onclick="deleteStudent()" class="text-red-600 hover:text-red-800">Delete</a> <!-- Red for delete -->
+                            <a href="/viewstudent/${student_account.student_id}" class="text-blue-600 hover:text-blue-800">View</a>
                         </td>
-                    </tr>
+                        <td class="border p-4 text-center">
+                            <a href="javascript:void(0);" onclick="deleteStudent()" class="text-red-600 hover:text-red-800">Delete</a>
+                        </td>
+                    </tr> -->
                 </tbody>
             </table>
         </section>
@@ -124,7 +124,7 @@
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script>
             function navigateAddStudentPage() {
-                window.location.href = "/viewAddStudentPage";
+                window.location.href = "viewAddStudentPage";
             }
 
             function fetchStudents() {
@@ -144,6 +144,7 @@
                     studentList.forEach(studentDetails => {
                         const row = `
                             <tr data-student-id="${studentDetails.student_id}">
+                                <td class="border p-4">${studentDetails.student_id}</td>
                                 <td class="border p-4">${studentDetails.name}</td>
                                 <td class="border p-4">${studentDetails.email}</td>
                                 <td class="border p-4 text-center">
@@ -159,9 +160,9 @@
                 });
             }
 
-            function deleteStudent(studentid) {
+            function deleteStudent(student_id) {
                 console.log("function work");
-                fetch(`/deletestudent/${studentid}`, {
+                fetch(`/deletestudent/${student_id}`, {
                     method: 'DELETE'
                 })
                 .then(response => response.json())
