@@ -640,6 +640,8 @@ def get_student_files(student_id):
 
 @app.route("/internship-form/<student_id>", methods=['GET'])
 def internship_form(student_id):
+    
+
     try:
         # Set up a cursor for database interaction
         cursor = db_conn.cursor()
@@ -695,9 +697,9 @@ def profile():
         print(e)
         return "Error occurred while fetching student details", 500
 
-@app.route("/edit-profile/<student_id>", methods=['GET', 'POST'])
-def edit_profile(student_id):
-    
+@app.route("/edit-profile", methods=['GET', 'POST'])
+def edit_profile():
+    student_id=session.get('student_id')
     try:
         if request.method == 'POST':
             # Handling form submission
@@ -769,8 +771,9 @@ def edit_profile(student_id):
         print("Exception occurred:", e)
         traceback.print_exc()
         return "Error occurred while fetching or updating student details", 500
-@app.route("/application-status/<student_id>", methods=['GET'])
-def application_status(student_id):
+@app.route("/application-status", methods=['GET'])
+def application_status():
+    student_id=session.get('student_id')
     try:
         cursor = db_conn.cursor()
         
