@@ -295,7 +295,7 @@ def application_status(student_id):
         WHERE 
             a.student_id = %s;
         """
-        
+        #run in db
         cursor.execute(query, (student_id,))
         raw_applications = cursor.fetchall()
         cursor.close()
