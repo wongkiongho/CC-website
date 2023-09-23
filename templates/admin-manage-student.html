@@ -124,7 +124,7 @@
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script>
             function navigateAddStudentPage() {
-                window.location.href = "/admin-add-student.html";
+                window.location.href = "/viewAddStudentPage";
             }
 
             function fetchStudents() {
@@ -141,20 +141,16 @@
                     // Clear any existing rows
                     studentTable.empty();
 
-                    studentList.forEach(student_account => {
+                    studentList.forEach(studentDetails => {
                         const row = `
-                            <tr data-company-id="${student_account.student_id}">
-                                <td class="border p-4">${student_account.full_name}</td>
-                                
+                            <tr data-student-id="${studentDetails.student_id}">
+                                <td class="border p-4">${studentDetails.name}</td>
+                                <td class="border p-4">${studentDetails.email}</td>
+                                <td class="border p-4 text-center">
+                                    <a href="javascript:void(0);" onclick="deleteStudent('${studentDetails.student_id}');" class="text-red-600 hover:text-red-800">Delete</a>
+                                </td>
                             </tr>
                         `;
-// <td class="border p-4">${company.industry}</td>
-                                // <td class="border p-4 text-center">
-                                //     <a href="/viewcompany/${company.company_id}" class="text-blue-600 hover:text-blue-800">View</a>
-                                // </td>
-                                // <td class="border p-4 text-center">
-                                //     <a href="javascript:void(0);" onclick="deleteCompany('${company.company_id}');" class="text-red-600 hover:text-red-800">Delete</a>
-                                // </td>
                         studentTable.append(row);
                     });
                 })
@@ -178,10 +174,9 @@
                     }
                 })
                 .catch(error => {
-                    console.error('Error deleting company:', error);
+                    console.error('Error deleting student:', error);
                 });
             }
-
 
             $(document).ready(function() {
                 fetchStudents();
