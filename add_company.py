@@ -381,7 +381,7 @@ def search_companies():
 
 
 @app.route("/viewcompanies", methods=['GET'])
-def view_companies():
+def view_companies_list():
     try:
         # Retrieve company data from the database
         cursor = db_conn.cursor()
