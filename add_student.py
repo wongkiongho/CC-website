@@ -281,10 +281,10 @@ def application_status(student_id):
         # SQL query to fetch application details
         query = """
         SELECT 
-            s.student_name, 
-            a.internship_details, 
+            s.name, 
+            a.details, 
             c.company_name, 
-            c.company_email, 
+            c.email, 
             a.status
         FROM 
             application AS a
