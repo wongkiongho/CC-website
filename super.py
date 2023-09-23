@@ -50,7 +50,7 @@ def studentList():
     try:
         print("Student list page accessed")  # Debugging line
         with db_conn.cursor() as cursor:
-            select_sql = "SELECT * FROM studentDetails"
+            select_sql = "SELECT student_id, name, email, programme, cohort FROM studentDetails"
             cursor.execute(select_sql)
             student_data = cursor.fetchall()
             print("SQL executed, data fetched:", student_data)  # Debugging line
