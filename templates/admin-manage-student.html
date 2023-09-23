@@ -83,27 +83,29 @@
         <section class="bg-white p-5 rounded-lg shadow-md">
             <div class="flex items-center justify-between mb-6">
                 <h2 class="text-2xl font-bold">Student Listing</h2>
-                <button onclick="navigateToNextPage()" class="bg-green-500 text-white p-2 rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400">Add New Company</button>
+                <button onclick="navigateAddStudentPage()" class="bg-green-500 text-white p-2 rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400">Add New Student</button>
             </div>
         
             <table class="w-full border-collapse">
                 <thead>
                     <tr>
-                        <th class="border p-4 text-left">Student Name</th>
-                        <th class="border p-4 text-left">Email</th>
+                        <th class="border p-4 text-center">Student ID</th>
+                        <th class="border p-4 text-center">Student Name</th>
+                        <th class="border p-4 text-center">Email</th>
                         <th class="border p-4 text-center" colspan="2">Actions</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="student-data">
                     <!-- This is a sample row, replicate this structure for each company -->
                     <tr>
+                        <td class="border p-4">2101234</td>
                         <td class="border p-4">ABC Corp</td>
                         <td class="border p-4">Technology</td>
                         <!-- <td class="border p-4 text-center">
-                            <a href="#editURL" class="text-blue-600 hover:text-blue-800">Edit</a>
+                            <a href="/viewstudent/${student_account.student_id}" class="text-blue-600 hover:text-blue-800">View</a>
                         </td> -->
                         <td class="border p-4 text-center">
-                            <a href="#deleteURL" class="text-red-600 hover:text-red-800">Delete</a> <!-- Red for delete -->
+                            <a href="javascript:void(0);" onclick="deleteStudent()" class="text-red-600 hover:text-red-800">Delete</a> <!-- Red for delete -->
                         </td>
                     </tr>
                 </tbody>
@@ -119,16 +121,71 @@
 
         <script src="admin.js"></script>
         
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script>
-            new DataTable('#example', {
-
-                scrollX: true,
-                scrollY: 200
-            });
-
-            function navigateToNextPage() {
-                window.location.href = "admin-add-company.html";
+            function navigateAddStudentPage() {
+                window.location.href = "/admin-add-student.html";
             }
+
+            function fetchStudents() {
+                fetch('/viewstudents')
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(studentList => {
+                    const studentTable = $('#student-data');
+
+                    // Clear any existing rows
+                    studentTable.empty();
+
+                    studentList.forEach(student_account => {
+                        const row = `
+                            <tr data-company-id="${student_account.student_id}">
+                                <td class="border p-4">${student_account.full_name}</td>
+                                
+                            </tr>
+                        `;
+// <td class="border p-4">${company.industry}</td>
+                                // <td class="border p-4 text-center">
+                                //     <a href="/viewcompany/${company.company_id}" class="text-blue-600 hover:text-blue-800">View</a>
+                                // </td>
+                                // <td class="border p-4 text-center">
+                                //     <a href="javascript:void(0);" onclick="deleteCompany('${company.company_id}');" class="text-red-600 hover:text-red-800">Delete</a>
+                                // </td>
+                        studentTable.append(row);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching students:', error);
+                });
+            }
+
+            function deleteStudent(studentid) {
+                console.log("function work");
+                fetch(`/deletestudent/${studentid}`, {
+                    method: 'DELETE'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert(`Error deleting student: ${data.error}`);
+                    } else {
+                        alert(data.message);
+                        fetchStudents();  // Refresh the list after deletion
+                    }
+                })
+                .catch(error => {
+                    console.error('Error deleting company:', error);
+                });
+            }
+
+
+            $(document).ready(function() {
+                fetchStudents();
+            });
         </script>
 
     </body>
