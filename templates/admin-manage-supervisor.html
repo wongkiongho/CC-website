@@ -99,17 +99,18 @@
                 </thead>
                 <tbody id="supervisor-data">
                     <!-- This is a sample row, replicate this structure for each company -->
-                    <tr>
+                    <!-- <tr>
                         <td class="border p-4">2101234</td>
                         <td class="border p-4">ABC Corp</td>
                         <td class="border p-4">Technology</td>
-                        <!-- <td class="border p-4 text-center">
-                            <a href="#editURL" class="text-blue-600 hover:text-blue-800">Edit</a>
-                        </td> -->
                         <td class="border p-4 text-center">
-                            <a href="javascript:void(0);" onclick="deleteSupervisor()" class="text-red-600 hover:text-red-800">Delete</a> <!-- Red for delete -->
+                            <a href="#editURL" class="text-blue-600 hover:text-blue-800">Edit</a>
                         </td>
-                    </tr>
+                        <td class="border p-4 text-center">
+                            <a href="javascript:void(0);" onclick="deleteSupervisor()" class="text-red-600 hover:text-red-800">Delete</a>
+                        </td>
+                    </tr> -->
+                    <!-- List of supervisors content -->
                 </tbody>
             </table>
         </section>
@@ -185,24 +186,20 @@
                 });
             }
 
-            // Function to fetch and update the student count
             function updateSupervisorCount() {
-                // Fetch the updated count from your server
-                fetch('/getStudentCount') // Replace with the actual endpoint to fetch the student count
+                fetch('/getSupervisorCount')
                     .then(response => response.json())
                     .then(data => {
-                        if (data && data.studentCount !== undefined) {
-                            // Update the student count element
-                            const studentCountElement = document.getElementById('studentCount');
-                            studentCountElement.textContent = data.studentCount;
+                        if (data && data.supervisorCount !== undefined) {
+                            const supervisorCountElement = document.getElementById('supervisorCount');
+                            supervisorCountElement.textContent = data.supervisorCount;
                         }
                     })
                     .catch(error => {
-                        console.error('Error fetching student count:', error);
+                        console.error('Error fetching supervisor count:', error);
                     });
             }
 
-            // Call the function initially to load the count
             updateSupervisorCount();
 
             $(document).ready(function() {
