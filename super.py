@@ -84,7 +84,7 @@ def applications_page():
                 'details': details
             })
 
-        return render_template('supervisor-application.html', applications=applications)
+        return render_template('supervisor-application.html', student_applications=applications)
     except Exception as e:
         return f"An error occurred: {str(e)}"
 
