@@ -538,7 +538,7 @@ def logoutSupervisor():
     return render_template('supervisor-login.html', message="logout_successful")
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=80, debug=True)
+    app.run(host="0.0.0.0", port=81, debug=True)
 
 
     
