@@ -671,7 +671,7 @@ def internship_form(student_id):
         return str(e), 500
 
 #... (All the previous imports and initializations remain unchanged)
-@app.route("/profile/<student_id>", methods=['GET'])
+@app.route("/profile", methods=['GET'])
 def profile():
     student_id=session.get('student_id')
     try:
