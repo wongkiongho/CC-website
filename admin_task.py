@@ -38,7 +38,7 @@ else:
 
 @app.route("/", methods=['GET', 'POST'])
 def home():
-    return render_template('/admin-manage-student.html')
+    return render_template('/admin-add-student.html')
 
 # add student page
 app.route("/admin-add-student.html", methods=['GET', 'POST'])
