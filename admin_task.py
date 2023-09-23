@@ -111,7 +111,7 @@ def Addstudent():
         updated_count = cursor.fetchone()[0]
 
         print("Data inserted in MySQL RDS...")
-        return jsonify({"message": "Student information added successfully"}), 200
+        return redirect(url_for('/admin-add-student.html'))
 
     except Exception as e:
         print(f"Error: {e}")
@@ -168,6 +168,7 @@ def delete_student(student_id):
         cursor.execute(delete_sql, (student_id,))
         db_conn.commit()
         cursor.close()
+        get_student_count()
         return jsonify({"message": "Student information deleted successfully"}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -232,8 +233,7 @@ def Addsupervisor():
         db_conn.commit()
 
         print("Data inserted in MySQL RDS...")
-        # return redirect(url_for('viewAddSupervisorPage'))
-        return jsonify({"message": "Student information added successfully"}), 200
+        return redirect(url_for('/admin-add-supervisor.html'))
 
     except Exception as e:
         print(f"Error: {e}")
