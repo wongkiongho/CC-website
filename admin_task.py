@@ -38,17 +38,17 @@ else:
 
 @app.route("/", methods=['GET', 'POST'])
 def home():
-    return render_template('/admin-add-student.html')
+    return render_template('/admin-manage-student.html')
 
 # add student page
 app.route("/admin-add-student.html", methods=['GET', 'POST'])
 def viewAddStudentPage():
-    return render_template('/admin-add-student.html')
+    return render_template('admin-add-student.html')
 
 # manage student page
 app.route("/admin-manage-student.html", methods=['GET', 'POST'])
 def viewManageStudentPage():
-    return render_template('/admin-manage-student.html')
+    return render_template('admin-manage-student.html')
 
 # add supervisor page
 app.route("/admin-add-supervisor.html", methods=['GET', 'POST'])
@@ -93,7 +93,7 @@ def view_students():
     try:
         # Retrieve company data from the database
         cursor = db_conn.cursor()
-        select_sql = "SELECT student_id, full_name FROM studentDetails"
+        select_sql = "SELECT student_id, name, email FROM studentDetails"
         cursor.execute(select_sql)
         student_data = cursor.fetchall()
         cursor.close()
@@ -103,10 +103,10 @@ def view_students():
 
         # Loop through the retrieved data and fetch S3 URLs for logos
         for studentDetails in student_data:
-            student_id, full_name = studentDetails
+            student_id, name, email = studentDetails
             # Assuming you have a naming convention for the logo files
             
-            studentList.append({'student_id': student_id,'full_name': full_name})
+            studentList.append({'student_id': student_id, 'name': name, 'email': email})
 
         return jsonify(studentList)
     except Exception as e:
@@ -135,16 +135,20 @@ def Addsupervisor():
     contact_number = request.form.get("contact_number")
     password = request.form.get("password")
 
-    insert_sql = "INSERT INTO supervisor VALUES (%s, %s, %s. %s, %s)"
-    cursor = db_conn.cursor()
-
     try:
-        print("Data inserted in MySQL RDS...")
+        insert_sql = "INSERT INTO supervisor (supervisor_id, name, email, contact_number, password) VALUES (%s, %s, %s, %s, %s)"
+        cursor = db_conn.cursor()
         cursor.execute(insert_sql, (supervisor_id, name, email, contact_number, password))
         db_conn.commit()
 
+        print("Data inserted in MySQL RDS...")
+        return redirect(url_for('home'))
+
     except Exception as e:
+        print(f"Error: {e}")
         return str(e)
+    finally:
+        cursor.close()
     
 # view supervisor
 @app.route("/viewsupervisor", methods=['GET'])
@@ -152,7 +156,7 @@ def view_supervisors():
     try:
         # Retrieve company data from the database
         cursor = db_conn.cursor()
-        select_sql = "SELECT supervisor_id, full_name FROM supervisor"
+        select_sql = "SELECT supervisor_id, full_name, email FROM supervisor"
         cursor.execute(select_sql)
         supervisor_data = cursor.fetchall()
         cursor.close()
@@ -162,10 +166,10 @@ def view_supervisors():
 
         # Loop through the retrieved data and fetch S3 URLs for logos
         for supervisor in supervisor_data:
-            supervisor_id, full_name = supervisor
+            supervisor_id, full_name, email = supervisor
             # Assuming you have a naming convention for the logo files
             
-            supervisorList.append({'supervisor_id': supervisor_id,'full_name': full_name})
+            supervisorList.append({'supervisor_id': supervisor_id, 'full_name': full_name, 'email': email})
 
         return jsonify(supervisorList)
     except Exception as e:
