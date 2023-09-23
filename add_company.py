@@ -585,16 +585,13 @@ def Addstudent():
         cursor.execute(insert_sql_application_file, (file_id, application_id))
         cursor.execute(insert_sql_file, (file_id, file_url))
         db_conn.commit()
+        cursor.close()
         print("Student and resume added successfully!")
         return redirect(url_for('home'))
-    except MySQLError as e:
-        print(f"Error while inserting into the database: {e}")
-        return jsonify(status="error", message=str(e)), 500
     except Exception as e:  # Generic exception for other errors, like S3 upload
         print(f"Error: {e}")
         return str(e)
-    finally:
-        cursor.close()
+
 
 @app.route("/viewcompanies", methods=['GET'])
 def view_companies():
