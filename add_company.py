@@ -523,17 +523,17 @@ def manageStudent():
     return render_template('supervisor-studentList.html', message=message)
     
 @app.route('/logoutStudent')
-def logout():
+def logoutStudent():
     session.clear()  # This will clear all session variables
     return render_template('student-login.html', message="logout_successful")
 
 @app.route('/logoutAdmin')
-def logout():
+def logoutAdmin():
     session.clear()  # This will clear all session variables
     return render_template('admin-login.html', message="logout_successful")
 
 @app.route('/logoutSupervisor')
-def logout():
+def logoutSupervisor():
     session.clear()  # This will clear all session variables
     return render_template('supervisor-login.html', message="logout_successful")
 
