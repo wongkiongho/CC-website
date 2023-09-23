@@ -311,33 +311,33 @@ def Addcompany():
 def delete_company(company_id):
     try:
         cursor = db_conn.cursor()
-        select_sql = "SELECT logo_url, file_url FROM company WHERE company_id = %s"
-        cursor.execute(select_sql, (company_id,))
-        result = cursor.fetchone()
-        if result:
-            logo_url, file_url = result
+        
+        # 1. Delete files associated with the company from the S3 bucket
+        cursor.execute("SELECT file_url FROM file f INNER JOIN companyFile cf ON f.file_id = cf.file_id WHERE cf.company_id=%s", (company_id,))
+        urls_to_delete = [row[0] for row in cursor.fetchall()]
 
-            # Extract object keys from URL
-            parsed_logo_url = urlparse(logo_url)
-            parsed_file_url = urlparse(file_url)
-            logo_object_key = parsed_logo_url.path.lstrip('/')
-            file_object_key = parsed_file_url.path.lstrip('/')
+        for url in urls_to_delete:
+            parsed_url = urlparse(url)
+            object_key = parsed_url.path.lstrip('/')
+            s3_client.delete_object(Bucket=custombucket, Key=object_key)
 
-            # Delete objects from S3 using the S3 client
-            s3_client.delete_object(Bucket=custombucket, Key=logo_object_key)
-            s3_client.delete_object(Bucket=custombucket, Key=file_object_key)
+        # 2. Delete records from `companyFile` and `file` tables
+        cursor.execute("DELETE FROM companyFile WHERE company_id=%s", (company_id,))
+        cursor.execute("DELETE FROM file WHERE file_id IN (SELECT file_id FROM companyFile WHERE company_id=%s)", (company_id,))
+        
+        # 3. Delete company record
+        cursor.execute("DELETE FROM company WHERE company_id=%s", (company_id,))
+        
+        db_conn.commit()
 
-            # Delete the company record from the database
-            delete_sql = "DELETE FROM company WHERE company_id = %s"
-            cursor.execute(delete_sql, (company_id,))
-            db_conn.commit()
-            cursor.close()
+        return jsonify({"message": "Company and associated objects deleted successfully"}), 200
 
-            return jsonify({"message": "Company and associated objects deleted successfully"}), 200
-        else:
-            return jsonify({"message": "Company not found"}), 404
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+    finally:
+        cursor.close()
+
 
 
 
@@ -401,7 +401,29 @@ def view_companies():
     except Exception as e:
         return str(e)
     
+@app.route("/login", methods=['Post'])
+def view_companies():
+    try:
+        # Retrieve company data from the database
+        cursor = db_conn.cursor()
+        select_sql = "SELECT company_id, company_name, industry FROM company"
+        cursor.execute(select_sql)
+        company_data = cursor.fetchall()
+        cursor.close()
 
+        # Create a list to store the company details
+        companies = []
+
+        # Loop through the retrieved data and fetch S3 URLs for logos
+        for company in company_data:
+            company_id, company_name, industry = company
+            # Assuming you have a naming convention for the logo files
+            
+            companies.append({'company_id': company_id,'company_name': company_name, 'industry': industry})
+
+        return jsonify(companies)
+    except Exception as e:
+        return str(e)
 
 
 if __name__ == "__main__":
