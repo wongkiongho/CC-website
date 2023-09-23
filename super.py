@@ -70,14 +70,19 @@ def studentList():
 def applications_page():
     try:
         with db_conn.cursor() as cursor:
-            select_sql = "SELECT student_id, company_id FROM application"
+            select_sql = "SELECT student_id, company_id, status, details FROM application"
             cursor.execute(select_sql)
             application_data = cursor.fetchall()
 
         applications = []
         for application in application_data:
-            student_id, company_id = application
-            applications.append({'student_id': student_id, 'company_id': company_id})
+            student_id, company_id, status, details = application
+            applications.append({
+                'student_id': student_id, 
+                'company_id': company_id,
+                'status': status,
+                'details': details
+            })
 
         return render_template('supervisor-application.html', applications=applications)
     except Exception as e:
