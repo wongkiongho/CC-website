@@ -273,43 +273,50 @@ def edit_profile(student_id):
         print("Exception occurred:", e)
         traceback.print_exc()
         return "Error occurred while fetching or updating student details", 500
-
 @app.route("/application-status/<student_id>", methods=['GET'])
 def application_status(student_id):
     try:
         cursor = db_conn.cursor()
-
-        # SQL query to join the application, studentDetails, and company tables
+        
+        # SQL query to fetch application details
         query = """
         SELECT 
-            s.name AS student_name,
-            a.details AS internship_details,
-            c.company_name,
-            c.email AS company_email,
+            s.student_name, 
+            a.internship_details, 
+            c.company_name, 
+            c.company_email, 
             a.status
-        FROM application a
-        JOIN studentDetails s ON a.student_id = s.student_id
-        JOIN company c ON a.company_id = c.company_id
-        WHERE a.student_id = %s;
+        FROM 
+            applications AS a
+        JOIN 
+            studentDetails AS s ON a.student_id = s.student_id
+        JOIN 
+            company AS c ON a.company_id = c.company_id
+        WHERE 
+            a.student_id = %s;
         """
-        print(query)
-        cursor.execute(query, (student_id,))
-        applications = cursor.fetchall()
-        print(applications)
-        print("Number of applications fetched:", len(applications))
-
-
-        cursor.close()
         
-        return render_template('application-status.html', applications=applications)
+        cursor.execute(query, (student_id,))
+        raw_applications = cursor.fetchall()
+        cursor.close()
+
+        # Convert the fetched data into a list of dictionaries
+        applications_list = []
+        for app in raw_applications:
+            app_dict = {
+                "student_name": app[0],
+                "internship_details": app[1] if app[1] else "N/A",  # Handle None values
+                "company_name": app[2],
+                "company_email": app[3],
+                "status": app[4] if app[4] else "Pending"  # Handle None values
+            }
+            applications_list.append(app_dict)
+
+        return render_template('application-status.html', applications=applications_list)
+
     except Exception as e:
         print(e)
         return "Error occurred while fetching application status", 500
-    
-    except MySQLError as db_err:
-        print("Database error:", db_err)
-        return "Database error occurred", 500
-
 
 
 
