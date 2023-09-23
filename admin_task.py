@@ -162,7 +162,7 @@ def VerifyStudentLogin():
 
             if hashed_input_password == stored_password:
                 # Passwords match, login successful, navigate to student profile
-                return redirect(url_for('viewStudentProfilePage'))
+                return redirect(url_for('/admin-manage-company.html'))
             else:
                 # Passwords do not match, login failed
                 return jsonify({"error": "Invalid credentials"}), 401
@@ -177,7 +177,7 @@ def VerifyStudentLogin():
         db_conn.close()
     
 # add supervisor
-@app.route("/addsupervisor", methods=['POST'])
+@app.route("/addsupervisor", methods=['GET'])
 def Addsupervisor():
     # Retrieve form fields
     supervisor_id = request.form.get("supervisor_id")
@@ -193,7 +193,7 @@ def Addsupervisor():
         db_conn.commit()
 
         print("Data inserted in MySQL RDS...")
-        return redirect(url_for('home'))
+        return redirect(url_for('viewAddSupervisorPage'))
 
     except Exception as e:
         print(f"Error: {e}")
@@ -217,10 +217,10 @@ def view_supervisors():
 
         # Loop through the retrieved data and fetch S3 URLs for logos
         for supervisor in supervisor_data:
-            supervisor_id, full_name, email = supervisor
+            supervisor_id, name, email = supervisor
             # Assuming you have a naming convention for the logo files
             
-            supervisorList.append({'supervisor_id': supervisor_id, 'full_name': full_name, 'email': email})
+            supervisorList.append({'supervisor_id': supervisor_id, 'name': name, 'email': email})
 
         return jsonify(supervisorList)
     except Exception as e:
