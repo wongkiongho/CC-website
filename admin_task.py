@@ -76,8 +76,8 @@ def Addstudent():
         cursor.execute(insert_sql, (student_id, name, email, password))
         db_conn.commit()
 
-        #print("Data inserted in MySQL RDS...")
-        #return redirect(url_for('home'))
+        print("Data inserted in MySQL RDS...")
+        return redirect(url_for('home'))
 
     except Exception as e:
         print(f"Error: {e}")
