@@ -145,10 +145,11 @@
                     supervisorList.forEach(supervisor => {
                         const row = `
                             <tr data-supervisor-id="${supervisor.supervisor_id}">
+                                <td class="border p-4">${supervisor.supervisor_id}</td>
                                 <td class="border p-4">${supervisor.name}</td>
                                 <td class="border p-4">${supervisor.email}</td>
                                 <td class="border p-4 text-center">
-                                    <a href="javascript:void(0);" onclick="deleteStudent('${studentDetails.student_id}');" class="text-red-600 hover:text-red-800">Delete</a>
+                                    <a href="javascript:void(0);" onclick="deleteSupervisor('${supervisor.supervisor_id}');" class="text-red-600 hover:text-red-800">Delete</a>
                                 </td>
                             </tr>
                         `;
@@ -161,9 +162,9 @@
                 });
             }
 
-            function deleteSupervisor(supervisorid) {
+            function deleteSupervisor(supervisor_id) {
                 console.log("function work");
-                fetch(`/deletesupervisor/${supervisorid}`, {
+                fetch(`/deletesupervisor/${supervisor_id}`, {
                     method: 'DELETE'
                 })
                 .then(response => response.json())
