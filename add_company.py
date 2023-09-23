@@ -437,10 +437,8 @@ def studentLogin():
 
     finally:
         cursor.close()
-@app.route("/profile")
-def profile():
-    message = request.args.get("message")
-    return render_template('profile.html', message=message)
+
+
 @app.route("/supervisor-login", methods=['GET', 'POST'])
 def supervisorLogin():
     try:
