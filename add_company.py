@@ -409,6 +409,8 @@ def supervisorLogin():
         if request.method == 'POST':
             supervisor_id = request.form.get("supervisor_id")
             password = request.form.get("password")
+            print("supervisor_id="+ supervisor_id)
+            print("password="+ password)
 
             # Fetch supervisor based on ID
             cursor.execute("SELECT password FROM supervisor WHERE supervisor_id=%s", (supervisor_id,))
