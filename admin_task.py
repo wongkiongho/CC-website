@@ -40,6 +40,11 @@ else:
 def home():
     return render_template('/admin-add-student.html')
 
+# student profile
+app.route("/profile.html", methods=['GET', 'POST'])
+def viewStudentProfilePage():
+    return render_template('profile.html')
+
 # add student page
 app.route("/admin-add-student.html", methods=['GET', 'POST'])
 def viewAddStudentPage():
@@ -48,7 +53,7 @@ def viewAddStudentPage():
 # manage student page
 app.route("/admin-manage-student.html", methods=['GET', 'POST'])
 def viewManageStudentPage():
-    return render_template('admin-manage-student.html')
+    return render_template('/admin-manage-student.html')
 
 # add supervisor page
 app.route("/admin-add-supervisor.html", methods=['GET', 'POST'])
@@ -61,7 +66,14 @@ def viewManageSupervisorPage():
     return render_template('admin-manage-supervisor.html')
 
 # student login page
+app.route("student-login.html", methods=['GET', 'POST'])
+def viewStudentLoginPage():
+    return render_template('student-login.html')
 
+# supervisor login page
+app.route("supervisor-login.html", methods=['GET', 'POST'])
+def viewSupervisorLoginPage():
+    return render_template('supervisor-login.html')
 
 # add student (DONE)
 @app.route("/addstudent", methods=['POST'])
@@ -125,6 +137,45 @@ def delete_student(student_id):
     except Exception as e:
         return jsonify({"error": str(e)}), 500
     
+
+# verify student login
+@app.route("/verifyStudentLogin", methods=['POST'])
+def VerifyStudentLogin():
+    # Retrieve form fields
+    student_id = request.form.get("student_id")
+    password = request.form.get("password")
+
+    try:
+        # Connect to the database
+        db_conn = pymysql.connect(**db_config)
+        cursor = db_conn.cursor()
+
+        # Query the database to retrieve the hashed password for the given student_id
+        select_sql = "SELECT password FROM studentDetails WHERE student_id = %s"
+        cursor.execute(select_sql, (student_id,))
+        result = cursor.fetchone()
+
+        if result:
+            # Compare the hashed password with the input password
+            stored_password = result[0]  # Assuming the password is in the first column
+            hashed_input_password = hashlib.sha256(password.encode()).hexdigest()
+
+            if hashed_input_password == stored_password:
+                # Passwords match, login successful, navigate to student profile
+                return redirect(url_for('viewStudentProfilePage'))
+            else:
+                # Passwords do not match, login failed
+                return jsonify({"error": "Invalid credentials"}), 401
+        else:
+            # Student not found in the database
+            return jsonify({"error": "Student not found"}), 404
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    finally:
+        cursor.close()
+        db_conn.close()
+    
 # add supervisor
 @app.route("/addsupervisor", methods=['POST'])
 def Addsupervisor():
@@ -151,7 +202,7 @@ def Addsupervisor():
         cursor.close()
     
 # view supervisor
-@app.route("/viewsupervisor", methods=['GET'])
+@app.route("/viewsupervisors", methods=['GET'])
 def view_supervisors():
     try:
         # Retrieve company data from the database
@@ -184,9 +235,47 @@ def delete_supervisor(supervisor_id):
         cursor.execute(delete_sql, (supervisor_id,))
         db_conn.commit()
         cursor.close()
-        return jsonify({"message": "Student information deleted successfully"}), 200
+        return jsonify({"message": "Supervisor information deleted successfully"}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    
+# verify supervisor login
+@app.route("/verifySupervisorLogin", methods=['POST'])
+def VerifySupervisorLogin():
+    # Retrieve form fields
+    supervisor_id = request.form.get("supervisor_id")
+    password = request.form.get("password")
+
+    try:
+        # Connect to the database
+        db_conn = pymysql.connect(**db_config)
+        cursor = db_conn.cursor()
+
+        # Query the database to retrieve the hashed password for the given student_id
+        select_sql = "SELECT password FROM supervisor WHERE supervisor_id = %s"
+        cursor.execute(select_sql, (supervisor_id,))
+        result = cursor.fetchone()
+
+        if result:
+            # Compare the hashed password with the input password
+            stored_password = result[0]  # Assuming the password is in the first column
+            hashed_input_password = hashlib.sha256(password.encode()).hexdigest()
+
+            if hashed_input_password == stored_password:
+                # Passwords match, login successful, navigate to student profile
+                return redirect(url_for('viewStudentProfilePage')) #OTW
+            else:
+                # Passwords do not match, login failed
+                return jsonify({"error": "Invalid credentials"}), 401
+        else:
+            # Student not found in the database
+            return jsonify({"error": "Student not found"}), 404
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    finally:
+        cursor.close()
+        db_conn.close()
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=80, debug=True)
