@@ -173,49 +173,6 @@ def delete_student(student_id):
     except Exception as e:
         return jsonify({"error": str(e)}), 500
     
-
-# verify student login
-@app.route("/verifyStudentLogin", methods=['POST'])
-def VerifyStudentLogin():
-    # Retrieve form fields
-    student_id = request.form.get("student_id")
-    password = request.form.get("password")
-
-    db_conn = None  # Initialize the variable outside the try block
-
-    try:
-        # Connect to the database
-        db_conn = pymysql.connect(**db_config)
-        cursor = db_conn.cursor()
-
-        # Query the database to retrieve the hashed password for the given student_id
-        select_sql = "SELECT password FROM studentDetails WHERE student_id = %s"
-        cursor.execute(select_sql, (student_id,))
-        result = cursor.fetchone()
-
-        if result:
-            # Compare the hashed password with the input password
-            stored_password = result[4]  # Assuming the password is in the first column
-            hashed_input_password = hashlib.sha256(password.encode()).hexdigest()
-
-            if hashed_input_password == stored_password:
-                # Passwords match, login successful, navigate to the admin page
-                return redirect(url_for('/profile.html'))
-            else:
-                # Passwords do not match, login failed
-                return jsonify({"error": "Invalid credentials"}), 401
-        else:
-            # Student not found in the database
-            return jsonify({"error": "Student not found"}), 404
-
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-    finally:
-        if db_conn:
-            cursor.close()
-            db_conn.close()
-
-    
 # add supervisor
 @app.route("/addsupervisor", methods=['GET'])
 def Addsupervisor():
@@ -238,6 +195,21 @@ def Addsupervisor():
     except Exception as e:
         print(f"Error: {e}")
         return str(e)
+    finally:
+        cursor.close()
+
+# update number of student
+@app.route("/getSupervisorCount", methods=['GET'])
+def get_supervisor_count():
+    try:
+        cursor = db_conn.cursor()
+        fetch_count_sql = "SELECT COUNT(*) FROM supervisor"
+        cursor.execute(fetch_count_sql)
+        supervisor_count = cursor.fetchone()[0]
+
+        return jsonify({"supervisorCount": supervisor_count}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
     finally:
         cursor.close()
     
@@ -278,44 +250,6 @@ def delete_supervisor(supervisor_id):
         return jsonify({"message": "Supervisor information deleted successfully"}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-    
-# verify supervisor login
-@app.route("/verifySupervisorLogin", methods=['POST'])
-def VerifySupervisorLogin():
-    # Retrieve form fields
-    supervisor_id = request.form.get("supervisor_id")
-    password = request.form.get("password")
-
-    try:
-        # Connect to the database
-        db_conn = pymysql.connect(**db_config)
-        cursor = db_conn.cursor()
-
-        # Query the database to retrieve the hashed password for the given student_id
-        select_sql = "SELECT password FROM supervisor WHERE supervisor_id = %s"
-        cursor.execute(select_sql, (supervisor_id,))
-        result = cursor.fetchone()
-
-        if result:
-            # Compare the hashed password with the input password
-            stored_password = result[0]  # Assuming the password is in the first column
-            hashed_input_password = hashlib.sha256(password.encode()).hexdigest()
-
-            if hashed_input_password == stored_password:
-                # Passwords match, login successful, navigate to student profile
-                return redirect(url_for('viewStudentProfilePage')) #OTW
-            else:
-                # Passwords do not match, login failed
-                return jsonify({"error": "Invalid credentials"}), 401
-        else:
-            # Student not found in the database
-            return jsonify({"error": "Student not found"}), 404
-
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-    finally:
-        cursor.close()
-        db_conn.close()
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=80, debug=True)
