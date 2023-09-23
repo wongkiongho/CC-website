@@ -46,7 +46,7 @@ def approve_reject():
 
 
 @app.route("/studentlist", methods=['GET'])
-def student_list_page():
+def studentList():
     try:
         print("Student list page accessed")  # Debugging line
         with db_conn.cursor() as cursor:
