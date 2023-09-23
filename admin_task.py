@@ -1,3 +1,4 @@
+import hashlib
 from flask import Flask, render_template, redirect, url_for, request
 from pymysql import connections
 import os
@@ -65,6 +66,11 @@ def viewAddSupervisorPage():
 def viewManageSupervisorPage():
     return render_template('admin-manage-supervisor.html')
 
+# admin login page
+@app.route("/admin-login.html", methods=['GET', 'POST'])
+def viewAdminLoginPage():
+    return render_template('admin-login.html')
+
 # student login page
 @app.route("/student-login.html", methods=['GET', 'POST'])
 def viewStudentLoginPage():
@@ -91,7 +97,7 @@ def Addstudent():
         db_conn.commit()
 
         print("Data inserted in MySQL RDS...")
-        return redirect(url_for('home'))
+        return jsonify({"message": "Student information added successfully"}), 200
 
     except Exception as e:
         print(f"Error: {e}")
@@ -145,6 +151,8 @@ def VerifyStudentLogin():
     student_id = request.form.get("student_id")
     password = request.form.get("password")
 
+    db_conn = None  # Initialize the variable outside the try block
+
     try:
         # Connect to the database
         db_conn = pymysql.connect(**db_config)
@@ -161,8 +169,8 @@ def VerifyStudentLogin():
             hashed_input_password = hashlib.sha256(password.encode()).hexdigest()
 
             if hashed_input_password == stored_password:
-                # Passwords match, login successful, navigate to student profile
-                return redirect(url_for('/admin-manage-company.html'))
+                # Passwords match, login successful, navigate to the admin page
+                return redirect(url_for('/profile.html'))
             else:
                 # Passwords do not match, login failed
                 return jsonify({"error": "Invalid credentials"}), 401
@@ -173,8 +181,10 @@ def VerifyStudentLogin():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
     finally:
-        cursor.close()
-        db_conn.close()
+        if db_conn:
+            cursor.close()
+            db_conn.close()
+
     
 # add supervisor
 @app.route("/addsupervisor", methods=['GET'])
@@ -193,7 +203,8 @@ def Addsupervisor():
         db_conn.commit()
 
         print("Data inserted in MySQL RDS...")
-        return redirect(url_for('viewAddSupervisorPage'))
+        # return redirect(url_for('viewAddSupervisorPage'))
+        return jsonify({"message": "Student information added successfully"}), 200
 
     except Exception as e:
         print(f"Error: {e}")
