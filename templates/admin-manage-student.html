@@ -108,6 +108,7 @@
                             <a href="javascript:void(0);" onclick="deleteStudent()" class="text-red-600 hover:text-red-800">Delete</a>
                         </td>
                     </tr> -->
+                    <!-- List of students content -->
                 </tbody>
             </table>
         </section>
@@ -124,7 +125,11 @@
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script>
             function navigateAddStudentPage() {
-                window.location.href = "viewAddStudentPage";
+                window.location.href = "/admin-add-student.html";
+            }
+
+            function logout() {
+                window.location.href = "/student-login.html";
             }
 
             function fetchStudents() {
@@ -152,6 +157,7 @@
                                 </td>
                             </tr>
                         `;
+
                         studentTable.append(row);
                     });
                 })
