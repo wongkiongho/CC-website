@@ -111,7 +111,7 @@ def Addstudent():
         updated_count = cursor.fetchone()[0]
 
         print("Data inserted in MySQL RDS...")
-        return redirect(url_for('/admin-add-student.html'))
+        return redirect(url_for('viewAddStudentPage'))
 
     except Exception as e:
         print(f"Error: {e}")
@@ -167,11 +167,6 @@ def delete_student(student_id):
         delete_sql = "DELETE FROM studentDetails WHERE student_id = %s"
         cursor.execute(delete_sql, (student_id,))
         db_conn.commit()
-
-        # Fetch the updated student count from the database
-        fetch_count_sql = "SELECT COUNT(*) FROM studentDetails"
-        cursor.execute(fetch_count_sql)
-        updated_count = cursor.fetchone()[0]
 
         cursor.close()
         return jsonify({"message": "Student information deleted successfully"}), 200
