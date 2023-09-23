@@ -68,7 +68,8 @@
         <div class="flex space-x-6">
             <div class="flex items-center">
                 <p class="text-lg font-semibold mr-4">Total Companies:</p>
-                <p class="text-xl text-blue-600">200</p> <!-- Dynamic Value -->
+                <p id="totalCompanies" class="text-xl text-blue-600">0</p> <!-- This will be a Dynamic Value -->
+
             </div>
         </div>
     </section>
@@ -143,15 +144,15 @@
             window.location.href = "/admin-add-company.html";
         }
 
-    function fetchCompanies() {
-        fetch('/viewcompanies')
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(companies => {
+        function fetchCompanies() {
+    fetch('/viewcompanies')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(companies => {
             const companyTable = $('#company-data');
 
             // Clear any existing rows
@@ -172,11 +173,16 @@
                 `;
 
                 companyTable.append(row);
+            });
+
+            // Set the total companies count
+            $('#totalCompanies').text(companies.length);
+        })
+        .catch(error => {
+            console.error('Error fetching companies:', error);
         });
-    })
-    .catch(error => {
-        console.error('Error fetching companies:', error);
-    });
+}
+
 }
 
 
