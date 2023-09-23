@@ -23,6 +23,13 @@ db_conn = connections.Connection(
     db=customdb
 )
 
+db_config = {
+    "host": customhost,
+    "user": customuser,
+    "password": custompass,
+    "db": customdb,
+}
+
 output = {}
 
 table = 'studentDetails'
