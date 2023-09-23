@@ -159,10 +159,7 @@ def VerifyStudentLogin():
     student_id = request.form.get("student_id")
     password = request.form.get("password")
 
-    print(f"Received student_id: {student_id}")
-    print(f"Received password: {password}")
-    print(f"Stored hashed password: {stored_password}")
-    print(f"Computed hashed password: {hashed_input_password}")
+    
 
     db_conn = None  # Initialize the variable outside the try block
 
@@ -192,6 +189,10 @@ def VerifyStudentLogin():
             return jsonify({"error": "Student not found"}), 404
 
     except Exception as e:
+        print(f"Received student_id: {student_id}")
+        print(f"Received password: {password}")
+        print(f"Stored hashed password: {stored_password}")
+        print(f"Computed hashed password: {hashed_input_password}")
         return jsonify({"error": str(e)}), 500
     finally:
         if db_conn:
