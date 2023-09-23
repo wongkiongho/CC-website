@@ -10,7 +10,7 @@ import mimetypes
 
 app = Flask(__name__)
 
-bucket = custombucket
+bucket = "limjiasheng-bucket"
 region = customregion
 
 db_conn = connections.Connection(
@@ -27,7 +27,8 @@ table = 'studentDetails'
 table = 'supervisor'
 
 s3 = boto3.resource('s3')
-bucket_location = boto3.client('s3').get_bucket_location(Bucket=custombucket)
+s3_client = boto3.client('s3')
+bucket_location = boto3.client('s3').get_bucket_location(Bucket="limjiasheng-bucket")
 s3_location = (bucket_location['LocationConstraint'])
 
 if s3_location is None:
