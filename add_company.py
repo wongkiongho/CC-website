@@ -9,13 +9,13 @@ from flask import jsonify
 import mimetypes
 from urllib.parse import urlparse
 from flask import session
-
+import os
 
 
 
 
 app = Flask(__name__)
-
+app.secret_key = os.urandom(24)
 bucket = custombucket
 region = customregion
 
