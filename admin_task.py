@@ -43,12 +43,12 @@ def home():
 # add student page
 app.route("/admin-add-student.html", methods=['GET', 'POST'])
 def viewAddStudentPage():
-    return render_template('admin-add-student.html')
+    return render_template('/admin-add-student.html')
 
 # manage student page
 app.route("/admin-manage-student.html", methods=['GET', 'POST'])
 def viewManageStudentPage():
-    return render_template('admin-manage-student.html')
+    return render_template('/admin-manage-student.html')
 
 # add supervisor page
 app.route("/admin-add-supervisor.html", methods=['GET', 'POST'])
@@ -60,7 +60,10 @@ app.route("/admin-manage-supervisor.html", methods=['GET', 'POST'])
 def viewManageSupervisorPage():
     return render_template('admin-manage-supervisor.html')
 
-# add student
+# student login page
+
+
+# add student (DONE)
 @app.route("/addstudent", methods=['POST'])
 def Addstudent():
     # Retrieve form fields
@@ -83,30 +86,6 @@ def Addstudent():
         return str(e)
     finally:
         cursor.close()
-       
-    # finally:
-    #     cursor.close()
-    # # If it's a GET request, simply render the form
-    # print("all modification done...")
-    # return redirect(url_for('admin-manage-company.html'))
-
-# # view student
-# @app.route("/viewstudent/<student_id>", methods=['GET'])
-# def viewStudent(student_id):
-#     try:
-#         cursor = db_conn.cursor()
-#         cursor.execute("SELECT * FROM studentDetails WHERE student_id=%s", (student_id,))
-#         studentDetails = cursor.fetchone()
-#         cursor.close()
-#         if studentDetails:
-#         # Deserialize the positions JSON before sending to template
-#             company_positions = json.loads(company[7])
-            
-#             return render_template('admin-view-company.html', company=company, company_positions=company_positions)
-#         else:
-#             return "Company not found", 404
-#     except Exception as e:
-#         return str(e)
 
 # view list of students
 @app.route("/viewstudents", methods=['GET'])
