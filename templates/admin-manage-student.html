@@ -97,17 +97,17 @@
                 </thead>
                 <tbody id="student-data">
                     <!-- This is a sample row, replicate this structure for each company -->
-                    <tr>
+                    <!-- <tr>
                         <td class="border p-4">2101234</td>
                         <td class="border p-4">ABC Corp</td>
                         <td class="border p-4">Technology</td>
-                        <!-- <td class="border p-4 text-center">
-                            <a href="/viewstudent/${student_account.student_id}" class="text-blue-600 hover:text-blue-800">View</a>
-                        </td> -->
                         <td class="border p-4 text-center">
-                            <a href="javascript:void(0);" onclick="deleteStudent()" class="text-red-600 hover:text-red-800">Delete</a> <!-- Red for delete -->
+                            <a href="/viewstudent/${student_account.student_id}" class="text-blue-600 hover:text-blue-800">View</a>
                         </td>
-                    </tr>
+                        <td class="border p-4 text-center">
+                            <a href="javascript:void(0);" onclick="deleteStudent()" class="text-red-600 hover:text-red-800">Delete</a>
+                        </td>
+                    </tr> -->
                 </tbody>
             </table>
         </section>
@@ -124,7 +124,7 @@
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script>
             function navigateAddStudentPage() {
-                window.location.href = "/viewAddStudentPage";
+                window.location.href = "viewAddStudentPage";
             }
 
             function fetchStudents() {
@@ -160,9 +160,9 @@
                 });
             }
 
-            function deleteStudent(studentid) {
+            function deleteStudent(student_id) {
                 console.log("function work");
-                fetch(`/deletestudent/${studentid}`, {
+                fetch(`/deletestudent/${student_id}`, {
                     method: 'DELETE'
                 })
                 .then(response => response.json())
