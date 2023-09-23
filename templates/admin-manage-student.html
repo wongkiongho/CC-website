@@ -74,8 +74,8 @@
         <!-- Search & Filter -->
         <section class="bg-white p-5 rounded-lg shadow-md">
             <div class="flex items-center space-x-4">
-                <input id="searchInput" type="text" placeholder="Search student..." class="border p-2 flex-grow rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
-                <button id="searchButton" onclick="filterStudents()" class="bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400">Search</button>
+                <input type="text" placeholder="Search student..." class="border p-2 flex-grow rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
+                <button class="bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400">Search</button>
             </div>
         </section>
 
@@ -203,23 +203,6 @@
             }
 
             updateStudentCount();
-
-            const searchInput = document.getElementById('searchInput');
-            const studentList = document.getElementById('studentList');
-
-            function filterStudents() {
-                const searchTerm = searchInput.value.toLowerCase();
-
-                const studentRows = studentList.querySelectorAll('tr[data-student-id]');
-                studentRows.forEach(row => {
-                    const studentName = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
-                    if (studentName.includes(searchTerm)) {
-                        row.style.display = 'table-row';
-                    } else {
-                        row.style.display = 'none';
-                    }
-                });
-            }
 
             // Attach an event listener to the search button
             const searchButton = document.getElementById('searchButton');
