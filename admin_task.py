@@ -219,7 +219,7 @@ def view_supervisors():
     try:
         # Retrieve company data from the database
         cursor = db_conn.cursor()
-        select_sql = "SELECT supervisor_id, full_name, email FROM supervisor"
+        select_sql = "SELECT supervisor_id, name, email FROM supervisor"
         cursor.execute(select_sql)
         supervisor_data = cursor.fetchall()
         cursor.close()
