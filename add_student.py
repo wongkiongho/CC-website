@@ -292,15 +292,23 @@ def application_status(student_id):
         JOIN company c ON a.company_id = c.company_id
         WHERE a.student_id = %s;
         """
-
+        print(query)
         cursor.execute(query, (student_id,))
         applications = cursor.fetchall()
+        print(applications)
+        print("Number of applications fetched:", len(applications))
+
+
         cursor.close()
         
         return render_template('application-status.html', applications=applications)
     except Exception as e:
         print(e)
         return "Error occurred while fetching application status", 500
+    
+    except MySQLError as db_err:
+        print("Database error:", db_err)
+        return "Database error occurred", 500
 
 
 
