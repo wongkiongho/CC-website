@@ -226,9 +226,9 @@ def edit_profile(student_id):
             progress_file = request.files.get('progress')
             if progress_file and progress_file.filename:
                 timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
-                progress_file_name_in_s3 = f"progress_{student_id}_{timestamp}.pdf"
+                progress_file_name_in_s3 = progress_file.filename
                 s3.Bucket("yewshuhan-bucket").put_object(Key=progress_file_name_in_s3, Body=progress_file, ContentDisposition=f"attachment; filename={progress_file.filename}")
-                progress_file_url = f"https://s3{s3_location}.amazonaws.com/{custombucket}/{progress_file_name_in_s3}"
+                progress_file_url =  progress_file_name_in_s3
 
                 # Insert file_url into the `file` table
                 file_id = str(uuid4())
