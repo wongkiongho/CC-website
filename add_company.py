@@ -8,6 +8,9 @@ import json
 from flask import jsonify
 import mimetypes
 from urllib.parse import urlparse
+from flask import session
+
+
 
 
 
@@ -412,15 +415,18 @@ def studentLogin():
             print("student_id="+ student_id)
             print("password="+ password)
 
-            # Fetch supervisor based on ID
+            # Fetch student based on ID
             cursor.execute("SELECT password FROM studentDetails WHERE student_id=%s", (student_id,))
             result = cursor.fetchone()
 
-            # If supervisor does not exist or password doesn't match
+            # If student does not exist or password doesn't match
             if not result or result[0] != password:
                 return "Invalid student ID or password!", 401
 
-            # If successful, you can redirect the supervisor to their dashboard with a message
+            # Store the student_id in the session
+            session['student_id'] = student_id
+
+            # If successful, you can redirect the student to their dashboard with a message
             return redirect(url_for('profile', message="login_successful"))
 
         # If it's a GET request, render the login form
@@ -431,12 +437,10 @@ def studentLogin():
 
     finally:
         cursor.close()
-
 @app.route("/profile")
 def profile():
     message = request.args.get("message")
     return render_template('profile.html', message=message)
-
 @app.route("/supervisor-login", methods=['GET', 'POST'])
 def supervisorLogin():
     try:
@@ -454,7 +458,10 @@ def supervisorLogin():
 
             # If supervisor does not exist or password doesn't match
             if not result or result[0] != password:
-                return "Invalid student ID or password!", 401
+                return "Invalid supervisor ID or password!", 401
+
+            # Store the supervisor_id in the session
+            session['supervisor_id'] = supervisor_id
 
             # If successful, you can redirect the supervisor to their dashboard with a message
             return redirect(url_for('studentList', message="login_successful"))
@@ -467,6 +474,7 @@ def supervisorLogin():
 
     finally:
         cursor.close()
+
 
 @app.route("/supervisor-studentList.html")
 def studentList():
@@ -484,19 +492,24 @@ def adminLogin():
             print("admin_id="+ admin_id)
             print("password="+ password)
 
-            # Fetch supervisor based on ID
+            # Fetch admin based on ID
             cursor.execute("SELECT password FROM admin WHERE admin_id=%s", (admin_id,))
             result = cursor.fetchone()
 
-            # If supervisor does not exist or password doesn't match
+            # If admin does not exist or password doesn't match
             if not result or result[0] != password:
-                return "Invalid student ID or password!", 401
+                return "Invalid admin ID or password!", 401
 
-            # If successful, you can redirect the supervisor to their dashboard with a message
+            # Store the admin_id in the session
+            session['admin_id'] = admin_id
+
+            # If successful, you can redirect the admin to their management dashboard or appropriate page with a message
             return redirect(url_for('manageStudent', message="login_successful"))
 
         # If it's a GET request, render the login form
-        return render_template('supervisor-login.html', )
+        # Note: Ensure you have a template named 'admin-login.html' for this purpose, 
+        # because using 'supervisor-login.html' for admins might be misleading.
+        return render_template('admin-login.html', )
 
     except Exception as e:
         return str(e)
@@ -509,6 +522,20 @@ def manageStudent():
     message = request.args.get("message")
     return render_template('supervisor-studentList.html', message=message)
     
+@app.route('/logoutStudent')
+def logout():
+    session.clear()  # This will clear all session variables
+    return render_template('student-login.html', message="logout_successful")
+
+@app.route('/logoutAdmin')
+def logout():
+    session.clear()  # This will clear all session variables
+    return render_template('admin-login.html', message="logout_successful")
+
+@app.route('/logoutSupervisor')
+def logout():
+    session.clear()  # This will clear all session variables
+    return render_template('supervisor-login.html', message="logout_successful")
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=80, debug=True)

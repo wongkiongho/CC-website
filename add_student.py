@@ -1,5 +1,5 @@
 
-from flask import Flask, render_template,redirect, url_for, request
+from flask import Flask, render_template,redirect, url_for, request, session
 from pymysql import connections
 import os
 import boto3
@@ -180,7 +180,8 @@ def internship_form(student_id):
 
 #... (All the previous imports and initializations remain unchanged)
 @app.route("/profile/<student_id>", methods=['GET'])
-def profile(student_id):
+def profile():
+    student_id=session.get('student_id')
     try:
         cursor = db_conn.cursor()
         cursor.execute("SELECT student_id, name, email, programme, cohort FROM studentDetails WHERE student_id=%s", (student_id,))
@@ -202,6 +203,7 @@ def profile(student_id):
 
 @app.route("/edit-profile/<student_id>", methods=['GET', 'POST'])
 def edit_profile(student_id):
+    
     try:
         if request.method == 'POST':
             # Handling form submission
