@@ -401,29 +401,41 @@ def view_companies():
     except Exception as e:
         return str(e)
     
-@app.route("/login", methods=['Post'])
-def login():
+@app.route("/supervisor-login", methods=['GET', 'POST'])
+def supervisorLogin():
     try:
-        # Retrieve company data from the database
         cursor = db_conn.cursor()
-        select_sql = "SELECT company_id, company_name, industry FROM company"
-        cursor.execute(select_sql)
-        company_data = cursor.fetchall()
-        cursor.close()
+        
+        if request.method == 'POST':
+            supervisor_id = request.form.get("supervisor_id")
+            password = request.form.get("password")
 
-        # Create a list to store the company details
-        companies = []
+            # Fetch supervisor based on ID
+            cursor.execute("SELECT password FROM supervisor WHERE supervisor_id=%s", (supervisor_id,))
+            result = cursor.fetchone()
 
-        # Loop through the retrieved data and fetch S3 URLs for logos
-        for company in company_data:
-            company_id, company_name, industry = company
-            # Assuming you have a naming convention for the logo files
-            
-            companies.append({'company_id': company_id,'company_name': company_name, 'industry': industry})
+            # If supervisor does not exist or password doesn't match
+            if not result or result[0] != password:
+                return "Invalid supervisor ID or password!", 401
 
-        return jsonify(companies)
+            # If successful, you can redirect the supervisor to their dashboard with a message
+            return redirect(url_for('supervisorStudentList', message="login_successful"))
+
+        # If it's a GET request, render the login form
+        return render_template('supervisor-login.html', )
+
     except Exception as e:
         return str(e)
+
+    finally:
+        cursor.close()
+
+@app.route("/supervisor-studentList")
+def supervisorStudentList():
+    message = request.args.get("message")
+    return render_template('supervisor-studentList.html', message=message)
+
+
 
 
 if __name__ == "__main__":
