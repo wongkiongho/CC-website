@@ -79,7 +79,12 @@ def applications_page():
             """
             cursor.execute(select_sql)
             application_data = cursor.fetchall()
-
+            
+            if not application_data:
+                print("No data returned from the SQL query.")
+            else:
+                print(f"SQL Query returned: {application_data}")
+                
         applications = []
         for application in application_data:
             student_id, company_id, status, details, programme, company_name = application
@@ -88,12 +93,13 @@ def applications_page():
                 'company_id': company_id,
                 'status': status,
                 'details': details,
-                'programme': programme,  # Add programme to the applications list
-                'company_name': company_name  # Add company_name to the applications list
+                'programme': programme, 
+                'company_name': company_name
             })
-
+        
         return render_template('supervisor-application.html', student_applications=applications)
     except Exception as e:
+        print(f"An error occurred: {str(e)}")
         return f"An error occurred: {str(e)}"
 
 @app.route("/approveOrReject", methods=['GET', 'POST'])
