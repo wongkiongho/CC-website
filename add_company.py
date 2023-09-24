@@ -511,7 +511,7 @@ def adminLogin():
 
             # If admin does not exist or password doesn't match
             if not result or result[0] != password:
-                return render_template('supervisor-login.html', message='login_failed')
+                return render_template('admin-login.html', message='login_failed')
 
             # Store the admin_id in the session
             session['admin_id'] = admin_id
