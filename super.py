@@ -114,10 +114,11 @@ def approveOrReject_page():
 def approve_application():
     try:
         data = request.json
-        application_id = data.get('application_id')
+        student_id = data.get('student_id')
+        company_id = data.get('company_id')  # Get company_id from the request data
         with db_conn.cursor() as cursor:
-            update_sql = "UPDATE application SET status='approved' WHERE student_id=%s"
-            cursor.execute(update_sql, (application_id,))
+            update_sql = "UPDATE application SET status='approved' WHERE student_id=%s AND company_id=%s"
+            cursor.execute(update_sql, (student_id, company_id))  # Pass both IDs to the execute method
             db_conn.commit()
         return jsonify(success=True)
     except Exception as e:
@@ -128,10 +129,11 @@ def approve_application():
 def reject_application():
     try:
         data = request.json
-        application_id = data.get('application_id')
+        student_id = data.get('student_id')
+        company_id = data.get('company_id')  # Get company_id from the request data
         with db_conn.cursor() as cursor:
-            update_sql = "UPDATE application SET status='rejected' WHERE student_id=%s"
-            cursor.execute(update_sql, (application_id,))
+            update_sql = "UPDATE application SET status='rejected' WHERE student_id=%s AND company_id=%s"
+            cursor.execute(update_sql, (student_id, company_id))  # Pass both IDs to the execute method
             db_conn.commit()
         return jsonify(success=True)
     except Exception as e:

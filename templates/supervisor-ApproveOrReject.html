@@ -59,8 +59,8 @@
                             <span class="font-bold ml-4">Status:</span> {{ application.status }}
                         </div>
                         <div class="flex items-end space-x-5">
-                            <button class="approve-button bg-green-500 text-white p-2 rounded" onclick="approveApplication('{{ application.student_id }}')">Approve</button>
-                            <button class="reject-button bg-red-500 text-white p-2 rounded" onclick="rejectApplication('{{ application.student_id }}')">Reject</button>
+                            <button class="approve-button bg-green-500 text-white p-2 rounded" onclick="approveApplication('{{ application.student_id }}', '{{ application.company_id }}')">Approve</button>
+                            <button class="reject-button bg-red-500 text-white p-2 rounded" onclick="rejectApplication('{{ application.student_id }}', '{{ application.company_id }}')">Reject</button>
                         </div>
                     </div>
                 {% endfor %}
@@ -80,41 +80,55 @@
             // Implement your logout function here
         }
 
-        function approveApplication(id) {
+        function approveApplication(studentId, companyId) {
     fetch('/approveApplication', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ application_id: id })
+        body: JSON.stringify({ student_id: studentId, company_id: companyId })
     })
-    .then(response => response.json())
+    .then(response => {
+        if(!response.ok) throw new Error('Network response was not ok ' + response.statusText);
+        return response.json();
+    })
     .then(data => {
         if (data.success) {
-            // Optionally update the UI to reflect the change
-            alert('Application approved successfully!');
+            // Refresh the page to reflect the changes
+            location.reload();
         } else {
             alert('Error approving application: ' + data.error);
         }
+    })
+    .catch(error => {
+        console.error('There has been a problem with your fetch operation:', error);
+        alert('There has been a problem with your fetch operation: ' + error);
     });
 }
 
-function rejectApplication(id) {
+function rejectApplication(studentId, companyId) {
     fetch('/rejectApplication', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ application_id: id })
+        body: JSON.stringify({ student_id: studentId, company_id: companyId })
     })
-    .then(response => response.json())
+    .then(response => {
+        if(!response.ok) throw new Error('Network response was not ok ' + response.statusText);
+        return response.json();
+    })
     .then(data => {
         if (data.success) {
-            // Optionally update the UI to reflect the change
-            alert('Application rejected successfully!');
+            // Refresh the page to reflect the changes
+            location.reload();
         } else {
             alert('Error rejecting application: ' + data.error);
         }
+    })
+    .catch(error => {
+        console.error('There has been a problem with your fetch operation:', error);
+        alert('There has been a problem with your fetch operation: ' + error);
     });
 }
     </script>
