@@ -20,6 +20,11 @@
     
 
     <body class="m-0 p-0 bg-gray-200">
+        {% if message == "login_failed" %}
+        <script>
+            alert('Login failed!');
+        </script>
+        {% endif %}
         {% if message == "logout_successful" %}
         <script>
             alert('Logout successful!');

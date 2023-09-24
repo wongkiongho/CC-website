@@ -432,7 +432,7 @@ def studentLogin():
 
             # If student does not exist or password doesn't match
             if not result or result[0] != password:
-                return "Invalid student ID or password!", 401
+                return render_template('student-login.html', message='login_failed')
 
             # Store the student_id in the session
             session['student_id'] = student_id
@@ -471,7 +471,7 @@ def supervisorLogin():
 
             # If supervisor does not exist or password doesn't match
             if not result or result[0] != password:
-                return "Invalid supervisor ID or password!", 401
+                return render_template('supervisor-login.html', message='login_failed')
 
             # Store the supervisor_id in the session
             session['supervisor_id'] = supervisor_id
@@ -511,7 +511,7 @@ def adminLogin():
 
             # If admin does not exist or password doesn't match
             if not result or result[0] != password:
-                return "Invalid admin ID or password!", 401
+                return render_template('supervisor-login.html', message='login_failed')
 
             # Store the admin_id in the session
             session['admin_id'] = admin_id
