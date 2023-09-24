@@ -112,7 +112,7 @@ def approve_or_reject():
 
         applications = []
         for application in application_data:
-            student_id, company_id, status, details, file_url = application
+            student_id, company_id, status, details, file_url, file_name = application
             applications.append({
                 'student_id': student_id,
                 'company_id': company_id,
