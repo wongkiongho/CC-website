@@ -707,11 +707,21 @@ def profile():
 
         if student:
             student_id, name, email, programme, cohort = student
-            
-            # Use the helper function here
-            student_files = get_student_files(student_id)
 
-            return render_template('profile.html', student_id=student_id, name=name, email=email, programme=programme, cohort=cohort, files=student_files, message = message)
+            cursor.execute("SELECT f.file_id, f.file_url, f.file_type, f.file_name, f.file_date FROM file f INNER JOIN studentFile cf ON f.file_id = cf.file_id WHERE cf.student_id = %s", (student_id,))
+            files = cursor.fetchall()
+            # Prepare the list of files and identify the company logo
+            logo_url = None
+            files_list = []
+            for file in files:
+                if file[2] == "ProgressReport":
+                    files_list.append({
+                        "file_url": file[1],
+                        "file_name": file[3]
+                    })
+            
+
+            return render_template('profile.html', student_id=student_id, name=name, email=email, programme=programme, cohort=cohort, files=files, message = message)
         else:
             return "Student not found", 404
     except Exception as e:
