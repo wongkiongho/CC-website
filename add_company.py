@@ -220,6 +220,7 @@ def editCompany(company_id):
                 cursor.execute("INSERT INTO companyFile (file_id, company_id) VALUES (%s, %s)", (logo_file_id, company_id))
                 cursor.execute("INSERT INTO file (file_id, file_url, file_type, file_name, file_date) VALUES (%s, %s, %s, %s, NOW())", (logo_file_id, logo_url, "logo", company_logo_file.filename))
                 db_conn.commit()
+                return render_template('admin-manage-company.html', message='company_edited')
 
             if company_files:
                 if file_ids_to_delete:
@@ -253,7 +254,8 @@ def editCompany(company_id):
                         cursor.execute("INSERT INTO companyFile (file_id, company_id) VALUES (%s, %s)", (file_id, company_id))
                         cursor.execute("INSERT INTO file (file_id, file_url, file_type, file_name, file_date) VALUES (%s, %s, %s, %s, NOW())", (file_id, file_url, "details", detail_file.filename))
                         db_conn.commit()
-                
+
+                return render_template('admin-manage-company.html', message='company_edited')
             
  
     except Exception as e:
@@ -261,7 +263,7 @@ def editCompany(company_id):
 
     finally:
         cursor.close()
-    return render_template('admin-manage-company.html', message='company_edited')
+   
 
 
 
