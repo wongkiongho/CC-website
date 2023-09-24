@@ -904,8 +904,11 @@ def addStudent():
             cursor.execute(insert_sql, (student_id, name, email, password, programme, cohort, supervisor_id))
             db_conn.commit()
 
+            cursor.execute("SELECT supervisor_id, name FROM supervisor")
+            supervisors = cursor.fetchall()
+
             print("Data inserted in MySQL RDS...")
-            return redirect(url_for('addStudent', message='student_added'))
+            return render_template("admin-add-student.html", supervisors=supervisors,message='student_added')
 
     except Exception as e:
         print(f"Error: {e}")
