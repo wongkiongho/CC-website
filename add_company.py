@@ -1164,12 +1164,13 @@ def applications_page():
 def approve_or_reject():
     try:
         with db_conn.cursor() as cursor:
-            # Example SQL, adjust as necessary
+            # Modified SQL to only select applications with a status of "pending"
             select_sql = """
             SELECT a.student_id, a.company_id, a.status, a.details, f.file_url
             FROM application a
             LEFT JOIN studentFile sf ON a.student_id = sf.student_id
             LEFT JOIN file f ON sf.file_id = f.file_id
+            WHERE a.status = 'pending'
             """
             cursor.execute(select_sql)
             application_data = cursor.fetchall()
@@ -1182,12 +1183,12 @@ def approve_or_reject():
                 'company_id': company_id,
                 'status': status,
                 'details': details,
-                'file_url': file_url
+                'file_url': file_url  # file_url will be None if there is no related file
             })
 
         return render_template('supervisor-ApproveOrReject.html', student_applications=applications)
     except Exception as e:
-        return f"An error occurred: {str(e)}"
+        return f"An error occurred: {str(e)}"
 
 @app.route('/approveApplication', methods=['POST'])
 def approve_application():
