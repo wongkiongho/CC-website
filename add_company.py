@@ -707,9 +707,12 @@ def profile():
 
         if student:
             student_id, name, email, programme, cohort = student
+            cursor = db_conn.cursor()
             cursor.execute("SELECT f.file_id, f.file_url, f.file_type, f.file_name, f.file_date FROM file f INNER JOIN studentFile cf ON f.file_id = cf.file_id WHERE cf.student_id = %s", (student_id,))
             files = cursor.fetchall()  # Fetch all records
             # Prepare the list of files and identify the progress report
+
+            logo_url = None
             files_list = []
             for file in files:
                 if file[2] == "ProgressReport":
@@ -717,7 +720,10 @@ def profile():
                         "file_url": file[1],
                         "file_name": file[3]
                     })
-            print(files_list)
+                else:
+                    print("no file")
+            cursor.close()
+
 
 
             return render_template('profile.html', student_id=student_id, name=name, email=email, programme=programme, cohort=cohort, files_list=files_list, message = message)
