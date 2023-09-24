@@ -101,7 +101,7 @@ def approve_or_reject():
         with db_conn.cursor() as cursor:
             # Adjust SQL to only select applications with a status of "pending"
             select_sql = """
-            SELECT a.student_id, a.company_id, a.status, a.details, f.file_url
+            SELECT a.student_id, a.company_id, a.status, a.details, f.file_url, f.file_name
             FROM application a
             LEFT JOIN studentFile sf ON a.student_id = sf.student_id
             LEFT JOIN file f ON sf.file_id = f.file_id
@@ -118,6 +118,7 @@ def approve_or_reject():
                 'company_id': company_id,
                 'status': status,
                 'details': details,
+                'file_name': file_name,
                 'file_url': file_url  # file_url will be None if there is no related file
             })
 
