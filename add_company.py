@@ -576,28 +576,34 @@ def Addstudent():
         return "Please upload your resume."
 
     # Generate a unique name for the resume (using student_id and current timestamp for uniqueness)
-    timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
-    resume_file_name_in_s3 = f"resume_{student_id}_{timestamp}.pdf"
+    resume_content_type, _ = mimetypes.guess_type(resume_file.filename)
+    resume_extension = resume_content_type.split("/")[1] if resume_content_type else ""
+    resume_file_name_in_s3 = f"student_id-{student_id}_resume.{resume_extension}"
+
 
     try:
-        # Upload resume to S3
-        s3.Bucket(custombucket).put_object(Key=resume_file_name_in_s3, Body=resume_file, ContentDisposition=f"attachment; filename={ resume_file.filename}")
+        s3.Bucket(custombucket).put_object(
+            Key=resume_file_name_in_s3, 
+            Body=resume_file, 
+            ContentDisposition=f"attachment; filename={resume_file.filename}"
+        )
+
         
         # Construct the S3 URL for the uploaded resume
         file_url = f"https://s3{s3_location}.amazonaws.com/{custombucket}/{resume_file_name_in_s3}"
-        
+
         # Your SQL to insert data into studentForm
         insert_sql = "INSERT INTO application (student_id, company_id, details) VALUES (%s, %s, %s)"
         insert_sql_application_file = "INSERT INTO applicationFile (file_id, application_id) VALUES (%s, %s)"
-        insert_sql_file = "INSERT INTO file (file_id, file_url,file_type,file_date) VALUES (%s, %s,'Resume','22/2/2022')"
+        insert_sql_file ="INSERT INTO file (file_id, file_url, file_type, file_name, file_date) VALUES (%s, %s, %s, %s, NOW())"
 
 
         cursor = db_conn.cursor()
         cursor.execute(insert_sql, (student_id, company_id, details))
         cursor.execute(insert_sql_application_file, (file_id, application_id))
-        cursor.execute(insert_sql_file, (file_id, file_url))
+        cursor.execute(insert_sql_file, (file_id, file_url, "Resume", resume_file.filename))
         db_conn.commit()
-        print("Student and resume added successfully!")
+        print("Student and resume edited successfully!")
         return render_template("profile.html")
 
     except MySQLError as e:
@@ -736,17 +742,25 @@ def edit_profile():
             # If the progress file is uploaded, save it to S3 and the database.
             progress_file = request.files.get('progress')
             if progress_file and progress_file.filename:
-                timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
-                progress_file_name_in_s3 = progress_file.filename
-                s3.Bucket(custombucket).put_object(Key=progress_file_name_in_s3, Body=progress_file, ContentDisposition=f"attachment; filename={progress_file.filename}")
-                progress_file_url =  progress_file_name_in_s3
+                resume_content_type, _ = mimetypes.guess_type(progress_file.filename)
+                resume_extension = resume_content_type.split("/")[1] if resume_content_type else ""
+                resume_file_name_in_s3 = f"student_id-{student_id}_progressreport.{resume_extension}"
+                s3.Bucket(custombucket).put_object(
+                    Key=resume_file_name_in_s3, 
+                    Body=progress_file, 
+                    ContentDisposition=f"attachment; filename={progress_file.filename}"
+                )
+
+                file_url = f"https://s3{s3_location}.amazonaws.com/{custombucket}/{resume_file_name_in_s3}"
+
 
                 # Insert file_url into the `file` table
                 file_id = str(uuid4())
-                insert_file_sql = "INSERT INTO file (file_id,file_url) VALUES (%s,%s)"
+              
+                insert_file_sql = "INSERT INTO file (file_id, file_url, file_type, file_name, file_date) VALUES (%s, %s, %s, %s, NOW())"
                 with db_conn.cursor() as cursor:
-                    cursor.execute(insert_file_sql, (file_id,progress_file_url))
-                    
+                    cursor.execute(insert_file_sql, (file_id, file_url, "ProgressReport", progress_file.filename))
+                           
                     db_conn.commit()
 
                 # Now, link the student with the file_id in the `studentFile` table
