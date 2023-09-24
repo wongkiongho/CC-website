@@ -522,7 +522,7 @@ def supervisorLogin():
             session['supervisor_id'] = supervisor_id
 
             # If successful, you can redirect the supervisor to their dashboard with a message
-            return redirect(url_for('manageStudent', message="login_successful"))
+            return redirect(url_for('studentList', message="login_successful"))
 
         # If it's a GET request, render the login form
         return render_template('supervisor-login.html', )
@@ -1094,6 +1094,7 @@ def delete_supervisor(supervisor_id):
 
 @app.route("/studentlist", methods=['GET'])
 def studentList():
+    message = request.args.get("message")
     try:
         with db_conn.cursor() as cursor:
             # Fetch all students
@@ -1126,7 +1127,7 @@ def studentList():
                     'reports': reports
                 })
 
-        return render_template('supervisor-studentList.html', students=students)
+        return render_template('supervisor-studentList.html', students=students, message=message)
     except Exception as e:
         return f"An error occurred: {str(e)}"
 
