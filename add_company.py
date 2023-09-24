@@ -882,7 +882,7 @@ def addStudent():
         if request.method == 'GET':
             cursor = db_conn.cursor()
             cursor.execute("SELECT supervisor_id, name FROM supervisor")
-            supevisors = cursor.fetchall()
+            supervisors = cursor.fetchall()
             cursor.close()
             return render_template("admin-add-student.html", supervisors=supervisors)
 
