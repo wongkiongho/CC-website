@@ -68,7 +68,7 @@ def studentList():
                 cursor.execute(select_reports_sql, (student_id,))
                 reports_data = cursor.fetchall()
                 
-                reports = [{'file_url': url, 'file_name': name} for url, name in reports_data] or [{'file_url': 'N/A', 'file_name': 'N/A'}]
+                reports = [{'file_url': url, 'file_name': name} for url, name in reports_data]
                 
                 students.append({
                     'student_id': student_id,
