@@ -477,7 +477,7 @@ def supervisorLogin():
             session['supervisor_id'] = supervisor_id
 
             # If successful, you can redirect the supervisor to their dashboard with a message
-            return redirect(url_for('admin-manage-student.html"', message="login_successful"))
+            return redirect(url_for('manageStudent', message="login_successful"))
 
         # If it's a GET request, render the login form
         return render_template('supervisor-login.html', )
@@ -517,7 +517,7 @@ def adminLogin():
             session['admin_id'] = admin_id
 
             # If successful, you can redirect the admin to their management dashboard or appropriate page with a message
-            return redirect(url_for('manageStudent', message="login_successful"))
+            return redirect(url_for('admin-manage-student.html', message="login_successful"))
 
         # If it's a GET request, render the login form
         # Note: Ensure you have a template named 'admin-login.html' for this purpose, 
