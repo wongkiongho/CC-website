@@ -42,36 +42,38 @@
     </nav>
 
     <!-- Main Content -->
-    <div class="main-content flex flex-col items-center mt-20 ml-80">
-        <!-- Section to Approve/Reject Application -->
-        <section class="approve-reject-section w-3/4 p-5 bg-white rounded shadow">
-            <h2 class="text-2xl font-bold mb-5">Approve/Reject Application</h2>
-            
-            <!-- Applications List -->
-            <div class="applications-list mb-5">
-                {% if student_applications %}
-                {% for application in student_applications %}
-                    <div class="application-item flex justify-between items-center mb-2">
-                        <div>
-                            <span class="font-bold">Student ID:</span> {{ application.student_id }}
-                            <span class="font-bold ml-4">Company ID:</span> {{ application.company_id }}
-                            <span class="font-bold ml-4">Details:</span> {{ application.details }}
-                            <span class="font-bold ml-4">Status:</span> {{ application.status }}
-                        </div>
-                        <div class="flex items-end space-x-5">
-                            <button class="approve-button bg-green-500 text-white p-2 rounded" onclick="approveApplication('{{ application.student_id }}', '{{ application.company_id }}')">Approve</button>
-                            <button class="reject-button bg-red-500 text-white p-2 rounded" onclick="rejectApplication('{{ application.student_id }}', '{{ application.company_id }}')">Reject</button>
-                        </div>
+    <div class="applications-list mb-5">
+        {% if student_applications %}
+        {% for application in student_applications %}
+            <div class="application-item bg-white p-5 rounded shadow mb-5">
+                <!-- Heading with Toggle Button -->
+                <div class="flex justify-between items-center mb-3">
+                    <h3 class="text-xl font-bold">Student ID:{{ application.student_id }}</h3>
+                    <button onclick="toggleDetails(this)" class="px-3 py-1 bg-gray-800 text-white rounded">Toggle Details</button>
+                </div>
+                
+                <!-- Hidden Details -->
+                <div class="details hidden flex flex-col">
+                    <p><span class="font-bold">Company ID:</span> {{ application.company_id }}</p>
+                    <p><span class="font-bold">Details:</span> {{ application.details }}</p>
+                    <p><span class="font-bold">Status:</span> {{ application.status }}</p>
+                    <div class="flex items-end space-x-5 mt-3">
+                        <button class="approve-button bg-green-500 text-white p-2 rounded" onclick="approveApplication('{{ application.student_id }}', '{{ application.company_id }}')">Approve</button>
+                        <button class="reject-button bg-red-500 text-white p-2 rounded" onclick="rejectApplication('{{ application.student_id }}', '{{ application.company_id }}')">Reject</button>
                     </div>
-                {% endfor %}
-                {% else %}
-                    <p>No pending application</p>
-                {% endif %}
-            </div>            
-        </section>
+                </div>
+            </div>
+        {% endfor %}
+        {% else %}
+            <p>No pending application</p>
+        {% endif %}
     </div>
 
     <script>
+         function toggleDetails(button) {
+        const detailsDiv = button.parentElement.nextElementSibling;
+        detailsDiv.classList.toggle('hidden');
+    }
         function toggleMenu() {
             document.getElementById('studentSubmenu').classList.toggle('hidden');
         }
