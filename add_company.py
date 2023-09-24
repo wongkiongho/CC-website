@@ -229,13 +229,13 @@ def editCompany(company_id):
                         db_conn.commit()
                 
             
-            return redirect(url_for('viewCompany', company_id=company_id ,message='edit_successful'))
+
     except Exception as e:
         return str(e)
 
     finally:
         cursor.close()
-
+    return render_template('admin-manage-company.html', message='company_edited')
 
 
 
