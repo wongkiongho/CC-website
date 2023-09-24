@@ -70,36 +70,22 @@ def studentList():
 def applications_page():
     try:
         with db_conn.cursor() as cursor:
-            select_sql = """
-            SELECT a.student_id, a.company_id, a.status, a.details, 
-                   s.programme, c.company_name
-            FROM application a
-            JOIN studentDetails s ON a.student_id = s.student_id
-            JOIN company c ON a.company_id = c.company_id
-            """
+            select_sql = "SELECT student_id, company_id, status, details FROM application"
             cursor.execute(select_sql)
             application_data = cursor.fetchall()
-            
-            if not application_data:
-                print("No data returned from the SQL query.")
-            else:
-                print(f"SQL Query returned: {application_data}")
-                
+
         applications = []
         for application in application_data:
-            student_id, company_id, status, details, programme, company_name = application
+            student_id, company_id, status, details = application
             applications.append({
                 'student_id': student_id, 
                 'company_id': company_id,
                 'status': status,
-                'details': details,
-                'programme': programme, 
-                'company_name': company_name
+                'details': details
             })
-        
+
         return render_template('supervisor-application.html', student_applications=applications)
     except Exception as e:
-        print(f"An error occurred: {str(e)}")
         return f"An error occurred: {str(e)}"
 
 @app.route("/approveOrReject", methods=['GET', 'POST'])
