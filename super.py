@@ -48,22 +48,30 @@ def approve_reject():
 @app.route("/studentlist", methods=['GET'])
 def studentList():
     try:
-        print("Student list page accessed")  # Debugging line
         with db_conn.cursor() as cursor:
-            select_sql = "SELECT student_id, name, email, programme, cohort FROM studentDetails"
+            select_sql = """
+            SELECT s.student_id, s.name, s.email, s.programme, s.cohort, f.file_url
+            FROM studentDetails s
+            LEFT JOIN studentFile sf ON s.student_id = sf.student_id
+            LEFT JOIN file f ON sf.file_id = f.file_id AND f.file_type = 'ProgressReport'
+            """
             cursor.execute(select_sql)
             student_data = cursor.fetchall()
-            print("SQL executed, data fetched:", student_data)  # Debugging line
 
         students = []
         for student in student_data:
-            student_id, name, email, programme, cohort = student
-            students.append({'student_id': student_id, 'name': name, 'email': email, 'programme': programme, 'cohort': cohort})
+            student_id, name, email, programme, cohort, file_url = student
+            students.append({
+                'student_id': student_id, 
+                'name': name, 
+                'email': email, 
+                'programme': programme, 
+                'cohort': cohort,
+                'file_url': file_url or 'N/A'  # if file_url is None, it will display 'N/A'
+            })
 
-        print("Returning response")  # Debugging line
         return render_template('supervisor-studentList.html', students=students)
     except Exception as e:
-        print("An error occurred:", e)  # Debugging line
         return f"An error occurred: {str(e)}"
 
 @app.route("/applications", methods=['GET'])
