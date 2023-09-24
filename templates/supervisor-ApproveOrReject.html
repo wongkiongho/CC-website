@@ -54,6 +54,8 @@
                         <div>
                             <span class="font-bold">Student ID:</span> {{ application.student_id }}
                             <span class="font-bold ml-4">Company ID:</span> {{ application.company_id }}
+                            <span class="font-bold ml-4">Details:</span> {{ application.details }}
+                            <span class="font-bold ml-4">Status:</span> {{ application.status }}
                         </div>
                         <div class="flex items-end space-x-5">
                             <button class="approve-button bg-green-500 text-white p-2 rounded" onclick="approveApplication('{{ application.student_id }}')">Approve</button>
