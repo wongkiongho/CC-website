@@ -437,7 +437,10 @@ def studentLogin():
             # Store the student_id in the session
             session['student_id'] = student_id
  
-            return render_template("profile.html", message="login successfully as student")
+ 
+            # If successful, you can redirect the student to their dashboard with a message
+            return redirect(url_for('profile', message="Login successfully as student"))
+
 
 
         # If it's a GET request, render the login form
@@ -695,6 +698,7 @@ def internship_form():
 @app.route("/profile", methods=['GET'])
 def profile():
     student_id=session.get('student_id')
+    message = request.args.get('message')  # Retrieve the message from query parameters
     try:
         cursor = db_conn.cursor()
         cursor.execute("SELECT student_id, name, email, programme, cohort FROM studentDetails WHERE student_id=%s", (student_id,))
@@ -707,7 +711,7 @@ def profile():
             # Use the helper function here
             student_files = get_student_files(student_id)
 
-            return render_template('profile.html', student_id=student_id, name=name, email=email, programme=programme, cohort=cohort, files=student_files)
+            return render_template('profile.html', student_id=student_id, name=name, email=email, programme=programme, cohort=cohort, files=student_files, message = message)
         else:
             return "Student not found", 404
     except Exception as e:
@@ -717,6 +721,7 @@ def profile():
 @app.route("/edit-profile", methods=['GET', 'POST'])
 def edit_profile():
     student_id=session.get('student_id')
+
     try:
         if request.method == 'POST':
             # Handling form submission
