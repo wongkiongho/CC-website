@@ -209,7 +209,7 @@ def editCompany(company_id):
                         s3_client.delete_object(Bucket=custombucket, Key=object_key)
                     
                     # Delete records from companyFile and file tables
-                    cursor.execute("DELETE FROM companyFile WHERE company_id=%s", (company_id,))
+                    cursor.execute("DELETE FROM companyFile WHERE company_id=%s AND file_id IN %s", (company_id, tuple(ids_to_delete)))
                     cursor.execute("DELETE FROM file WHERE file_id IN %s", (tuple(ids_to_delete),))
                 # Process company logo
                 logo_content_type, _ = mimetypes.guess_type(company_logo_file.filename)
@@ -245,7 +245,7 @@ def editCompany(company_id):
                         s3_client.delete_object(Bucket=custombucket, Key=object_key)
                     
                     # Delete records from companyFile and file tables
-                    cursor.execute("DELETE FROM companyFile WHERE company_id=%s", (company_id,))
+                    cursor.execute("DELETE FROM companyFile WHERE company_id=%s AND file_id IN %s", (company_id, tuple(ids_to_delete)))
                     cursor.execute("DELETE FROM file WHERE file_id IN %s", (tuple(ids_to_delete),))
 
                 # Process company detail files
