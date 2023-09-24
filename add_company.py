@@ -210,7 +210,7 @@ def editCompany(company_id):
 
            
 
-            
+            return render_template('admin-manage-company.html', message='company_edited')
             
  
     except Exception as e:
@@ -218,7 +218,7 @@ def editCompany(company_id):
 
     finally:
         cursor.close()
-        return render_template('admin-manage-company.html', message='company_edited')
+   
 
 
 
