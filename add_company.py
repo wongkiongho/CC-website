@@ -884,7 +884,7 @@ def addStudent():
             cursor.execute("SELECT supervisor_id, name FROM supervisor")
             supevisors = cursor.fetchall()
             cursor.close()
-            return render_template("admin-add-student.html", supevisors=supevisors)
+            return render_template("admin-add-student.html", supervisors=supervisors)
 
         elif request.method == 'POST':
             # Retrieve form fields
