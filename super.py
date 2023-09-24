@@ -70,29 +70,29 @@ def studentList():
 def applications_page():
     try:
         with db_conn.cursor() as cursor:
+            # Start with joining one table first
             select_sql = """
-            SELECT a.student_id, a.company_id, a.status, a.details, s.programme, c.company_name
+            SELECT a.student_id, a.company_id, a.status, a.details, s.programme
             FROM application a
-            JOIN studentDetails s ON a.student_id = s.student_id
-            JOIN company c ON a.company_id = c.company_id;
+            JOIN studentDetails s ON a.student_id = s.student_id;
             """
             cursor.execute(select_sql)
             application_data = cursor.fetchall()
 
         applications = []
         for application in application_data:
-            student_id, company_id, status, details, programme, company_name = application
+            student_id, company_id, status, details, programme = application
             applications.append({
-                'student_id': student_id, 
+                'student_id': student_id,
                 'company_id': company_id,
                 'status': status,
                 'details': details,
-                'programme': programme,
-                'company_name': company_name
+                'programme': programme  # Only include programme for now
             })
 
         return render_template('supervisor-application.html', student_applications=applications)
     except Exception as e:
+        print("Error: ", str(e))  # print the error to the console
         return f"An error occurred: {str(e)}"
 
 @app.route("/approveOrReject", methods=['GET', 'POST'])
