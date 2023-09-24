@@ -876,7 +876,7 @@ def viewAddSupervisorPage():
 
 
 # add student (DONE)
-@app.route("/addstudent", methods=['GET','POST'])
+@app.route("/addstudentandassigntosupervisor", methods=['GET','POST'])
 def addStudent():
     try:
         if request.method == 'GET':
