@@ -65,7 +65,7 @@ def viewManageSupervisorPage():
 
 @app.route("/admin-add-student.html", methods=['GET', 'POST'])
 def viewAddStudentPage():
-    return redirect(url_for('/addstudentandassigntosupervisor'))
+    return redirect(url_for('addStudent'))
 
 
 @app.route("/admin-manage-company.html", methods=['GET', 'POST'])
