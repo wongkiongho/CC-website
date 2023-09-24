@@ -39,7 +39,7 @@
             </li>
         </ul>
     </nav>
-  
+
 <!-- Main Content -->
 <div class="main-content ml-72 mt-5 p-5 bg-white shadow-md rounded-lg p-6">
     <h1 class="text-xl font-bold mb-4">Student List</h1>
@@ -55,14 +55,12 @@
                 <p class="py-2">Email Address: {{ student.email }}</p>
                 <p class="py-2">Programme: {{ student.programme }}</p>
                 <p class="py-2">Cohort: {{ student.cohort }}</p>
-                <p class="py-2">
-                    Progress Report: 
-                    {% if student.file_url != 'N/A' %}
-                        <a href="{{ student.file_url }}" target="_blank">{{ student.file_name }}</a>
-                    {% else %}
-                        N/A
-                    {% endif %}
-                </p>
+                <p class="py-2">Progress Reports:</p>
+                <ul>
+                {% for report in student.reports %}
+                    <li><a href="{{ report.file_url }}">{{ report.file_name }}</a></li>
+                {% endfor %}
+                </ul>
             </div>
         </li>  
         {% endfor %}

@@ -49,38 +49,35 @@ def approve_reject():
 def studentList():
     try:
         with db_conn.cursor() as cursor:
-            select_sql = """
-            SELECT 
-                s.student_id, 
-                s.name, 
-                s.email, 
-                s.programme, 
-                s.cohort, 
-                MAX(f.file_url) AS file_url, 
-                MAX(f.file_name) AS file_name 
-            FROM studentDetails s
-            LEFT JOIN (
-                SELECT sf.student_id, f.file_url, f.file_name
-                FROM studentFile sf
-                JOIN file f ON sf.file_id = f.file_id AND f.file_type = 'ProgressReport'
-            ) AS f ON s.student_id = f.student_id
-            GROUP BY s.student_id, s.name, s.email, s.programme, s.cohort
-            """
-            cursor.execute(select_sql)
+            # Fetch all students
+            select_students_sql = "SELECT student_id, name, email, programme, cohort FROM studentDetails"
+            cursor.execute(select_students_sql)
             student_data = cursor.fetchall()
-
-        students = []
-        for student in student_data:
-            student_id, name, email, programme, cohort, file_url, file_name = student
-            students.append({
-                'student_id': student_id, 
-                'name': name, 
-                'email': email, 
-                'programme': programme, 
-                'cohort': cohort,
-                'file_url': file_url or 'N/A',
-                'file_name': file_name or 'N/A'
-            })
+            
+            students = []
+            for student in student_data:
+                student_id, name, email, programme, cohort = student
+                
+                # For each student, fetch all corresponding progress reports
+                select_reports_sql = """
+                SELECT f.file_url, f.file_name 
+                FROM studentFile sf 
+                JOIN file f ON sf.file_id = f.file_id AND f.file_type = 'ProgressReport'
+                WHERE sf.student_id = %s
+                """
+                cursor.execute(select_reports_sql, (student_id,))
+                reports_data = cursor.fetchall()
+                
+                reports = [{'file_url': url, 'file_name': name} for url, name in reports_data] or [{'file_url': 'N/A', 'file_name': 'N/A'}]
+                
+                students.append({
+                    'student_id': student_id,
+                    'name': name,
+                    'email': email,
+                    'programme': programme,
+                    'cohort': cohort,
+                    'reports': reports
+                })
 
         return render_template('supervisor-studentList.html', students=students)
     except Exception as e:
