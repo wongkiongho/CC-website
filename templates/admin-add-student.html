@@ -53,20 +53,27 @@
             <h2 class="text-2xl md:text-3xl mb-5 text-center text-gray-800 font-bold">Add Student</h2>
             
             <form action="/addstudent" autocomplete="on" method = "POST" class=" mx-auto bg-white p-5 rounded-lg shadow">
+                <label for="student_id" class="block text-lg font-medium text-gray-700">ID:</label>
+                <input type="text" class="w-full px-4 py-2 mb-8 border border-gray-300 rounded-lg text-lg" id="student_id" name="student_id" required>
+                
                 <label for="name" class="block text-lg font-medium text-gray-700">Full Name:</label>
                 <input type="text" class="w-full px-4 py-2 mb-8 border border-gray-300 rounded-lg text-lg" id="name" name="name" required>
 
                 <label for="email" class="block text-lg font-medium text-gray-700">Email:</label>
-                <input type="text" class="w-full px-4 py-2 mb-8 border border-gray-300 rounded-lg text-lg" id="email" name="email" required>
+                <input type="email" class="w-full px-4 py-2 mb-8 border border-gray-300 rounded-lg text-lg" id="email" name="email" required>
                 
-                <label for="student_id" class="block text-lg font-medium text-gray-700">ID:</label>
-                <input type="text" class="w-full px-4 py-2 mb-8 border border-gray-300 rounded-lg text-lg" id="student_id" name="student_id" required>
 
                 <label for="password" class="block text-lg font-medium text-gray-700">Password:</label>
                 <input type="text" class="w-full px-4 py-2 mb-8 border border-gray-300 rounded-lg text-lg" id="password" name="password" required>
 
+                <label for="programme" class="block text-lg font-medium text-gray-700">Programme:</label>
+                <input type="text" class="w-full px-4 py-2 mb-8 border border-gray-300 rounded-lg text-lg" id="programme" name="programme" required>
+
+                <label for="cohort" class="block text-lg font-medium text-gray-700">Cohort:</label>
+                <input type="text" class="w-full px-4 py-2 mb-8 border border-gray-300 rounded-lg text-lg" id="cohort" name="cohort" required>
+
                 <label for="supervisor" class="block text-lg font-medium text-gray-700">Supervisor:</label>
-                <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="supervisor" name="supervisor-id">
+                <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="supervisor_id" name="supervisor_id">
                     {% for supervisor in supervisors %}
                         <option value="{{ supervisor[0] }}">{{ supervisor[1] }}</option>
                     {% endfor %}

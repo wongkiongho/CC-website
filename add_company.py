@@ -892,11 +892,14 @@ def addStudent():
             email = request.form.get("email")
             student_id = request.form.get("student_id")
             password = request.form.get("password")
+            programme = request.form.get("programme")
+            cohort = request.form.get("cohort")
+            supervisor_id = request.form.get("supervisor_id")
 
             
-            insert_sql = "INSERT INTO studentDetails (student_id, name, email, password) VALUES (%s, %s, %s, %s)"
+            insert_sql = "INSERT INTO studentDetails (student_id, name, email, password, programme,  cohort, supervisor_id) VALUES (%s, %s, %s, %s, %s, %s, %s)"
             cursor = db_conn.cursor()
-            cursor.execute(insert_sql, (student_id, name, email, password))
+            cursor.execute(insert_sql, (student_id, name, email, password, programme, cohort, supervisor_ids))
             db_conn.commit()
 
             # Fetch the updated student count from the database
