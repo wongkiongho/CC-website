@@ -988,7 +988,7 @@ def Addsupervisor():
         db_conn.commit()
 
         print("Data inserted in MySQL RDS...")
-        return redirect(url_for('/admin-add-supervisor.html',message = 'supervisor_added'))
+        return redirect(url_for('Addsupervisor',message = 'supervisor_added'))
 
     except Exception as e:
         print(f"Error: {e}")
