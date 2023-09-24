@@ -88,6 +88,28 @@ def applications_page():
     except Exception as e:
         return f"An error occurred: {str(e)}"
 
+@app.route("/approveOrReject", methods=['GET', 'POST'])
+def approveOrReject_page():
+    try:
+        with db_conn.cursor() as cursor:
+            select_sql = "SELECT student_id, company_id, status, details FROM application WHERE status='pending'"
+            cursor.execute(select_sql)
+            application_data = cursor.fetchall()
+
+        applications = []
+        for application in application_data:
+            student_id, company_id, status, details = application
+            applications.append({
+                'student_id': student_id, 
+                'company_id': company_id,
+                'status': status,
+                'details': details
+            })
+
+        return render_template('supervisor-ApproveOrReject.html', student_applications=applications)
+    except Exception as e:
+        return f"An error occurred: {str(e)}"
+
 @app.route("/viewcompanies", methods=['GET'])
 def view_companies():
     try:
