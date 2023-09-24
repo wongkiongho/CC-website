@@ -61,11 +61,11 @@ def viewAdminLoginPage():
     return render_template('admin-login.html')
 
 @app.route("/admin-manage-supervisor.html", methods=['GET', 'POST'])
-def viewManageCompanyPage():
+def viewManageSupervisorPage():
     return render_template('admin-manage-supervisor.html')
 
 @app.route("/admin-manage-student.html", methods=['GET', 'POST'])
-def viewManageCompanyPage():
+def viewManageStudentPage():
     return render_template('admin-manage-student.html')
 
 @app.route("/admin-manage-company.html", methods=['GET', 'POST'])
