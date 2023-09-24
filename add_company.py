@@ -871,7 +871,7 @@ def viewAddSupervisorPage():
 
 # add student (DONE)
 @app.route("/addstudent", methods=['POST'])
-def Addstudent():
+def addStudent():
     # Retrieve form fields
     name = request.form.get("name")
     email = request.form.get("email")
