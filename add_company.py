@@ -711,7 +711,6 @@ def profile():
             cursor.execute("SELECT f.file_id, f.file_url, f.file_type, f.file_name, f.file_date FROM file f INNER JOIN studentFile cf ON f.file_id = cf.file_id WHERE cf.student_id = %s", (student_id,))
             files = cursor.fetchall()
             # Prepare the list of files and identify the company logo
-            logo_url = None
             files_list = []
             for file in files:
                 if file[2] == "ProgressReport":
