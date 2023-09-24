@@ -46,10 +46,6 @@ else:
 def home():
     return render_template('/student-login.html')
 
-@app.route("/profile-student.html", methods=['GET', 'POST'])
-def viewProfilePage():
-    return render_template('profile.html')
-
 @app.route("/student-login.html", methods=['GET', 'POST'])
 def viewStudentLoginPage():
     return render_template('student-login.html')
