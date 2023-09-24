@@ -644,13 +644,13 @@ def Addstudent():
         file_url = f"https://s3{s3_location}.amazonaws.com/{custombucket}/{resume_file_name_in_s3}"
 
         # Your SQL to insert data into studentForm
-        insert_sql = "INSERT INTO application (student_id, company_id, details) VALUES (%s, %s, %s)"
+        insert_sql = "INSERT INTO application (student_id, company_id, details, status) VALUES (%s, %s, %s, %s)"
         insert_sql_application_file = "INSERT INTO applicationFile (file_id, application_id) VALUES (%s, %s)"
         insert_sql_file ="INSERT INTO file (file_id, file_url, file_type, file_name, file_date) VALUES (%s, %s, %s, %s, NOW())"
 
 
         cursor = db_conn.cursor()
-        cursor.execute(insert_sql, (student_id, company_id, details))
+        cursor.execute(insert_sql, (student_id, company_id, details, "pending"))
         cursor.execute(insert_sql_application_file, (file_id, application_id))
         cursor.execute(insert_sql_file, (file_id, file_url, "Resume", resume_file.filename))
         db_conn.commit()
@@ -902,7 +902,7 @@ def application_status():
                 "internship_details": app[1] if app[1] else "N/A",  # Handle None values
                 "company_name": app[2],
                 "company_email": app[3],
-                "status": app[4] if app[4] else "Pending"  # Handle None values
+                "status": app[4] 
             }
             applications_list.append(app_dict)
 
