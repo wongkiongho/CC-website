@@ -3,66 +3,106 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+        
         <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.1/flowbite.min.css" rel="stylesheet" />
         <script src="https://cdn.tailwindcss.com"></script>
-
+        
         <!-- Link to FontAwesome -->
-        <link rel="stylesheet" type="text/css"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+        
         <!-- Link to Tailwind Elements -->
         <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900&display=swap" rel="stylesheet" />
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tw-elements/dist/css/tw-elements.min.css" />
-
+        
         <title>Internship</title>
     </head>
-
-    <body class="m-0 p-0 bg-gray-200">
-        {% if message == "logout_successful" %}
+    <body class="bg-gray-100 h-screen font-sans">
+        {% if message == "login_successful" %}
         <script>
-            alert('Logout successful!');
+            alert('Login successful!');
         </script>
         {% endif %}
         <!-- Header -->
         <header class="bg-gray-800 text-white py-5 flex items-center">
             <div class="logo">
-                <img src="logo.png" alt="Internship Logo" class="w-12 h-12 ml-5 rounded-full">
+                
+                <img src="{{ url_for('static', filename='logo.png') }}" class="w-12 h-12 ml-5 rounded-full">
             </div>
             <h1 class="text-2xl mt-2 ml-5 p-0">Internship</h1>
+            <button id="logoutBtn" onclick="logout()" class="ml-auto mr-5 bg-red-500 hover:bg-red-700 text-white px-4 py-1 rounded">Logout</button>
         </header>
 
         <!-- Side Navigation Bar -->
         <nav class="bg-gray-700 text-white w-72 fixed left-0 h-full overflow-y-auto">
             <ul class="py-5 pl-4">
-                <li class="mb-4"><a href="student-login.html" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Student</a></li>
-                <li class="mb-4"><a href="supervisor-login.html" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Supervisor</a></li>
-                <li class="mb-4"><a href="admin-login.html" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Admin</a></li>
+                
+                <li class="mb-4">
+                    <a id="studentMenu" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Student</a>
+                    <ul id="studentSubmenu" class=" py-5 pl-4">
+                        <li class="mb-4"><a href="{{ url_for('profile', student_id=['student-id']) }}" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Profile</a></li>
+                        <li class="mb-4"><a href="/company-list.html" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Company List</a></li>
+                        <li class="mb-4"> <a href="{{ url_for('internship_form', student_id=['student_id']) }}" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Internship Form</a></li>
+                    </ul>
+                </li>
             </ul>
         </nav>
 
-        <!-- Student Login Page -->
-
-        
-        <section class="ml-72 p-5 bg-gray-100 rounded-lg shadow-md">
-            <h2 class="text-2xl md:text-3xl mb-5 text-center text-gray-800 font-bold">Student Login</h2>
-            
-            <form action="/student-login" method="POST" class="max-w-screen-sm mx-auto bg-white p-5 rounded-lg shadow">
-                <input type="text" name="student_id" placeholder="student_id" class="w-full px-4 py-2 mb-8 border border-gray-300 rounded-lg text-lg" required>
-                
-                <input type="password" name="password" placeholder="Password" class="w-full px-4 py-2 mb-8 border border-gray-300 rounded-lg text-lg" required>
-                
-                <button type="submit" id="loginBtn"  class="w-40 py-2 mx-auto block bg-orange-500 text-white rounded-lg focus:outline-none hover:bg-orange-600">Login</button>
-            </form>
-        </section>
+        <!-- Main Content -->
+        <!-- Main Content -->
+<div class="ml-72 w-3/4 bg-gray-100 p-8">
+    <h1 class="text-xl font-semibold mb-6">Profile</h1>
     
+    <!-- Card for Profile -->
+    <div class="bg-white shadow-md rounded-lg p-6">
+        <div class="mb-4">
+            <h2 class="text-lg font-semibold">Personal Information</h2>
+        </div>
+        
+<div class="mb-2">
+    <span class="font-medium">Name:</span> {{ name }}
+</div>
+<div class="mb-2">
+    <span class="font-medium">Student Id:</span> {{ student_id }}
+</div>
+<div class="mb-2">
+    <span class="font-medium">Programme:</span> {{ programme }}
+</div>
+<div class="mb-2">
+    <span class="font-medium">Email:</span> {{ email }}
+</div>
+<div class="mb-2">
+    <span class="font-medium">Cohort:</span> {{ cohort }}
+</div>
 
-        <!-- Link to tailwind -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.1/flowbite.min.js"></script>
-                
-        <!-- Link to Tailwind Elements -->
-        <script src="https://cdn.jsdelivr.net/npm/tw-elements/dist/js/tw-elements.umd.min.js"></script>
+<!-- ... other HTML code ... -->
 
-        <script src="login.js"></script>
+<h3>Student Files:</h3>
+<ul>
+    {% for file_url in files %}
+    <li><a href="{{ file_url }}" target="_blank">{{ file_url }}</a></li>
+    {% endfor %}
+</ul>
+
+<!-- ... other HTML code ... -->
+
+        <div class="mt-6">
+            <button class="bg-blue-500 hover:bg-blue-700 text-white px-4 py-1 rounded"><a href="{{ url_for('edit_profile', student_id=student_id) }}" class="bg-blue-500 hover:bg-blue-700 text-white px-4 py-1 rounded block text-center">
+                Edit Profile
+            </a>
+            <button class="bg-blue-500 hover:bg-blue-700 text-white px-4 py-1 rounded ">
+                <a href="{{ url_for('application_status', student_id=student_id) }}" class="text-white">
+                    View Application Status
+                </a>
+            </button>
+            
+            </button>
+
+        </div>
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='student.js') }}"></script>
+
+
     </body>
 </html>

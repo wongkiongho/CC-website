@@ -13,6 +13,7 @@ from uuid import uuid4
 from pymysql import MySQLError
 import traceback
 from datetime import datetime
+from flask import flash
 
 
 
@@ -435,11 +436,12 @@ def studentLogin():
 
             # Store the student_id in the session
             session['student_id'] = student_id
+ 
+            return render_template("profile.html", message="login successfully as student")
 
-            # If successful, you can redirect the student to their dashboard with a message
-            return redirect(url_for('profile', message="login_successful"))
 
         # If it's a GET request, render the login form
+        
         return render_template('student-login.html', )
 
     except Exception as e:
