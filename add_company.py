@@ -876,27 +876,35 @@ def viewAddSupervisorPage():
 
 
 # add student (DONE)
-@app.route("/addstudent", methods=['POST'])
+@app.route("/addstudent", methods=['GET','POST'])
 def addStudent():
-    # Retrieve form fields
-    name = request.form.get("name")
-    email = request.form.get("email")
-    student_id = request.form.get("student_id")
-    password = request.form.get("password")
-    
     try:
-        insert_sql = "INSERT INTO studentDetails (student_id, name, email, password) VALUES (%s, %s, %s, %s)"
-        cursor = db_conn.cursor()
-        cursor.execute(insert_sql, (student_id, name, email, password))
-        db_conn.commit()
+        if request.method == 'GET':
+            cursor = db_conn.cursor()
+            cursor.execute("SELECT supervisor_id, name FROM supervisor")
+            supevisors = cursor.fetchall()
+            cursor.close()
+            return render_template("admin-add-student.html", supevisors=supevisors)
 
-        # Fetch the updated student count from the database
-        fetch_count_sql = "SELECT COUNT(*) FROM studentDetails"
-        cursor.execute(fetch_count_sql)
-        updated_count = cursor.fetchone()[0]
+        elif request.method == 'POST':
+            # Retrieve form fields
+            name = request.form.get("name")
+            email = request.form.get("email")
+            student_id = request.form.get("student_id")
+            password = request.form.get("password")
 
-        print("Data inserted in MySQL RDS...")
-        return redirect(url_for('viewAddStudentPage'))
+            
+            insert_sql = "INSERT INTO studentDetails (student_id, name, email, password) VALUES (%s, %s, %s, %s)"
+            cursor = db_conn.cursor()
+            cursor.execute(insert_sql, (student_id, name, email, password))
+            db_conn.commit()
+
+            # Fetch the updated student count from the database
+            fetch_count_sql = "SELECT COUNT(*) FROM studentDetails"
+            cursor.execute(fetch_count_sql)
+
+            print("Data inserted in MySQL RDS...")
+            return redirect(url_for('viewAddStudentPage'))
 
     except Exception as e:
         print(f"Error: {e}")
