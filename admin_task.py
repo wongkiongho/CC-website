@@ -61,19 +61,14 @@ def viewAddStudentPage():
     return render_template('admin-add-student.html')
 
 # manage student page
-@app.route("/admin-manage-student.html", methods=['GET', 'POST'])
-def viewManageStudentPage():
-    return render_template('admin-manage-student.html')
+
 
 # add supervisor page
 @app.route("/admin-add-supervisor.html", methods=['GET', 'POST'])
 def viewAddSupervisorPage():
     return render_template('admin-add-supervisor.html')
 
-# manage supervisor page
-@app.route("/admin-manage-supervisor.html", methods=['GET', 'POST'])
-def viewManageSupervisorPage():
-    return render_template('admin-manage-supervisor.html')
+
 
 
 # add student (DONE)
