@@ -239,14 +239,15 @@ def editCompany(company_id):
                         cursor.execute("INSERT INTO file (file_id, file_url, file_type, file_name, file_date) VALUES (%s, %s, %s, %s, NOW())", (file_id, file_url, "details", detail_file.filename))
                         db_conn.commit()
                 
-                        return redirect(url_for('viewCompany', company_id=company_id ,message='edit_successful'))
+            
+            return redirect(url_for('viewCompany', company_id=company_id ,message='edit_successful'))
     except Exception as e:
         return str(e)
 
     finally:
         cursor.close()
 
-    return render_template('admin-manage-company.html')
+
 
 
 
