@@ -439,7 +439,7 @@ def studentLogin():
  
  
             # If successful, you can redirect the student to their dashboard with a message
-            return redirect(url_for('profile', message="Login successfully as student"))
+            return redirect(url_for('profile', message="login_successful"))
 
 
 
@@ -477,7 +477,7 @@ def supervisorLogin():
             session['supervisor_id'] = supervisor_id
 
             # If successful, you can redirect the supervisor to their dashboard with a message
-            return redirect(url_for('studentList', message="login_successful"))
+            return redirect(url_for('admin-manage-student.html"', message="login_successful"))
 
         # If it's a GET request, render the login form
         return render_template('supervisor-login.html', )
