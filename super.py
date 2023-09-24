@@ -70,18 +70,26 @@ def studentList():
 def applications_page():
     try:
         with db_conn.cursor() as cursor:
-            select_sql = "SELECT student_id, company_id, status, details FROM application"
+            select_sql = """
+            SELECT a.student_id, a.company_id, a.status, a.details, 
+                   s.programme, c.company_name
+            FROM application a
+            JOIN studentDetails s ON a.student_id = s.student_id
+            JOIN company c ON a.company_id = c.company_id
+            """
             cursor.execute(select_sql)
             application_data = cursor.fetchall()
 
         applications = []
         for application in application_data:
-            student_id, company_id, status, details = application
+            student_id, company_id, status, details, programme, company_name = application
             applications.append({
                 'student_id': student_id, 
                 'company_id': company_id,
                 'status': status,
-                'details': details
+                'details': details,
+                'programme': programme,  # Add programme to the applications list
+                'company_name': company_name  # Add company_name to the applications list
             })
 
         return render_template('supervisor-application.html', student_applications=applications)
