@@ -14,7 +14,7 @@ from pymysql import MySQLError
 import traceback
 from datetime import datetime
 from flask import flash
-
+import traceback
 
 
 app = Flask(__name__)
@@ -271,6 +271,8 @@ def editCompany(company_id):
             
  
     except Exception as e:
+        print(e)
+        print(traceback.format_exc())
         return str(e)
 
     finally:
