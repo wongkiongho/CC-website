@@ -20,7 +20,7 @@
     <body class="m-0 p-0 bg-gray-200">
         {% if message == "supervisor_added" %}
         <script>
-            alert('Student added!');
+            alert('Supervisor added!');
         </script>
         {% endif %}
 
@@ -74,7 +74,10 @@
                 <label for="password" class="block text-lg font-medium text-gray-700">Password:</label>
                 <input type="text" class="w-full px-4 py-2 mb-8 border border-gray-300 rounded-lg text-lg" id="password" name="password" required>
 
-                <button type="submit" class="w-40 py-2 mx-auto block bg-orange-500 text-white rounded-lg focus:outline-none hover:bg-orange-600">Add Student</button>
+                <div class="mt-5 flex justify-between items-center">
+                    <button type="submit" class="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 focus:outline-none focus:bg-orange-700 focus:ring-2 focus:ring-offset-2 focus:ring-orange-400">Add Supervisor</button>
+                    <a href="/admin-manage-supervisor.html" class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 focus:outline-none focus:bg-gray-700 focus:ring-2 focus:ring-offset-2 focus:ring-gray-400">Back to Manage Supervisor page</a>
+                </div>
             </form>
         </section>
 
