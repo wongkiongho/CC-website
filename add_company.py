@@ -132,152 +132,146 @@ def viewCompany(company_id):
 
 @app.route("/editcompany/<company_id>", methods=['GET', 'POST'])
 def editCompany(company_id):
-    try:
-        cursor = db_conn.cursor()
+    
+    cursor = db_conn.cursor()
 
-        if request.method == 'GET':
-            # Retrieve company data based on company_id
-            cursor.execute("SELECT * FROM company WHERE company_id=%s", (company_id,))
-            company = cursor.fetchone()
+    if request.method == 'GET':
+        # Retrieve company data based on company_id
+        cursor.execute("SELECT * FROM company WHERE company_id=%s", (company_id,))
+        company = cursor.fetchone()
 
-            # Get related files
-            cursor.execute("SELECT f.file_id, f.file_url, f.file_type, f.file_name, f.file_date FROM file f INNER JOIN companyFile cf ON f.file_id = cf.file_id WHERE cf.company_id = %s", (company_id,))
-            files = cursor.fetchall()
-            # Prepare the list of files and identify the company logo
-            logo_url = None
-            files_list = []
-            for file in files:
-                if file[2] == "logo":
-                    logo_url = file[1]
-                else:
-                    files_list.append({
-                        "file_url": file[1],
-                        "file_name": file[3]
-                    })
-
-            # Close the database cursor
-            cursor.close()
-
-            if company:
-                # Pass the company data and associated files to the edit form
-                company_positions = json.loads(company[7])
-                return render_template('admin-edit-company.html', company=company, company_positions=company_positions, files_list=files_list, logo_url=logo_url)
+        # Get related files
+        cursor.execute("SELECT f.file_id, f.file_url, f.file_type, f.file_name, f.file_date FROM file f INNER JOIN companyFile cf ON f.file_id = cf.file_id WHERE cf.company_id = %s", (company_id,))
+        files = cursor.fetchall()
+        # Prepare the list of files and identify the company logo
+        logo_url = None
+        files_list = []
+        for file in files:
+            if file[2] == "logo":
+                logo_url = file[1]
             else:
-                return "Company not found", 404
+                files_list.append({
+                    "file_url": file[1],
+                    "file_name": file[3]
+                })
 
-        elif request.method == 'POST':
-            # Retrieve form fields
-            company_name = request.form.get("companyName")
-            industry = request.form.get("industry")
-            company_desc = request.form.get("companyDesc")
-            location = request.form.get("location")
-            email = request.form.get("email")
-            contact_number = request.form.get("contactNumber")
-            positions = request.form.getlist("position[]")
-            company_files = request.files.getlist("companyFile")
-            company_logo_file = request.files.get("companyLogo")
+        # Close the database cursor
+        cursor.close()
 
-            # Serialize the positions list to JSON
-            positions_json = json.dumps(positions)
+        if company:
+            # Pass the company data and associated files to the edit form
+            company_positions = json.loads(company[7])
+            return render_template('admin-edit-company.html', company=company, company_positions=company_positions, files_list=files_list, logo_url=logo_url)
+        else:
+            return "Company not found", 404
 
-            # Insert company details into the company table
-            update_company_sql = "UPDATE company SET company_name=%s, industry=%s, company_desc=%s, location=%s, email=%s, contact_number=%s, position_json=%s WHERE company_id=%s"
-            cursor.execute(update_company_sql, (company_name, industry, company_desc, location, email, contact_number, positions_json, company_id))
-            db_conn.commit()
-         
+    elif request.method == 'POST':
+        # Retrieve form fields
+        company_name = request.form.get("companyName")
+        industry = request.form.get("industry")
+        company_desc = request.form.get("companyDesc")
+        location = request.form.get("location")
+        email = request.form.get("email")
+        contact_number = request.form.get("contactNumber")
+        positions = request.form.getlist("position[]")
+        company_files = request.files.getlist("companyFile")
+        company_logo_file = request.files.get("companyLogo")
 
+        # Serialize the positions list to JSON
+        positions_json = json.dumps(positions)
+
+        # Insert company details into the company table
+        update_company_sql = "UPDATE company SET company_name=%s, industry=%s, company_desc=%s, location=%s, email=%s, contact_number=%s, position_json=%s WHERE company_id=%s"
+        cursor.execute(update_company_sql, (company_name, industry, company_desc, location, email, contact_number, positions_json, company_id))
+        db_conn.commit()
+        
+
+        cursor.execute("SELECT file_id FROM companyFile WHERE company_id=%s", (company_id,))
+        file_ids_to_delete = [row[0] for row in cursor.fetchall()]
+        # Handle company logo file
+        
+        
+        if company_logo_file:
+            # Delete previous company files from S3 and database
             cursor.execute("SELECT file_id FROM companyFile WHERE company_id=%s", (company_id,))
             file_ids_to_delete = [row[0] for row in cursor.fetchall()]
-            # Handle company logo file
-         
-            
-            if company_logo_file:
-                # Delete previous company files from S3 and database
-                cursor.execute("SELECT file_id FROM companyFile WHERE company_id=%s", (company_id,))
-                file_ids_to_delete = [row[0] for row in cursor.fetchall()]
-                cursor.execute("SELECT file_id, file_url FROM file WHERE file_type=%s AND file_id IN %s", ("logo",tuple(file_ids_to_delete),))
-                rows = cursor.fetchall()
-                ids_to_delete = [row[0] for row in rows]
-                urls_to_delete = [row[1] for row in rows]
+            cursor.execute("SELECT file_id, file_url FROM file WHERE file_type=%s AND file_id IN %s", ("logo",tuple(file_ids_to_delete),))
+            rows = cursor.fetchall()
+            ids_to_delete = [row[0] for row in rows]
+            urls_to_delete = [row[1] for row in rows]
 
-                if ids_to_delete:
-                    # Delete files from S3 and database
+            if ids_to_delete:
+                # Delete files from S3 and database
 
-                    for url in urls_to_delete:
-                        parsed_url = urlparse(url)
-                        object_key = parsed_url.path.lstrip('/')
-                        s3_client.delete_object(Bucket=custombucket, Key=object_key)
-                    
-                    # Delete records from companyFile and file tables
-                    cursor.execute("DELETE FROM companyFile WHERE company_id=%s AND file_id IN %s", (company_id, tuple(ids_to_delete)))
-                    cursor.execute("DELETE FROM file WHERE file_id IN %s", (tuple(ids_to_delete),))
-                # Process company logo
-                logo_content_type, _ = mimetypes.guess_type(company_logo_file.filename)
-                logo_extension = logo_content_type.split("/")[1] if logo_content_type else ""
-                company_logo_file_name_in_s3 = f"company_id-{company_id}_logo.{logo_extension}"
+                for url in urls_to_delete:
+                    parsed_url = urlparse(url)
+                    object_key = parsed_url.path.lstrip('/')
+                    s3_client.delete_object(Bucket=custombucket, Key=object_key)
+                
+                # Delete records from companyFile and file tables
+                cursor.execute("DELETE FROM companyFile WHERE company_id=%s AND file_id IN %s", (company_id, tuple(ids_to_delete)))
+                cursor.execute("DELETE FROM file WHERE file_id IN %s", (tuple(ids_to_delete),))
+            # Process company logo
+            logo_content_type, _ = mimetypes.guess_type(company_logo_file.filename)
+            logo_extension = logo_content_type.split("/")[1] if logo_content_type else ""
+            company_logo_file_name_in_s3 = f"company_id-{company_id}_logo.{logo_extension}"
 
 
-                s3.Bucket(custombucket).put_object(
-                    Key=company_logo_file_name_in_s3, 
-                    Body=company_logo_file, 
-                    ContentDisposition=f"attachment; filename={company_logo_file.filename}"
-                )
-                logo_url = f"https://s3{s3_location}.amazonaws.com/{custombucket}/{company_logo_file_name_in_s3}"
-                logo_file_id = str(uuid4())
-                cursor.execute("INSERT INTO companyFile (file_id, company_id) VALUES (%s, %s)", (logo_file_id, company_id))
-                cursor.execute("INSERT INTO file (file_id, file_url, file_type, file_name, file_date) VALUES (%s, %s, %s, %s, NOW())", (logo_file_id, logo_url, "logo", company_logo_file.filename))
-                db_conn.commit()
+            s3.Bucket(custombucket).put_object(
+                Key=company_logo_file_name_in_s3, 
+                Body=company_logo_file, 
+                ContentDisposition=f"attachment; filename={company_logo_file.filename}"
+            )
+            logo_url = f"https://s3{s3_location}.amazonaws.com/{custombucket}/{company_logo_file_name_in_s3}"
+            logo_file_id = str(uuid4())
+            cursor.execute("INSERT INTO companyFile (file_id, company_id) VALUES (%s, %s)", (logo_file_id, company_id))
+            cursor.execute("INSERT INTO file (file_id, file_url, file_type, file_name, file_date) VALUES (%s, %s, %s, %s, NOW())", (logo_file_id, logo_url, "logo", company_logo_file.filename))
+            db_conn.commit()
 
-            if company_files:
-                cursor.execute("SELECT file_id FROM companyFile WHERE company_id=%s", (company_id,))
-                file_ids_to_delete = [row[0] for row in cursor.fetchall()]
-                cursor.execute("SELECT file_id, file_url FROM file WHERE file_type=%s AND file_id IN %s", ("details",tuple(file_ids_to_delete),))
-                rows = cursor.fetchall()
-                ids_to_delete = [row[0] for row in rows]
-                urls_to_delete = [row[1] for row in rows]
+        if company_files:
+            cursor.execute("SELECT file_id FROM companyFile WHERE company_id=%s", (company_id,))
+            file_ids_to_delete = [row[0] for row in cursor.fetchall()]
+            cursor.execute("SELECT file_id, file_url FROM file WHERE file_type=%s AND file_id IN %s", ("details",tuple(file_ids_to_delete),))
+            rows = cursor.fetchall()
+            ids_to_delete = [row[0] for row in rows]
+            urls_to_delete = [row[1] for row in rows]
 
-                if ids_to_delete:
-                    # Delete files from S3 and database
+            if ids_to_delete:
+                # Delete files from S3 and database
 
-                    for url in urls_to_delete:
-                        parsed_url = urlparse(url)
-                        object_key = parsed_url.path.lstrip('/')
-                        s3_client.delete_object(Bucket=custombucket, Key=object_key)
-                    
-                    # Delete records from companyFile and file tables
-                    cursor.execute("DELETE FROM companyFile WHERE company_id=%s AND file_id IN %s", (company_id, tuple(ids_to_delete)))
-                    cursor.execute("DELETE FROM file WHERE file_id IN %s", (tuple(ids_to_delete),))
+                for url in urls_to_delete:
+                    parsed_url = urlparse(url)
+                    object_key = parsed_url.path.lstrip('/')
+                    s3_client.delete_object(Bucket=custombucket, Key=object_key)
+                
+                # Delete records from companyFile and file tables
+                cursor.execute("DELETE FROM companyFile WHERE company_id=%s AND file_id IN %s", (company_id, tuple(ids_to_delete)))
+                cursor.execute("DELETE FROM file WHERE file_id IN %s", (tuple(ids_to_delete),))
 
-                # Process company detail files
-                for detail_file in company_files:
-                    
-                    if detail_file.filename != "":
-                        details_content_type, _ = mimetypes.guess_type(detail_file.filename)
-                        details_extension = details_content_type.split("/")[1] if details_content_type else ""
-                        detail_file_name_in_s3 = f"company_id-{company_id}_file.{details_extension}"
+            # Process company detail files
+            for detail_file in company_files:
+                
+                if detail_file.filename != "":
+                    details_content_type, _ = mimetypes.guess_type(detail_file.filename)
+                    details_extension = details_content_type.split("/")[1] if details_content_type else ""
+                    detail_file_name_in_s3 = f"company_id-{company_id}_file.{details_extension}"
 
-                        s3.Bucket(custombucket).put_object(
-                            Key=detail_file_name_in_s3, 
-                            Body=detail_file, 
-                            ContentDisposition=f"attachment; filename={detail_file.filename}"
-                        )
-                        file_url = f"https://s3{s3_location}.amazonaws.com/{custombucket}/{detail_file_name_in_s3}"
-                        file_id = str(uuid4())
-                        cursor.execute("INSERT INTO companyFile (file_id, company_id) VALUES (%s, %s)", (file_id, company_id))
-                        cursor.execute("INSERT INTO file (file_id, file_url, file_type, file_name, file_date) VALUES (%s, %s, %s, %s, NOW())", (file_id, file_url, "details", detail_file.filename))
-                        db_conn.commit()
+                    s3.Bucket(custombucket).put_object(
+                        Key=detail_file_name_in_s3, 
+                        Body=detail_file, 
+                        ContentDisposition=f"attachment; filename={detail_file.filename}"
+                    )
+                    file_url = f"https://s3{s3_location}.amazonaws.com/{custombucket}/{detail_file_name_in_s3}"
+                    file_id = str(uuid4())
+                    cursor.execute("INSERT INTO companyFile (file_id, company_id) VALUES (%s, %s)", (file_id, company_id))
+                    cursor.execute("INSERT INTO file (file_id, file_url, file_type, file_name, file_date) VALUES (%s, %s, %s, %s, NOW())", (file_id, file_url, "details", detail_file.filename))
+                    db_conn.commit()
 
-
+    cursor.close()
+    return render_template('admin-manage-company.html')
             
  
-    except Exception as e:
-        print(e)
-        print(traceback.format_exc())
-        return str(e)
 
-    finally:
-        cursor.close()
-    return render_template('admin-manage-company.html')
 
 
 
