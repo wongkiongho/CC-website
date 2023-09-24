@@ -103,7 +103,7 @@
 
 <script src="{{ url_for('static', filename='student.js') }}"></script>
 <script>
-function fetchCompanies() {
+function fetchProfile() {
     fetch('/profile')
         .then(response => {
             if (!response.ok) {
@@ -115,6 +115,9 @@ function fetchCompanies() {
             console.error('Error fetching companies:', error);
         });
 }
+$(document).ready(function() {
+    fetchProfile();
+});
 </script>
 
     </body>
