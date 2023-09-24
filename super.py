@@ -110,6 +110,33 @@ def approveOrReject_page():
     except Exception as e:
         return f"An error occurred: {str(e)}"
 
+@app.route('/approveApplication', methods=['POST'])
+def approve_application():
+    try:
+        data = request.json
+        application_id = data.get('application_id')
+        with db_conn.cursor() as cursor:
+            update_sql = "UPDATE application SET status='approved' WHERE student_id=%s"
+            cursor.execute(update_sql, (application_id,))
+            db_conn.commit()
+        return jsonify(success=True)
+    except Exception as e:
+        return jsonify(success=False, error=str(e))
+
+
+@app.route('/rejectApplication', methods=['POST'])
+def reject_application():
+    try:
+        data = request.json
+        application_id = data.get('application_id')
+        with db_conn.cursor() as cursor:
+            update_sql = "UPDATE application SET status='rejected' WHERE student_id=%s"
+            cursor.execute(update_sql, (application_id,))
+            db_conn.commit()
+        return jsonify(success=True)
+    except Exception as e:
+        return jsonify(success=False, error=str(e))
+
 @app.route("/viewcompanies", methods=['GET'])
 def view_companies():
     try:

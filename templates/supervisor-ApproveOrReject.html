@@ -77,14 +77,42 @@
         }
 
         function approveApplication(id) {
-            // Implement your approve application function here
-            // Use the id parameter to identify which application to approve
+    fetch('/approveApplication', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ application_id: id })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Optionally update the UI to reflect the change
+            alert('Application approved successfully!');
+        } else {
+            alert('Error approving application: ' + data.error);
         }
+    });
+}
 
-        function rejectApplication(id) {
-            // Implement your reject application function here
-            // Use the id parameter to identify which application to reject
+function rejectApplication(id) {
+    fetch('/rejectApplication', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ application_id: id })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Optionally update the UI to reflect the change
+            alert('Application rejected successfully!');
+        } else {
+            alert('Error rejecting application: ' + data.error);
         }
+    });
+}
     </script>
 </body>
 </html>
