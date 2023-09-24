@@ -214,7 +214,8 @@ def editCompany(company_id):
                 # Process company logo
                 logo_content_type, _ = mimetypes.guess_type(company_logo_file.filename)
                 logo_extension = logo_content_type.split("/")[1] if logo_content_type else ""
-                company_logo_file_name_in_s3 = f"comspany_id-{company_id}_logo.{logo_extension}"
+                company_logo_file_name_in_s3 = f"company_id-{company_id}_logo.{logo_extension}"
+
 
                 s3.Bucket(custombucket).put_object(
                     Key=company_logo_file_name_in_s3, 
