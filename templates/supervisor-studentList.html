@@ -55,11 +55,12 @@
                 <p class="py-2">Email Address: {{ student.email }}</p>
                 <p class="py-2">Programme: {{ student.programme }}</p>
                 <p class="py-2">Cohort: {{ student.cohort }}</p>
-                <p class="py-2">Progress Report:
+                <p class="py-2">
+                    Progress Report: 
                     {% if student.file_url != 'N/A' %}
-                        <a href="{{ student.file_url }}" target="_blank">View Report</a>
+                        <a href="{{ student.file_url }}" target="_blank">{{ student.file_name }}</a>
                     {% else %}
-                        {{ student.file_url }} <!-- This will display 'N/A' -->
+                        N/A
                     {% endif %}
                 </p>
             </div>

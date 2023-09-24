@@ -50,7 +50,7 @@ def studentList():
     try:
         with db_conn.cursor() as cursor:
             select_sql = """
-            SELECT s.student_id, s.name, s.email, s.programme, s.cohort, f.file_url
+            SELECT s.student_id, s.name, s.email, s.programme, s.cohort, f.file_url, f.file_name 
             FROM studentDetails s
             LEFT JOIN studentFile sf ON s.student_id = sf.student_id
             LEFT JOIN file f ON sf.file_id = f.file_id AND f.file_type = 'ProgressReport'
@@ -60,14 +60,15 @@ def studentList():
 
         students = []
         for student in student_data:
-            student_id, name, email, programme, cohort, file_url = student
+            student_id, name, email, programme, cohort, file_url, file_name = student
             students.append({
                 'student_id': student_id, 
                 'name': name, 
                 'email': email, 
                 'programme': programme, 
                 'cohort': cohort,
-                'file_url': file_url or 'N/A'  # if file_url is None, it will display 'N/A'
+                'file_url': file_url or 'N/A',  # file_url will be None if there is no related file
+                'file_name': file_name or 'N/A'
             })
 
         return render_template('supervisor-studentList.html', students=students)
