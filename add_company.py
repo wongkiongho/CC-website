@@ -717,7 +717,8 @@ def profile():
                         "file_url": file[1],
                         "file_name": file[3]
                     })
-            
+            print(files_list)
+
 
             return render_template('profile.html', student_id=student_id, name=name, email=email, programme=programme, cohort=cohort, files_list=files_list, message = message)
         else:
