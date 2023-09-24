@@ -52,8 +52,11 @@ def studentList():
             select_sql = """
             SELECT s.student_id, s.name, s.email, s.programme, s.cohort, f.file_url, f.file_name 
             FROM studentDetails s
-            LEFT JOIN studentFile sf ON s.student_id = sf.student_id
-            LEFT JOIN file f ON sf.file_id = f.file_id AND f.file_type = 'ProgressReport'
+            LEFT JOIN (
+                SELECT sf.student_id, f.file_url, f.file_name
+                FROM studentFile sf
+                JOIN file f ON sf.file_id = f.file_id AND f.file_type = 'ProgressReport'
+            ) AS f ON s.student_id = f.student_id
             """
             cursor.execute(select_sql)
             student_data = cursor.fetchall()
