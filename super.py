@@ -95,22 +95,29 @@ def applications_page():
         print("Error: ", str(e))  # print the error to the console
         return f"An error occurred: {str(e)}"
 
-@app.route("/approveOrReject", methods=['GET', 'POST'])
-def approveOrReject_page():
+@app.route("/approveOrReject", methods=['GET'])
+def approve_or_reject():
     try:
         with db_conn.cursor() as cursor:
-            select_sql = "SELECT student_id, company_id, status, details FROM application WHERE status='pending'"
+            # Example SQL, adjust as necessary
+            select_sql = """
+            SELECT a.student_id, a.company_id, a.status, a.details, f.file_url
+            FROM application a
+            LEFT JOIN studentFile sf ON a.student_id = sf.student_id
+            LEFT JOIN file f ON sf.file_id = f.file_id
+            """
             cursor.execute(select_sql)
             application_data = cursor.fetchall()
 
         applications = []
         for application in application_data:
-            student_id, company_id, status, details = application
+            student_id, company_id, status, details, file_url = application
             applications.append({
-                'student_id': student_id, 
+                'student_id': student_id,
                 'company_id': company_id,
                 'status': status,
-                'details': details
+                'details': details,
+                'file_url': file_url
             })
 
         return render_template('supervisor-ApproveOrReject.html', student_applications=applications)
