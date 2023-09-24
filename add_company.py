@@ -605,7 +605,7 @@ def Addstudent():
         cursor.execute(insert_sql_file, (file_id, file_url, "Resume", resume_file.filename))
         db_conn.commit()
         print("Student and resume edited successfully!")
-        return render_template("profile.html")
+        return redirect(url_for('profile'))
 
     except MySQLError as e:
         print(f"Error while inserting into the database: {e}")
