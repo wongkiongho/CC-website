@@ -58,7 +58,7 @@
     <p><span class="font-bold">Company ID:</span> {{ application.company_id }}</p>
     <p><span class="font-bold">Details:</span> {{ application.details }}</p>
     <p><span class="font-bold">Status:</span> {{ application.status }}</p>
-    <p><span class="font-bold">File:</span> <a href="{{ application.file_url }}" target="_blank">{{ application.file.name }}</a></p>
+    <p><span class="font-bold">File:</span> <a href="{{ application.file_url if application.get('file_url') else 'N/A' }}" target="_blank">{{ application.file_name if application.get('file_name') else 'N/A' }}</a></p>
     <div class="flex items-end space-x-5 mt-3">
         <button class="approve-button bg-green-500 text-white p-2 rounded" onclick="approveApplication('{{ application.student_id }}', '{{ application.company_id }}')">Approve</button>
         <button class="reject-button bg-red-500 text-white p-2 rounded" onclick="rejectApplication('{{ application.student_id }}', '{{ application.company_id }}')">Reject</button>
