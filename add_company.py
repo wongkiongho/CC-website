@@ -186,27 +186,44 @@ def editCompany(company_id):
             db_conn.commit()
 
 
-            cursor.execute("SELECT file_id FROM companyFile WHERE company_id=%s", (company_id,))
+            #cursor.execute("SELECT file_id FROM companyFile WHERE company_id=%s", (company_id,))
             file_ids_to_delete = [row[0] for row in cursor.fetchall()]
             # Handle company logo file
            
 
-            # Process company logo
-            logo_content_type, _ = mimetypes.guess_type(company_logo_file.filename)
-            logo_extension = logo_content_type.split("/")[1] if logo_content_type else ""
-            company_logo_file_name_in_s3 = f"company_id-{company_id}_logo.{logo_extension}"
+        # Process company logo
+        logo_content_type, _ = mimetypes.guess_type(company_logo_file.filename)
+        logo_extension = logo_content_type.split("/")[1] if logo_content_type else ""
+        company_logo_file_name_in_s3 = f"company_id-{company_id}_logo.{logo_extension}"
 
-            s3.Bucket(custombucket).put_object(
-                Key=company_logo_file_name_in_s3, 
-                Body=company_logo_file, 
-                ContentDisposition=f"attachment; filename={company_logo_file.filename}"
-            )
-            logo_url = f"https://s3{s3_location}.amazonaws.com/{custombucket}/{company_logo_file_name_in_s3}"
-            logo_file_id = str(uuid4())
-            cursor.execute("INSERT INTO companyFile (file_id, company_id) VALUES (%s, %s)", (logo_file_id, company_id))
-            cursor.execute("INSERT INTO file (file_id, file_url, file_type, file_name, file_date) VALUES (%s, %s, %s, %s, NOW())", (logo_file_id, logo_url, "logo", company_logo_file.filename))
-            db_conn.commit()
-            cursor.close()
+        s3.Bucket(custombucket).put_object(
+            Key=company_logo_file_name_in_s3, 
+            Body=company_logo_file, 
+            ContentDisposition=f"attachment; filename={company_logo_file.filename}"
+        )
+        logo_url = f"https://s3{s3_location}.amazonaws.com/{custombucket}/{company_logo_file_name_in_s3}"
+        logo_file_id = str(uuid4())
+        cursor.execute("INSERT INTO companyFile (file_id, company_id) VALUES (%s, %s)", (logo_file_id, company_id))
+        cursor.execute("INSERT INTO file (file_id, file_url, file_type, file_name, file_date) VALUES (%s, %s, %s, %s, NOW())", (logo_file_id, logo_url, "logo", company_logo_file.filename))
+        db_conn.commit()
+
+        # Process company detail files
+        for detail_file in company_files:
+            if detail_file.filename != "":
+                details_content_type, _ = mimetypes.guess_type(detail_file.filename)
+                details_extension = details_content_type.split("/")[1] if details_content_type else ""
+                detail_file_name_in_s3 = f"company_id-{company_id}_file.{details_extension}"
+
+                s3.Bucket(custombucket).put_object(
+                    Key=detail_file_name_in_s3, 
+                    Body=detail_file, 
+                    ContentDisposition=f"attachment; filename={detail_file.filename}"
+                )
+                file_url = f"https://s3{s3_location}.amazonaws.com/{custombucket}/{detail_file_name_in_s3}"
+                file_id = str(uuid4())
+                cursor.execute("INSERT INTO companyFile (file_id, company_id) VALUES (%s, %s)", (file_id, company_id))
+                cursor.execute("INSERT INTO file (file_id, file_url, file_type, file_name, file_date) VALUES (%s, %s, %s, %s, NOW())", (file_id, file_url, "details", detail_file.filename))
+                db_conn.commit()
 
            
 
