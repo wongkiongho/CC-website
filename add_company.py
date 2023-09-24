@@ -63,9 +63,7 @@ def viewAdminLoginPage():
 def viewManageSupervisorPage():
     return render_template('admin-manage-supervisor.html')
 
-@app.route("/admin-manage-student.html", methods=['GET', 'POST'])
-def viewManageStudentPage():
-    return render_template('admin-manage-student.html')
+
 
 @app.route("/admin-manage-company.html", methods=['GET', 'POST'])
 def viewManageCompanyPage():
@@ -535,6 +533,11 @@ def manageStudent():
     message = request.args.get("message")
     return render_template('supervisor-studentList.html', message=message)
     
+@app.route("/admin-manage-student.html", methods=['GET', 'POST'])
+def viewManageStudentPage():
+    message = request.args.get("message")
+    return render_template('admin-manage-student.html', message=message)
+
 @app.route('/logoutStudent')
 def logoutStudent():
     session.clear()  # This will clear all session variables
