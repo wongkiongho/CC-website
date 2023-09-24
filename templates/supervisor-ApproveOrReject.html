@@ -42,6 +42,7 @@
     </nav>
 
     <!-- Main Content -->
+    <div class="main-content flex flex-col items-center mt-20 ml-20">
     <div class="applications-list mb-5">
         {% if student_applications %}
         {% for application in student_applications %}
@@ -68,7 +69,7 @@
             <p>No pending application</p>
         {% endif %}
     </div>
-
+</div>
     <script>
          function toggleDetails(button) {
         const detailsDiv = button.parentElement.nextElementSibling;
