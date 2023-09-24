@@ -535,7 +535,7 @@ def supervisorLogin():
 
 
 @app.route("/supervisor-studentList.html")
-def studentList():
+def showstudentList():
     message = request.args.get("message")
     return render_template('supervisor-studentList.html', message=message)
 
