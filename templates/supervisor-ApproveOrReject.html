@@ -55,7 +55,7 @@
                 
                 <!-- Hidden Details -->
 <div class="details hidden flex flex-col">
-    <p><span class="font-bold">Company Name:</span> {{ application.company_name }}</p>
+    <p><span class="font-bold">Company ID:</span> {{ application.company_id }}</p>
     <p><span class="font-bold">Details:</span> {{ application.details }}</p>
     <p><span class="font-bold">Status:</span> {{ application.status }}</p>
     <p><span class="font-bold">Resume File:</span> <a href="{{ application.file_url if application.get('file_url') else 'N/A' }}" target="_blank">{{ application.file_url if application.get('file_url') else 'N/A' }}</a></p>
