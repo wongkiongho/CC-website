@@ -13,7 +13,7 @@ import bcrypt
 
 app = Flask(__name__)
 
-bucket = "limjiasheng-bucket"
+bucket = custombucket
 region = customregion
 
 db_conn = connections.Connection(
@@ -38,7 +38,7 @@ table = 'supervisor'
 
 s3 = boto3.resource('s3')
 s3_client = boto3.client('s3')
-bucket_location = boto3.client('s3').get_bucket_location(Bucket="limjiasheng-bucket")
+bucket_location = boto3.client('s3').get_bucket_location(Bucket=custombucket)
 s3_location = (bucket_location['LocationConstraint'])
 
 if s3_location is None:
@@ -75,20 +75,6 @@ def viewAddSupervisorPage():
 def viewManageSupervisorPage():
     return render_template('admin-manage-supervisor.html')
 
-# admin login page
-@app.route("/admin-login.html", methods=['GET', 'POST'])
-def viewAdminLoginPage():
-    return render_template('admin-login.html')
-
-# student login page
-@app.route("/student-login.html", methods=['GET', 'POST'])
-def viewStudentLoginPage():
-    return render_template('student-login.html')
-
-# supervisor login page
-@app.route("/supervisor-login.html", methods=['GET', 'POST'])
-def viewSupervisorLoginPage():
-    return render_template('supervisor-login.html')
 
 # add student (DONE)
 @app.route("/addstudent", methods=['POST'])
