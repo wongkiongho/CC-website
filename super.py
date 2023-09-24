@@ -99,27 +99,25 @@ def applications_page():
 def approve_or_reject():
     try:
         with db_conn.cursor() as cursor:
-            # Adjust SQL to only select applications with a status of "pending"
+            # Example SQL, adjust as necessary
             select_sql = """
-            SELECT a.student_id, a.company_id, a.status, a.details, f.file_name, f.file_url
+            SELECT a.student_id, a.company_id, a.status, a.details, f.file_url
             FROM application a
             LEFT JOIN studentFile sf ON a.student_id = sf.student_id
             LEFT JOIN file f ON sf.file_id = f.file_id
-            WHERE a.status = 'pending'  -- Only select rows where status is 'pending'
             """
             cursor.execute(select_sql)
             application_data = cursor.fetchall()
 
         applications = []
         for application in application_data:
-            student_id, company_id, status, details, file_url, file_name = application
+            student_id, company_id, status, details, file_url = application
             applications.append({
                 'student_id': student_id,
                 'company_id': company_id,
                 'status': status,
                 'details': details,
-                'file_name': file_name or 'N/A',  # Use 'N/A' as default value
-                'file_url': file_url  # This can be None
+                'file_url': file_url
             })
 
         return render_template('supervisor-ApproveOrReject.html', student_applications=applications)
