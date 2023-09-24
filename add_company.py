@@ -84,6 +84,7 @@ def viewEditCompanyPage():
 
 @app.route("/viewcompany/<company_id>", methods=['GET'])
 def viewCompany(company_id):
+    message = request.args.get('message')  # Retrieve the message from query parameters
     try:
         cursor = db_conn.cursor()
 
@@ -122,7 +123,8 @@ def viewCompany(company_id):
             company=company, 
             company_positions=company_positions, 
             files_list=files_list,
-            logo_url=logo_url
+            logo_url=logo_url,
+            message=message
         )
     except Exception as e:
         return str(e)
@@ -236,7 +238,9 @@ def editCompany(company_id):
                         cursor.execute("INSERT INTO companyFile (file_id, company_id) VALUES (%s, %s)", (file_id, company_id))
                         cursor.execute("INSERT INTO file (file_id, file_url, file_type, file_name, file_date) VALUES (%s, %s, %s, %s, NOW())", (file_id, file_url, "details", detail_file.filename))
                         db_conn.commit()
-
+                
+                        viewCompany(company_id)
+                        return redirect(url_for('viewCompany', company_id=company_id ,message='edit_successful'))
     except Exception as e:
         return str(e)
 
