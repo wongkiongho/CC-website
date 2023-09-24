@@ -721,7 +721,7 @@ def profile():
                     })
             
 
-            return render_template('profile.html', student_id=student_id, name=name, email=email, programme=programme, cohort=cohort, files=files, message = message)
+            return render_template('profile.html', student_id=student_id, name=name, email=email, programme=programme, cohort=cohort, files_list=files_list, message = message)
         else:
             return "Student not found", 404
     except Exception as e:
