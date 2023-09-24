@@ -190,22 +190,7 @@ def editCompany(company_id):
             # Handle company logo file
             if company_logo_file:
                 # Delete previous company files from S3 and database
-                cursor.execute("SELECT file_id FROM companyFile WHERE company_id=%s", (company_id,))
-                file_ids_to_delete = [row[0] for row in cursor.fetchall()]
-
-                if file_ids_to_delete:
-                    # Delete files from S3 and database
-                    cursor.execute("SELECT file_url FROM file WHERE file_type='logo' AND file_id IN %s", (tuple(file_ids_to_delete),))
-                    urls_to_delete = [row[0] for row in cursor.fetchall()]
-
-                    for url in urls_to_delete:
-                        parsed_url = urlparse(url)
-                        object_key = parsed_url.path.lstrip('/')
-                        s3_client.delete_object(Bucket=custombucket, Key=object_key)
-
-                    # Delete records from companyFile and file tables
-                    cursor.execute("DELETE FROM companyFile WHERE company_id=%s", (company_id,))
-                    cursor.execute("DELETE FROM file WHERE file_id IN %s", (tuple(file_ids_to_delete),))
+               
 
                 # Process company logo
                 logo_content_type, _ = mimetypes.guess_type(company_logo_file.filename)
@@ -226,23 +211,7 @@ def editCompany(company_id):
             if company_files:
                 # Process company detail files
                 for detail_file in company_files:
-                    # Delete previous company files from S3 and database
-                    cursor.execute("SELECT file_id FROM companyFile WHERE company_id=%s", (company_id,))
-                    file_ids_to_delete = [row[0] for row in cursor.fetchall()]
-
-                    if file_ids_to_delete:
-                        # Delete files from S3 and database
-                        cursor.execute("SELECT file_url FROM file WHERE file_type='details' AND file_id IN %s", (tuple(file_ids_to_delete),))
-                        urls_to_delete = [row[0] for row in cursor.fetchall()]
-
-                        for url in urls_to_delete:
-                            parsed_url = urlparse(url)
-                            object_key = parsed_url.path.lstrip('/')
-                            s3_client.delete_object(Bucket=custombucket, Key=object_key)
-
-                        # Delete records from companyFile and file tables
-                        cursor.execute("DELETE FROM companyFile WHERE company_id=%s", (company_id,))
-                        cursor.execute("DELETE FROM file WHERE file_id IN %s", (tuple(file_ids_to_delete),))
+                    
                     if detail_file.filename != "":
                         details_content_type, _ = mimetypes.guess_type(detail_file.filename)
                         details_extension = details_content_type.split("/")[1] if details_content_type else ""
