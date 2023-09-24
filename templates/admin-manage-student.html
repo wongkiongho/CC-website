@@ -202,12 +202,6 @@
 
             updateStudentCount();
 
-            // Attach an event listener to the search button
-            const searchButton = document.getElementById('searchButton');
-            searchButton.addEventListener('click', filterStudents);
-
-            // Attach an event listener to the search input for real-time filtering
-            searchInput.addEventListener('input', filterStudents);
 
             $(document).ready(function() {
                 fetchStudents();
