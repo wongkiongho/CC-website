@@ -226,11 +226,7 @@ def editCompany(company_id):
                 db_conn.commit()
 
 
-            
 
-           
-
-           
             
  
     except Exception as e:
