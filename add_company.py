@@ -870,7 +870,8 @@ def application_status():
 
 @app.route("/admin-add-supervisor.html", methods=['GET', 'POST'])
 def viewAddSupervisorPage():
-    return render_template('admin-add-supervisor.html')
+    message = request.args.get('message')  # Retrieve the message from query parameters
+    return render_template('admin-add-supervisor.html', message=message)
 
 
 
@@ -878,13 +879,14 @@ def viewAddSupervisorPage():
 # add student (DONE)
 @app.route("/addstudentandassigntosupervisor", methods=['GET','POST'])
 def addStudent():
+    message = request.args.get('message')  # Retrieve the message from query parameters
     try:
         if request.method == 'GET':
             cursor = db_conn.cursor()
             cursor.execute("SELECT supervisor_id, name FROM supervisor")
             supervisors = cursor.fetchall()
             cursor.close()
-            return render_template("admin-add-student.html", supervisors=supervisors)
+            return render_template("admin-add-student.html", supervisors=supervisors,message=message)
 
         elif request.method == 'POST':
             # Retrieve form fields
@@ -899,15 +901,11 @@ def addStudent():
             
             insert_sql = "INSERT INTO studentDetails (student_id, name, email, password, programme,  cohort, supervisor_id) VALUES (%s, %s, %s, %s, %s, %s, %s)"
             cursor = db_conn.cursor()
-            cursor.execute(insert_sql, (student_id, name, email, password, programme, cohort, supervisor_ids))
+            cursor.execute(insert_sql, (student_id, name, email, password, programme, cohort, supervisor_id))
             db_conn.commit()
 
-            # Fetch the updated student count from the database
-            fetch_count_sql = "SELECT COUNT(*) FROM studentDetails"
-            cursor.execute(fetch_count_sql)
-
             print("Data inserted in MySQL RDS...")
-            return redirect(url_for('viewAddStudentPage'))
+            return redirect(url_for('addStudent', message='student_added'))
 
     except Exception as e:
         print(f"Error: {e}")
@@ -970,8 +968,9 @@ def delete_student(student_id):
         return jsonify({"error": str(e)}), 500
     
 # add supervisor
-@app.route("/addsupervisor", methods=['GET'])
+@app.route("/addsupervisor", methods=['POST'])
 def Addsupervisor():
+
     # Retrieve form fields
     supervisor_id = request.form.get("supervisor_id")
     name = request.form.get("name")
@@ -986,7 +985,7 @@ def Addsupervisor():
         db_conn.commit()
 
         print("Data inserted in MySQL RDS...")
-        return redirect(url_for('/admin-add-supervisor.html'))
+        return redirect(url_for('/admin-add-supervisor.html',message = 'supervisor_added'))
 
     except Exception as e:
         print(f"Error: {e}")
