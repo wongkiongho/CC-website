@@ -116,27 +116,31 @@ def applications_page():
 def approve_or_reject():
     try:
         with db_conn.cursor() as cursor:
-            select_sql = """
-            SELECT a.student_id, a.company_id, c.company_name, a.status, a.details, f.file_url
-            FROM application a
-            LEFT JOIN studentFile sf ON a.student_id = sf.student_id
-            LEFT JOIN file f ON sf.file_id = f.file_id
-            LEFT JOIN company c ON a.company_id = c.company_id
+            # Get data from application table
+            select_sql_application = """
+            SELECT student_id, company_id, status, details
+            FROM application
+            WHERE status = 'pending'
             """
-            cursor.execute(select_sql)
+            cursor.execute(select_sql_application)
             application_data = cursor.fetchall()
 
-        applications = []
-        for application in application_data:
-            student_id, company_id, company_name, status, details, file_url = application
-            applications.append({
-                'student_id': student_id,
-                'company_id': company_id,
-                'company_name': company_name,  # Adding the company_name to the applications list
-                'status': status,
-                'details': details,
-                'file_url': file_url
-            })
+            applications = []
+            for application in application_data:
+                student_id, company_id, status, details = application
+                
+                # For each company_id, get the company_name from company table
+                cursor.execute("SELECT company_name FROM company WHERE company_id = %s", (company_id,))
+                company_name_data = cursor.fetchone()
+                company_name = company_name_data[0] if company_name_data else "N/A"
+                
+                applications.append({
+                    'student_id': student_id,
+                    'company_id': company_id,
+                    'status': status,
+                    'details': details,
+                    'company_name': company_name
+                })
 
         return render_template('supervisor-ApproveOrReject.html', student_applications=applications)
     except Exception as e:
