@@ -50,13 +50,21 @@ def studentList():
     try:
         with db_conn.cursor() as cursor:
             select_sql = """
-            SELECT s.student_id, s.name, s.email, s.programme, s.cohort, f.file_url, f.file_name 
+            SELECT 
+                s.student_id, 
+                s.name, 
+                s.email, 
+                s.programme, 
+                s.cohort, 
+                MAX(f.file_url) AS file_url, 
+                MAX(f.file_name) AS file_name 
             FROM studentDetails s
             LEFT JOIN (
                 SELECT sf.student_id, f.file_url, f.file_name
                 FROM studentFile sf
                 JOIN file f ON sf.file_id = f.file_id AND f.file_type = 'ProgressReport'
             ) AS f ON s.student_id = f.student_id
+            GROUP BY s.student_id, s.name, s.email, s.programme, s.cohort
             """
             cursor.execute(select_sql)
             student_data = cursor.fetchall()
@@ -70,7 +78,7 @@ def studentList():
                 'email': email, 
                 'programme': programme, 
                 'cohort': cohort,
-                'file_url': file_url or 'N/A',  # file_url will be None if there is no related file
+                'file_url': file_url or 'N/A',
                 'file_name': file_name or 'N/A'
             })
 
