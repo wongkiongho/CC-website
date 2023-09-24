@@ -905,7 +905,7 @@ def addStudent():
             db_conn.commit()
 
             print("Data inserted in MySQL RDS...")
-            return redirect(url_for('addStudent', message='student_added'))
+            return redirect(url_for('addstudentandassigntosupervisor', message='student_added'))
 
     except Exception as e:
         print(f"Error: {e}")
