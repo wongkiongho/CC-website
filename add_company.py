@@ -872,20 +872,13 @@ def viewStudentProfilePage():
 def viewAddStudentPage():
     return render_template('admin-add-student.html')
 
-# manage student page
-@app.route("/admin-manage-student.html", methods=['GET', 'POST'])
-def viewManageStudentPage():
-    return render_template('admin-manage-student.html')
+
 
 # add supervisor page
 @app.route("/admin-add-supervisor.html", methods=['GET', 'POST'])
 def viewAddSupervisorPage():
     return render_template('admin-add-supervisor.html')
 
-# manage supervisor page
-@app.route("/admin-manage-supervisor.html", methods=['GET', 'POST'])
-def viewManageSupervisorPage():
-    return render_template('admin-manage-supervisor.html')
 
 
 # add student (DONE)
@@ -899,7 +892,106 @@ def Addstudent():
     
     try:
         insert_sql = "INSERT INTO studentDetails (student_id, name, email, password) VALUES (%s, %s, %s, %s)"
+
+        cursor.execute(insert_sql, (student_id, name, email, password))
+        db_conn.commit()
+
+        # Fetch the updated student count from the database
+        fetch_count_sql = "SELECT COUNT(*) FROM studentDetails"
+        cursor.execute(fetch_count_sql)
+        updated_count = cursor.fetchone()[0]
+
+        print("Data inserted in MySQL RDS...")
+        return redirect(url_for('viewAddStudentPage'))
+
+    except Exception as e:
+        print(f"Error: {e}")
+        return str(e)
+    finally:
+        cursor.close()
+
+# update number of student
+@app.route("/getStudentCount", methods=['GET'])
+def get_student_count():
+    try:
         cursor = db_conn.cursor()
+        fetch_count_sql = "SELECT COUNT(*) FROM studentDetails"
+        cursor.execute(fetch_count_sql)
+        student_count = cursor.fetchone()[0]
+
+        return jsonify({"studentCount": student_count}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    finally:
+        cursor.close()
+
+# view list of students
+@app.route("/viewstudents", methods=['GET'])
+def view_students():
+    try:
+        # Retrieve company data from the database
+        cursor = db_conn.cursor()
+        select_sql = "SELECT student_id, name, email FROM studentDetails"
+        cursor.execute(select_sql)
+        student_data = cursor.fetchall()
+        cursor.close()
+
+        # Create a list to store the company details
+        studentList = []
+
+        # Loop through the retrieved data and fetch S3 URLs for logos
+        for studentDetails in student_data:
+            student_id, name, email = studentDetails
+            # Assuming you have a naming convention for the logo files
+            
+            studentList.append({'student_id': student_id, 'name': name, 'email': email})
+
+        return jsonify(studentList)
+    except Exception as e:
+        return str(e)
+
+# delete student
+@app.route("/deletestudent/<string:student_id>", methods=['DELETE'])
+def delete_student(student_id):
+    try:
+        cursor = db_conn.cursor()
+        delete_sql = "DELETE FROM studentDetails WHERE student_id = %s"
+        cursor.execute(delete_sql, (student_id,))
+        db_conn.commit()
+
+        cursor.close()
+        return jsonify({"message": "Student information deleted successfully"}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    
+# add supervisor
+@app.route("/addsupervisor", methods=['GET'])
+def Addsupervisor():
+    # Retrieve form fields
+    supervisor_id = request.form.get("supervisor_id")
+    name = request.form.get("name")
+    email = request.form.get("email")
+    contact_number = request.form.get("contact_number")
+    password = request.form.get("password")
+
+    try:
+        insert_sql = "INSERT INTO supervisor (supervisor_id, name, email, contact_number, password) VALUES (%s, %s, %s, %s, %s)"
+        cursor = db_conn.cursor()
+        cursor.execute(insert_sql, (supervisor_id, name, email, contact_number, password))
+        db_conn.commit()
+
+        print("Data inserted in MySQL RDS...")
+        return redirect(url_for('/admin-add-supervisor.html'))
+
+    except Exception as e:
+        print(f"Error: {e}")
+        return str(e)
+    finally:
+        cursor.close()
+
+# update number of student
+@app.route("/getSupervisorCount", methods=['GET'])
+
         cursor.execute(insert_sql, (student_id, name, email, password))
         db_conn.commit()
 
