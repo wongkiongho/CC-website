@@ -33,40 +33,50 @@
             <li class="mb-4">
                 <a id="studentMenu" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500" onclick="toggleMenu()">Supervisor</a>
                 <ul id="studentSubmenu" class="hidden py-5 pl-4">
-                    <li class="mb-4"><a href="supervisor-studentList.html" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Student List</a></li>
-                    <li class="mb-4"><a href="supervisor-application.html" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Student Application</a></li>
-                    <li class="mb-4"><a href="supervisor-ApproveOrReject.html" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Approve/Reject Application</a></li>
+                    <li class="mb-4"><a href="/studentlist" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">View Student List</a></li>
+                    <li class="mb-4"><a href="/applications" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Student Application</a></li>
+                    <li class="mb-4"><a href="/approveOrReject" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Approve / Reject Application</a></li>
                 </ul>
             </li>
         </ul>
     </nav>
 
     <!-- Main Content -->
-    <div class="main-content flex flex-col items-center mt-20 ml-80">
-        <!-- Section to Approve/Reject Application -->
-        <section class="approve-reject-section w-3/4 p-5 bg-white rounded shadow">
-            <h2 class="text-2xl font-bold mb-5">Approve/Reject Application</h2>
-            
-            <!-- Applications List -->
-            <div class="applications-list mb-5">
-                <!-- Each item in this list represents an application. You can duplicate this block for each application. -->
-                <div class="application-item flex justify-between items-center mb-2">
-                    <div>
-                        <span class="font-bold">Student Name:</span> John Doe
-                        <span class="font-bold ml-4">ID:</span> 12345
-                        <span class="font-bold ml-4">Company Name:</span> ABC Corp
-                    </div>
-                    <div class="flex items-end space-x-5">
-                        <button class="approve-button bg-green-500 text-white p-2 rounded" onclick="approveApplication('12345')">Approve</button>
-                        <button class="reject-button bg-red-500 text-white p-2 rounded" onclick="rejectApplication('12345')">Reject</button>
-                    </div>
+<div class="main-content flex flex-col items-center mt-20 ml-40 w-full">
+    <div class="applications-list mb-5 w-3/5 mx-auto"> <!-- Set a maximum or fixed width here -->
+        {% if student_applications %}
+        {% for application in student_applications %}
+            <div class="application-item bg-white p-5 rounded shadow mb-5 w-full"> <!-- w-full ensures that this div takes the full width of its container -->
+                <!-- Heading with Toggle Button -->
+                <div class="flex justify-between items-center mb-3">
+                    <h3 class="text-xl font-bold">Student ID:{{ application.student_id }}</h3>
+                    <button onclick="toggleDetails(this)" class="px-3 py-1 bg-gray-800 text-white rounded">Details</button>
                 </div>
-                <!-- Repeat similar blocks for other applications -->
-            </div>
-        </section>
+                
+                <!-- Hidden Details -->
+<div class="details hidden flex flex-col">
+    <p><span class="font-bold">Company ID:</span> {{ application.company_id }}</p>
+    <p><span class="font-bold">Details:</span> {{ application.details }}</p>
+    <p><span class="font-bold">Status:</span> {{ application.status }}</p>
+    <p><span class="font-bold">Resume File:</span> <a href="{{ application.file_url if application.get('file_url') else 'N/A' }}" target="_blank">{{ application.file_url if application.get('file_url') else 'N/A' }}</a></p>
+    <div class="flex items-end space-x-5 mt-3">
+        <button class="approve-button bg-green-500 text-white p-2 rounded" onclick="approveApplication('{{ application.student_id }}', '{{ application.company_id }}')">Approve</button>
+        <button class="reject-button bg-red-500 text-white p-2 rounded" onclick="rejectApplication('{{ application.student_id }}', '{{ application.company_id }}')">Reject</button>
     </div>
+</div>
+            </div>
+        {% endfor %}
+        {% else %}
+            <p>No pending application</p>
+        {% endif %}
+    </div>
+</div>
 
     <script>
+         function toggleDetails(button) {
+        const detailsDiv = button.parentElement.nextElementSibling;
+        detailsDiv.classList.toggle('hidden');
+    }
         function toggleMenu() {
             document.getElementById('studentSubmenu').classList.toggle('hidden');
         }
@@ -75,15 +85,57 @@
             // Implement your logout function here
         }
 
-        function approveApplication(id) {
-            // Implement your approve application function here
-            // Use the id parameter to identify which application to approve
+        function approveApplication(studentId, companyId) {
+    fetch('/approveApplication', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ student_id: studentId, company_id: companyId })
+    })
+    .then(response => {
+        if(!response.ok) throw new Error('Network response was not ok ' + response.statusText);
+        return response.json();
+    })
+    .then(data => {
+        if (data.success) {
+            // Refresh the page to reflect the changes
+            location.reload();
+        } else {
+            alert('Error approving application: ' + data.error);
         }
+    })
+    .catch(error => {
+        console.error('There has been a problem with your fetch operation:', error);
+        alert('There has been a problem with your fetch operation: ' + error);
+    });
+}
 
-        function rejectApplication(id) {
-            // Implement your reject application function here
-            // Use the id parameter to identify which application to reject
+function rejectApplication(studentId, companyId) {
+    fetch('/rejectApplication', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ student_id: studentId, company_id: companyId })
+    })
+    .then(response => {
+        if(!response.ok) throw new Error('Network response was not ok ' + response.statusText);
+        return response.json();
+    })
+    .then(data => {
+        if (data.success) {
+            // Refresh the page to reflect the changes
+            location.reload();
+        } else {
+            alert('Error rejecting application: ' + data.error);
         }
+    })
+    .catch(error => {
+        console.error('There has been a problem with your fetch operation:', error);
+        alert('There has been a problem with your fetch operation: ' + error);
+    });
+}
     </script>
 </body>
 </html>

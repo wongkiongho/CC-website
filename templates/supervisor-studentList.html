@@ -25,7 +25,7 @@
     <!-- Header -->
     <header class="sticky top-0 bg-gray-800 text-white py-5 flex items-center">
         <div class="logo">
-            <img src="logo.png" alt="Internship Logo" class="w-12 h-12 ml-5 rounded-full">
+
         </div>
         <h1 class="text-2xl mt-2 ml-5 p-0">Internship</h1>
         <a href="/logoutStudent" class="ml-auto mr-5 bg-red-500 hover:bg-red-700 text-white px-4 py-1 rounded">Logout</a>
@@ -36,62 +36,43 @@
         <ul class="py-5 pl-4">
             <li class="mb-4">
                 <a id="studentMenu" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500" onclick="toggleMenu()">Supervisor</a>
-<ul id="studentSubmenu" class="hidden py-5 pl-4">
-    <li class="mb-4"><a href="supervisor-studentList.html" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Student List</a></li>
-    <li class="mb-4"><a href="supervisor-application.html" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Student Application</a></li>
-    <li class="mb-4"><a href="supervisor-ApproveOrReject.html" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Internship Form</a></li>
-</ul>
+                <ul id="studentSubmenu" class="hidden py-5 pl-4">
+                    <li class="mb-4"><a href="/studentlist" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">View Student List</a></li>
+                    <li class="mb-4"><a href="/applications" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Student Application</a></li>
+                    <li class="mb-4"><a href="/approveOrReject" class="text-white block py-2 px-4 no-underline hover:bg-gray-700 hover:border-l-4 hover:border-orange-500">Approve / Reject Application</a></li>              </ul>
             </li>
         </ul>
     </nav>
 
-    <!-- Main Content -->
-    <div class="main-content ml-72 mt-5 p-5 bg-white shadow-md rounded-lg p-6">
-        <h1 class="text-xl font-bold mb-4">Student List</h1>
-        <ul>
-            <li class="border-b border-gray-200">
-				<div class="flex justify-between p-2 cursor-pointer" onclick="toggleDetails('student1')">
-				  <h2>Student 1</h2>
-				  <h2>Grade A</h2>
-				</div>
-				<div id="student1" class="transition-all overflow-hidden max-h-0 p-0 pl-10">
-				  <p class="py-2">Programme:</p>
-				  <p class="py-2">Faculty:</p>
-				  <p class="py-2">Season Joined:</p>
-				  <p class="py-2">Contact Number:</p>
-				  <p class="py-2">Email Address:</p>
-				</div>
-			  </li>
-			   <li class="border-b border-gray-200">
-			<!-- Student 2 Block -->
-			<div class="flex justify-between p-2 cursor-pointer" onclick="toggleDetails('student2')">
-			  <h2>Student 2</h2>
-			  <h2>Grade B</h2>
-			</div>
-			<div id="student2" class="transition-all overflow-hidden max-h-0 p-0 pl-10">
-			  <p class="py-2">Programme:</p>
-			  <p class="py-2">Faculty:</p>
-			  <p class="py-2">Season Joined:</p>
-			  <p class="py-2">Contact Number:</p>
-			  <p class="py-2">Email Address:</p>
-			</div>
-		  </li>
-		  <li class="border-b border-gray-200">
-			<!-- Student 3 Block -->
-			<div class="flex justify-between p-2 cursor-pointer" onclick="toggleDetails('student3')">
-			  <h2>Student 3</h2>
-			  <h2>Grade C</h2>
-			</div>
-			<div id="student3" class="transition-all overflow-hidden max-h-0 p-0 pl-10">
-			  <p class="py-2">Programme:</p>
-			  <p class="py-2">Faculty:</p>
-			  <p class="py-2">Season Joined:</p>
-			  <p class="py-2">Contact Number:</p>
-			  <p class="py-2">Email Address:</p>
-			</div>
-		  </li>
-        </ul>
-    </div>
+<!-- Main Content -->
+<div class="main-content ml-72 mt-5 p-5 bg-white shadow-md rounded-lg p-6">
+    <h1 class="text-xl font-bold mb-4">Student List</h1>
+    <ul>
+        {% if students %}
+        {% for student in students %}
+        <li class="border-b border-gray-200">
+            <div class="flex justify-between p-2 cursor-pointer" onclick="toggleDetails('student{{ student.student_id }}')">
+                <h2>{{ student.student_id }}</h2>
+            </div>
+            <div id="student{{ student.student_id }}" class="transition-all overflow-hidden max-h-0 p-0 pl-10">
+                <p class="py-2">Name: {{ student.name }}</p>
+                <p class="py-2">Email Address: {{ student.email }}</p>
+                <p class="py-2">Programme: {{ student.programme }}</p>
+                <p class="py-2">Cohort: {{ student.cohort }}</p>
+                <p class="py-2">Progress Reports:</p>
+                <ul>
+                {% for report in student.reports %}
+                    <li><a href="{{ report.file_url }}">{{ report.file_name }}</a></li>
+                {% endfor %}
+                </ul>
+            </div>
+        </li>  
+        {% endfor %}
+        {% else %}
+        <p>No students available</p>
+        {% endif %}
+    </ul>
+</div>
 
     <script>
 		 function toggleMenu() {
