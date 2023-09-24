@@ -238,7 +238,7 @@ def editCompany(company_id):
 
     finally:
         cursor.close()
-    return render_template('admin-manage-company.html', message='company_edited')
+    return render_template('admin-manage-company.html')
 
 
 
