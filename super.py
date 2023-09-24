@@ -112,14 +112,14 @@ def approve_or_reject():
 
         applications = []
         for application in application_data:
-            student_id, company_id, status, details, file_name, file_url = application
+            student_id, company_id, status, details, file_url, file_name = application
             applications.append({
                 'student_id': student_id,
                 'company_id': company_id,
                 'status': status,
                 'details': details,
-                'file_name': file_name,
-                'file_url': file_url  # file_url will be None if there is no related file
+                'file_name': file_name or 'N/A',  # Use 'N/A' as default value
+                'file_url': file_url  # This can be None
             })
 
         return render_template('supervisor-ApproveOrReject.html', student_applications=applications)
