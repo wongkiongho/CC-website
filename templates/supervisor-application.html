@@ -49,11 +49,18 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {% for application in student_applications %}
                 <div class="bg-white p-5 rounded shadow">
-                    <h3 class="text-xl font-bold mb-3">Student ID:{{ application.student_id }}</h3>
-                    <p><strong>Programme:</strong> {{ application.programme }}</p> <!-- Display programme -->
-                    <p><strong>Company:</strong> {{ application.company_id }}</p> <!-- Display company_name -->
-                    <p><strong>Internship Details:</strong> {{ application.details }}</p>
-                    <p><strong>Status:</strong> {{ application.status }}</p>
+                    <!-- Heading -->
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-xl font-bold mb-3">Student ID:{{ application.student_id }}</h3>
+                        <button onclick="toggleDetails(this)" class="px-3 py-1 bg-gray-800 text-white rounded">Toggle Details</button>
+                    </div>
+                    <!-- Details -->
+                    <div class="details hidden flex flex-col">
+                        <p><strong>Programme:</strong> {{ application.programme }}</p>
+                        <p><strong>Company:</strong> {{ application.company_id }}</p>
+                        <p><strong>Internship Details:</strong> {{ application.details }}</p>
+                        <p><strong>Status:</strong> {{ application.status }}</p>
+                    </div>
                 </div>
             {% endfor %}
         </div>
@@ -61,6 +68,10 @@
 </div>
 
     <script>
+         function toggleDetails(button) {
+        const detailsDiv = button.parentElement.nextElementSibling;
+        detailsDiv.classList.toggle('hidden');
+    }
         function toggleMenu() {
             document.getElementById('studentSubmenu').classList.toggle('hidden');
         }
