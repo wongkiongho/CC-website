@@ -268,7 +268,7 @@ def editCompany(company_id):
                     db_conn.commit()
 
     cursor.close()
-    return render_template('admin-manage-company.html')
+    return redirect(url_for('viewCompany', company_id=company_id, message="edit_successful"))
             
  
 
