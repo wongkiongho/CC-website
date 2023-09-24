@@ -92,7 +92,7 @@ def applications_page():
 def approveOrReject_page():
     try:
         with db_conn.cursor() as cursor:
-            select_sql = "SELECT student_id, company_id, status, details FROM application WHERE status='approved'"
+            select_sql = "SELECT student_id, company_id, status, details FROM application WHERE status='pending'"
             cursor.execute(select_sql)
             application_data = cursor.fetchall()
 
