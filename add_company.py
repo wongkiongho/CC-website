@@ -61,7 +61,8 @@ def viewAdminLoginPage():
 
 @app.route("/admin-manage-supervisor.html", methods=['GET', 'POST'])
 def viewManageSupervisorPage():
-    return render_template('admin-manage-supervisor.html')
+    message = request.args.get('message')  # Retrieve the message from query parameters
+    return render_template('admin-manage-supervisor.html', message=message)
 
 @app.route("/admin-add-student.html", methods=['GET', 'POST'])
 def viewAddStudentPage():
@@ -70,7 +71,8 @@ def viewAddStudentPage():
 
 @app.route("/admin-manage-company.html", methods=['GET', 'POST'])
 def viewManageCompanyPage():
-    return render_template('admin-manage-company.html')
+    message = request.args.get('message')  # Retrieve the message from query parameters
+    return render_template('admin-manage-company.html', message=message)
 
 @app.route("/admin-add-company.html", methods=['GET', 'POST'])
 def viewAddCompanyPage():
@@ -318,7 +320,7 @@ def Addcompany():
         cursor.close()
     
     print("All modifications done...")
-    return render_template('admin-manage-company.html')
+    return render_template('admin-manage-company.html', message='company_added')
 
 
 
@@ -904,11 +906,9 @@ def addStudent():
             cursor.execute(insert_sql, (student_id, name, email, password, programme, cohort, supervisor_id))
             db_conn.commit()
 
-            cursor.execute("SELECT supervisor_id, name FROM supervisor")
-            supervisors = cursor.fetchall()
 
             print("Data inserted in MySQL RDS...")
-            return render_template("admin-add-student.html", supervisors=supervisors,message='student_added')
+            return render_template("admin-manage-student.html", message='student_added')
 
     except Exception as e:
         print(f"Error: {e}")
@@ -988,7 +988,7 @@ def Addsupervisor():
         db_conn.commit()
 
         print("Data inserted in MySQL RDS...")
-        return render_template("admin-add-supervisor.html", message='supervisor_added')
+        return render_template("admin-manage-supervisor.html", message='supervisor_added')
 
 
     except Exception as e:

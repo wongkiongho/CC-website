@@ -19,6 +19,11 @@
         <title>Internship</title>
     </head>
     <body class="m-0 p-0 bg-gray-200">
+        {% if message == "student_added" %}
+        <script>
+            alert('Student added!');
+        </script>
+        {% endif %}
         {% if message == "login_successful" %}
         <script>
             alert('Login successful!');
