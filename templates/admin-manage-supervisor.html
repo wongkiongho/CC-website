@@ -153,6 +153,7 @@
 
                         supervisorTable.append(row);
                     });
+                    updateStudentCount();
                 })
                 .catch(error => {
                     console.error('Error fetching supervisors:', error);
@@ -192,9 +193,10 @@
                     });
             }
 
-            updateSupervisorCount();
+            
 
             $(document).ready(function() {
+                updateSupervisorCount();
                 fetchSupervisors();
             });
         </script>
