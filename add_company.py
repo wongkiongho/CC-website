@@ -19,7 +19,7 @@ import traceback
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
-bucket = zikianbucket
+bucket = custombucket
 region = customregion
 
 
